@@ -95,8 +95,10 @@ nb-configuration.xml
 .vscode/
 .code-workspace
 target/
+target/classes
+target/test-classes
 
 ##############################
 ## OS X
 ##############################
-.DS_Store
+*.DS_Store
