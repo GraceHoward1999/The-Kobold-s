@@ -8,6 +8,7 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -17,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+<TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
   <tabs>
     <Tab text="Customers">
          <content>
@@ -33,7 +34,7 @@
                   </TableView>
                   <VBox alignment="CENTER" prefHeight="749.0" prefWidth="476.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <children>
-                        <HBox alignment="CENTER" prefHeight="52.0" prefWidth="476.0" spacing="20.0">
+                        <HBox alignment="CENTER" prefWidth="476.0" spacing="10.0">
                            <children>
                               <Button fx:id="editCustomerButton" mnemonicParsing="false" onAction="#handleEditCustomer" prefHeight="24.0" prefWidth="200.0" text="Edit" />
                               <Button fx:id="deleteCustomerButton" mnemonicParsing="false" onAction="#handleDeleteCustomer" prefHeight="24.0" prefWidth="200.0" text="Delete" />
@@ -55,10 +56,10 @@
                               <RowConstraints maxHeight="200.0" minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="First Name" GridPane.rowIndex="1" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Last Name:" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number:" GridPane.rowIndex="3" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Email Address:" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="First Name:" underline="true" GridPane.rowIndex="1" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Last Name:" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number:" underline="true" GridPane.rowIndex="3" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Email Address:" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <Text fx:id="customerFirstNameText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="2" />
                               <Text fx:id="customerLastNameText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <Text fx:id="customerPhoneText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="4" />
@@ -75,11 +76,11 @@
                                     <TableColumn fx:id="customerOrderIssueColumn" prefWidth="75.0" text="Issue" />
                                 </columns>
                               </TableView>
-                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
                                  <children>
                                      <Button fx:id="NewOrder" mnemonicParsing="false" onAction="#handleNewOrder" prefWidth="100.0" text="Add Request" wrapText="true">
                                        <VBox.margin>
-                                          <Insets bottom="30.0" top="10.0" />
+                                          <Insets bottom="20.0" top="5.0" />
                                        </VBox.margin>
                                        <font>
                                           <Font size="11.0" />
@@ -94,13 +95,16 @@
                                          <font>
                                              <Font size="11.0" />
                                          </font>
+                                       <VBox.margin>
+                                          <Insets top="5.0" />
+                                       </VBox.margin>
                                      </Button>
                                     <Button mnemonicParsing="false" onAction="#handleExportSingleCustomer" prefWidth="100.0" text="Export Single Customer List" wrapText="true">
                                        <font>
                                           <Font size="11.0" />
                                        </font>
                                        <VBox.margin>
-                                          <Insets top="100.0" />
+                                          <Insets top="325.0" />
                                        </VBox.margin>
                                     </Button>
                                  </children>
@@ -110,6 +114,7 @@
                      </children>
                   </VBox>
                   <Button fx:id="addCustomerButtonMain" mnemonicParsing="false" onAction="#handleAddCustomer" text="Add New Customer" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+                  <TextField layoutX="209.0" layoutY="10.0" prefHeight="26.0" prefWidth="291.0" promptText="Search..." />
                </children>
             </AnchorPane>
          </content></Tab>
@@ -117,7 +122,7 @@
       <content>
         <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                <children>
-                  <TableView fx:id="titleTable" editable="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="500.0" AnchorPane.topAnchor="50.0">
+                  <TableView fx:id="titleTable" editable="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="500.0" AnchorPane.topAnchor="80.0">
                     <columns>
                         <TableColumn fx:id="titleFlaggedColumn" prefWidth="51.0" text="Flagged" />
                       <TableColumn fx:id="titleTitleColumn" editable="false" prefWidth="224.0" text="Title" />
@@ -126,10 +131,10 @@
                     </columns>
                   </TableView>
                   <Button fx:id="addTitleButtonMain" mnemonicParsing="false" onAction="#handleAddTitle" text="Add New Title" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
-                  <Button fx:id="resetFlagsButton" mnemonicParsing="false" onAction="#resetFlags" text="Reset New Release Flags" AnchorPane.leftAnchor="220.0" AnchorPane.topAnchor="10.0" />
+                  <Button fx:id="resetFlagsButton" layoutX="346.0" layoutY="10.0" mnemonicParsing="false" onAction="#resetFlags" text="Reset New Release Flags" AnchorPane.leftAnchor="346.0" AnchorPane.topAnchor="10.0" />
                   <VBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="749.0" prefWidth="476.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <children>
-                        <HBox alignment="CENTER" prefHeight="52.0" prefWidth="476.0" spacing="20.0">
+                        <HBox alignment="CENTER" prefWidth="476.0" spacing="10.0">
                            <children>
                               <Button fx:id="editTitleButton" mnemonicParsing="false" onAction="#handleEditTitle" prefHeight="24.0" prefWidth="200.0" text="Edit" />
                               <Button fx:id="deleteTitleButton" mnemonicParsing="false" onAction="#handleDeleteTitle" prefHeight="24.0" prefWidth="200.0" text="Delete" />
@@ -151,15 +156,15 @@
                               <RowConstraints maxHeight="200.0" minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Title:" GridPane.rowIndex="1" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Title:" underline="true" GridPane.rowIndex="1" />
                               <Text fx:id="titleFlagNoticeText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Price:" GridPane.rowIndex="3" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Special Order Notes:" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Price:" underline="true" GridPane.rowIndex="3" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Special Order Notes:" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <Text fx:id="titleTitleText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="2" />
                               <Text fx:id="titlePriceText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="4" />
                               <Text fx:id="titleNotesText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Title Details" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Last Flagged:" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Last Flagged:" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Text fx:id="titleDateFlagged" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <Text fx:id="titleDateFlaggedNoticeText" fill="#de7d00" strokeType="OUTSIDE" strokeWidth="0.0" text="This Title Has Not Been Flagged in Over Six Months" visible="false" wrappingWidth="200.0" GridPane.columnIndex="1" />
                            </children>
@@ -178,7 +183,8 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <Button fx:id="saveFlagsButton" mnemonicParsing="false" onAction="#saveFlags" text="Save Flags" AnchorPane.leftAnchor="125.0" AnchorPane.topAnchor="10.0" />
+                  <Button fx:id="saveFlagsButton" layoutX="269.0" layoutY="10.0" mnemonicParsing="false" onAction="#saveFlags" text="Save Flags" AnchorPane.leftAnchor="259.0" AnchorPane.topAnchor="10.0" />
+                  <TextField layoutX="10.0" layoutY="43.0" prefHeight="26.0" prefWidth="490.0" promptText="Search..." />
                </children></AnchorPane>
       </content>
     </Tab>

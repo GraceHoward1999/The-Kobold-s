@@ -843,7 +843,7 @@ public class Controller implements Initializable {
             window.initModality(Modality.APPLICATION_MODAL);
             window.setTitle("Add Customer");
             window.setResizable(false);
-            window.setHeight(250);
+            window.setHeight(280);
             window.setWidth(400);
             window.setScene(new Scene(root));
             window.setOnHidden( e -> {
@@ -1079,7 +1079,7 @@ public class Controller implements Initializable {
                 window.initModality(Modality.APPLICATION_MODAL);
                 window.setTitle("Edit Customer");
                 window.setResizable(false);
-                window.setHeight(250);
+                window.setHeight(280);
                 window.setWidth(400);
                 window.setScene(new Scene(root));
                 window.setOnHidden(e -> {
