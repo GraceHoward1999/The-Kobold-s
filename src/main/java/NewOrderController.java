@@ -39,7 +39,6 @@ public class NewOrderController {
      */
     @FXML
     void newOrder(ActionEvent event) {
-
         PreparedStatement s = null;
         String sql = "INSERT INTO Orders (customerId, titleId, quantity, issue) VALUES (?, ?, ?, ?)";
         orderQuantityErrorText.setVisible(false);
