@@ -123,7 +123,7 @@ public class EditOrderController {
         this.customerId = order.getCustomerId();
 
         this.prevCustomerId = String.valueOf(order.getCustomerId());
-        this. prevTitle =  String.valueOf(order.getTitleId());
+        this.prevTitle =  String.valueOf(order.getTitleId());
         this.prevIssue = String.valueOf(order.getIssue());
         this.prevQuantity = String.valueOf(order.getQuantity());
 
