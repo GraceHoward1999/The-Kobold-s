@@ -44,7 +44,7 @@ public class Main extends Application {
             System.out.println(controller.isUnsaved());
             if (controller.isUnsaved()) {
                 Alert unsavedAlert = new Alert(Alert.AlertType.CONFIRMATION, "You have unsaved changes to flags. " +
-                        "Are you sure you want to exit?");
+                        "Please save to avoid losing changes");
                 unsavedAlert.showAndWait()
                         .filter(response -> response == ButtonType.CANCEL)
                         .ifPresent(response -> {
