@@ -1,0 +1,30 @@
+
+
+.anchorpane {
+    -fx-background-color: "#eeeeee";
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: "#bcbcbc";
+}
+
+.button {
+    -fx-background-color: "#ffffff";
+}
+
+.tab {
+    -fx-background-color: "#ffffff";
+}
+
+.tab:selected {
+    -fx-background-color: "#eeeeee";
+    -fx-text-base-color: "#000000";
+}
+
+.tab-label {
+    -fx-fill-text: "#ffffff";
+}
+
+"#ffffff"
+"#eeeeee"
+"#bcbcbc"
