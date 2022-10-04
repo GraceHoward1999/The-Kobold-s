@@ -44,7 +44,7 @@ public class EditCustomerController implements Initializable {
         String lastName = updateCustomerLastName.getText();
         String phone = updateCustomerPhone.getText();
         String email = updateCustomerEmail.getText();
-        if (phone.length() < 12) {
+        if (phone.length() > 0 && phone.length() < 12) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Phone number must be 10 digits", ButtonType.OK);
             alert.setTitle("Invalid Phone Number");
             alert.setHeaderText("");
