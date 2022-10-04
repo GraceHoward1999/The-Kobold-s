@@ -1,3 +1,4 @@
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -86,14 +87,19 @@ public class NewOrderController {
     }
 
     /**
-     * Populate the ComboBox with the titles in titlesStr
+     * Populate the ComboBox with the titles in titlesStr, add listener to handle typing over selection
      */
     public void setNewOrder(){
         setTitle.setItems(this.titlesStr);
         setTitle.getSelectionModel().selectFirst();
         setTitle.setEditable(true);
         FxUtilTest.autoCompleteComboBoxPlus(setTitle, (typedText, itemToCompare) -> itemToCompare.toLowerCase().contains(typedText.toLowerCase()) || itemToCompare.equals(typedText));
-
+        setTitle.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            selectTextIfFocused(setTitle);
+        });
+        setTitle.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            selectTextIfFocused(setTitle);
+        });
     }
 
     /**
@@ -137,5 +143,13 @@ public class NewOrderController {
             }
         }
         return -1;
+    }
+
+    private void selectTextIfFocused(ComboBox<String> box){
+        Platform.runLater(() -> {
+            if ((box.getEditor().isFocused() || box.isFocused()) && !box.getEditor().getText().isEmpty()) {
+                box.getEditor().selectAll();
+            }
+        });
     }
 }

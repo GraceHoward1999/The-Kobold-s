@@ -1,10 +1,10 @@
 ----------------------------------------------------------------
-Mon Oct 03 14:18:07 CDT 2022:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.15.2.0 - (1873585): instance a816c00e-0183-9f48-bb3b-00000f411940 
-on database directory C:\Users\ryker\DragonSlayer\derbyDB with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@6d5380c2 
+Tue Oct 04 14:38:02 CDT 2022:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.15.2.0 - (1873585): instance a816c00e-0183-a481-5347-00000e2ec028 
+on database directory C:\Users\ryker\DragonSlayer\derbyDB with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@73d16e93 
 Loaded from file:/C:/Users/ryker/.m2/repository/org/apache/derby/derby/10.15.2.0/derby-10.15.2.0.jar
-java.vendor=Eclipse Adoptium
-java.runtime.version=17.0.4+8
+java.vendor=Oracle Corporation
+java.runtime.version=18.0.2.1+1-1
 user.dir=C:\Users\ryker\OneDrive\Documents\GitHub\The-Kobold-s
 os.name=Windows 11
 os.arch=amd64
