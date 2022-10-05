@@ -40,6 +40,8 @@ public class EditCustomerController implements Initializable {
      */
     @FXML
     void updateCustomer(ActionEvent event) {
+        Stage window = (Stage) updateCustomerButton.getScene().getWindow();
+
         String firstName = updateCustomerFirstName.getText();
         String lastName = updateCustomerLastName.getText();
         String phone = updateCustomerPhone.getText();
@@ -63,6 +65,7 @@ public class EditCustomerController implements Initializable {
         try
         {
             get = conn.createStatement();
+            update = conn.prepareStatement(sql);
             ResultSet result = get.executeQuery("SELECT * FROM CUSTOMERS");
             while (result.next()) {
                 String testFirstName = result.getString("FIRSTNAME");
@@ -71,11 +74,13 @@ public class EditCustomerController implements Initializable {
                     String testPhone = result.getString("PHONE");
                     String testEmail = result.getString("EMAIL");
                     if (testPhone.equals(phone) && testEmail.equals(email)) {
-                        Alert alert = new Alert(Alert.AlertType.WARNING, "Cannot create duplicate Customers. If two Customers have the exact same name, make sure they have different phones or emails.", ButtonType.OK);
+                        /**Alert alert = new Alert(Alert.AlertType.WARNING, "Cannot create duplicate Customers. If two Customers have the exact same name, make sure they have different phones or emails.", ButtonType.OK);
                         alert.setTitle("Duplicate Customer Entry");
                         alert.setHeaderText("");
                         alert.show();
-                        return;
+                        return;*/
+                        update.close();
+                        window.close();
                     }
                 }
             }
@@ -97,7 +102,7 @@ public class EditCustomerController implements Initializable {
             alert.setHeaderText("");
             alert.show();
         }
-        Stage window = (Stage) updateCustomerButton.getScene().getWindow();
+        
         window.close();
     }
 
