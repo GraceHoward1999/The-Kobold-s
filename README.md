@@ -1,4 +1,4 @@
-# Dragon-s-Lair
+# DragonSlayer Pull List Program
 Capstone Project UNO 2022
 
 # How to use
