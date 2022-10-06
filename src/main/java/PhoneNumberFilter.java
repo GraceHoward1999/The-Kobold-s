@@ -16,7 +16,8 @@ public class PhoneNumberFilter implements UnaryOperator<TextFormatter.Change> {
     public TextFormatter.Change apply(TextFormatter.Change change) {
         if (change.isContentChange()) {
             handleBackspaceOverSpecialCharacter(change);
-            if (change.getText().matches("[0-9]*")) {
+            String phoneStr = change.getText().replaceAll("[-() ]*", "");
+            if (phoneStr.matches("[0-9]*")) {
                 int originalNewTextLength = change.getControlNewText().length();
                 change.setText(formatNumber(change.getControlNewText()));
                 change.setRange(0, change.getControlText().length());
