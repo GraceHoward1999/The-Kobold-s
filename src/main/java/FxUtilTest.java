@@ -33,6 +33,7 @@ public class FxUtilTest {
 
             @Override
             public void handle(KeyEvent event) {
+
                 if (event.getCode() == KeyCode.UP) {
                     caretPos = -1;
                     if (comboBox.getEditor().getText() != null) {
@@ -48,12 +49,7 @@ public class FxUtilTest {
                         moveCaret(comboBox.getEditor().getText().length());
                     }
                     return;
-                } else if (event.getCode() == KeyCode.BACK_SPACE) {
-                    if (comboBox.getEditor().getText() != null) {
-                        moveCaretToPos = true;
-                        caretPos = comboBox.getEditor().getCaretPosition();
-                    }
-                } else if (event.getCode() == KeyCode.DELETE) {
+                } else if (event.getCode() == KeyCode.BACK_SPACE || event.getCode() == KeyCode.DELETE) {
                     if (comboBox.getEditor().getText() != null) {
                         moveCaretToPos = true;
                         caretPos = comboBox.getEditor().getCaretPosition();
@@ -63,8 +59,7 @@ public class FxUtilTest {
                 }
 
                 if (event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT || event.getCode().equals(KeyCode.SHIFT) || event.getCode().equals(KeyCode.CONTROL)
-                        || event.isControlDown() || event.getCode() == KeyCode.HOME
-                        || event.getCode() == KeyCode.END || event.getCode() == KeyCode.TAB) {
+                        || event.isShortcutDown() || event.getCode() == KeyCode.HOME || event.getCode() == KeyCode.END || event.getCode() == KeyCode.TAB) {
                     return;
                 }
 
@@ -100,6 +95,7 @@ public class FxUtilTest {
             }
         });
     }
+    
     public static<T> T getComboBoxValue(ComboBox<T> comboBox){
         if (comboBox.getSelectionModel().getSelectedIndex() < 0) {
             return null;

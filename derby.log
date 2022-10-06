@@ -1,6 +1,6 @@
 ----------------------------------------------------------------
-Tue Oct 04 14:38:02 CDT 2022:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.15.2.0 - (1873585): instance a816c00e-0183-a481-5347-00000e2ec028 
+Thu Oct 06 16:39:20 CDT 2022:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.15.2.0 - (1873585): instance a816c00e-0183-af3d-1983-00000e24bf90 
 on database directory C:\Users\ryker\DragonSlayer\derbyDB with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@73d16e93 
 Loaded from file:/C:/Users/ryker/.m2/repository/org/apache/derby/derby/10.15.2.0/derby-10.15.2.0.jar
 java.vendor=Oracle Corporation
