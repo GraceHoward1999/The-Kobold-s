@@ -22,7 +22,7 @@
   <tabs>
     <Tab text="Customers">
          <content>
-            <AnchorPane styleClass="anchorpane" stylesheets="@style.css">
+            <AnchorPane fx:id="CustomerAnchorPane" onKeyPressed="#handleCustomerKeyboardInput" onMouseClicked="#passCustomerKeyboardFocus" styleClass="anchorpane" stylesheets="@style.css">
                <children>
                   <TableView fx:id="customerTable" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="500.0" AnchorPane.topAnchor="80.0">
                     <columns>
@@ -34,7 +34,7 @@
                   </TableView>
                   <VBox alignment="CENTER" prefHeight="749.0" prefWidth="476.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <children>
-                        <GridPane prefHeight="172.0" prefWidth="476.0">
+                        <GridPane onMouseClicked="#passCustomerKeyboardFocus" prefHeight="172.0" prefWidth="476.0">
                           <columnConstraints>
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -70,7 +70,7 @@
                                     <TableColumn fx:id="customerOrderIssueColumn" prefWidth="75.0" text="Issue" />
                                 </columns>
                               </TableView>
-                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+                              <VBox alignment="TOP_CENTER" onMouseClicked="#passCustomerKeyboardFocus" prefHeight="200.0" prefWidth="100.0">
                                  <children>
                                      <Button fx:id="NewOrder" mnemonicParsing="false" onAction="#handleNewOrder" prefWidth="100.0" text="Add Request" wrapText="true">
                                        <VBox.margin>
@@ -107,8 +107,8 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <TextField layoutX="10.0" layoutY="44.0" prefHeight="26.0" prefWidth="490.0" promptText="Search..." />
-                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="30.0" prefWidth="490.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <TextField fx:id="CustomerSearch" layoutX="10.0" layoutY="44.0" prefHeight="26.0" prefWidth="490.0" promptText="Search..." />
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" onMouseClicked="#passCustomerKeyboardFocus" prefHeight="30.0" prefWidth="490.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <children>
                         <Button fx:id="addCustomerButtonMain" mnemonicParsing="false" onAction="#handleAddCustomer" text="Add New Customer" />
                         <Button fx:id="editCustomerButton" mnemonicParsing="false" onAction="#handleEditCustomer" prefWidth="60.0" text="Edit">
@@ -128,7 +128,7 @@
          </content></Tab>
     <Tab text="Titles">
       <content>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+        <AnchorPane fx:id="TitleAnchorPane" minHeight="0.0" minWidth="0.0" onKeyPressed="#handleTitleKeyboardInput" onMouseClicked="#passTitleKeyboardFocus" prefHeight="180.0" prefWidth="200.0">
                <children>
                   <TableView fx:id="titleTable" editable="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="500.0" AnchorPane.topAnchor="80.0">
                     <columns>
@@ -140,7 +140,7 @@
                   </TableView>
                   <VBox alignment="CENTER" prefHeight="749.0" prefWidth="476.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <children>
-                        <GridPane prefHeight="172.0" prefWidth="476.0">
+                        <GridPane onMouseClicked="#passTitleKeyboardFocus" prefHeight="172.0" prefWidth="476.0">
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -179,7 +179,7 @@
                                     <TableColumn prefWidth="120.0" text="Email" />
                                  </columns>
                               </TableView>
-                              <VBox alignment="TOP_CENTER" prefHeight="200.0" prefWidth="100.0">
+                              <VBox alignment="TOP_CENTER" onMouseClicked="#passTitleKeyboardFocus" prefHeight="200.0" prefWidth="100.0">
                                  <children>
                                     <Button fx:id="NewOrder1" mnemonicParsing="false" onAction="#handleNewOrder" prefWidth="100.0" text="Add Request" wrapText="true">
                                        <VBox.margin>
@@ -216,8 +216,8 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <TextField layoutX="10.0" layoutY="44.0" prefHeight="26.0" prefWidth="490.0" promptText="Search..." />
-                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="30.0" prefWidth="490.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <TextField fx:id="TitleSearch" layoutX="10.0" layoutY="44.0" prefHeight="26.0" prefWidth="490.0" promptText="Search..." />
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" nodeOrientation="LEFT_TO_RIGHT" onMouseClicked="#passTitleKeyboardFocus" prefHeight="30.0" prefWidth="490.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <children>
                         <Button fx:id="addTitleButtonMain" mnemonicParsing="false" onAction="#handleAddTitle" prefWidth="94.0" text="Add New Title" />
                         <Button fx:id="saveFlagsButton" mnemonicParsing="false" onAction="#saveFlags" prefWidth="77.0" text="Save Flags">

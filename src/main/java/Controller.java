@@ -16,6 +16,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Modality;
@@ -2161,7 +2164,53 @@ public class Controller implements Initializable {
         getDatabaseInfo();
     }
 
-/*######################################################################/
+    @FXML
+    void handleCustomerKeyboardInput(KeyEvent event)
+    {
+        System.out.println("Customer keyboard input triggered: " + event.getCode().toString());
+
+        if (event.isControlDown() && event.getCode() == KeyCode.F)
+        {
+            Scene scene = customerOrderTable.getScene();
+
+            TextField search = (TextField) scene.lookup("#CustomerSearch");
+            search.requestFocus();
+        }
+    }
+
+    @FXML
+    void passCustomerKeyboardFocus(MouseEvent event)
+    {
+        if (event.getEventType() == event.MOUSE_CLICKED)
+        {
+            customerOrderTable.getScene().lookup("#CustomerAnchorPane").requestFocus();
+        }
+    }
+
+    @FXML
+    void handleTitleKeyboardInput(KeyEvent event)
+    {
+        System.out.println("Title keyboard input triggered: " + event.getCode().toString());
+
+        if (event.isControlDown() && event.getCode() == KeyCode.F)
+        {
+            Scene scene = titleTable.getScene();
+
+            TextField search = (TextField) scene.lookup("#TitleSearch");
+            search.requestFocus();
+        }
+    }
+
+    @FXML
+    void passTitleKeyboardFocus(MouseEvent event)
+    {
+        if (event.getEventType() == event.MOUSE_CLICKED)
+        {
+            titleTable.getScene().lookup("#TitleAnchorPane").requestFocus();
+        }
+    }
+
+    /*######################################################################/
 //////////////////////////// Custom Functions ///////////////////////////
 /######################################################################*/
     
