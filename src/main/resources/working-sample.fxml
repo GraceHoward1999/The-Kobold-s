@@ -47,17 +47,17 @@
                               <RowConstraints maxHeight="200.0" minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="First Name:" underline="true" GridPane.rowIndex="1" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Last Name:" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number:" underline="true" GridPane.rowIndex="3" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Email Address:" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="First Name:" underline="true" GridPane.rowIndex="1" />
+                              <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Last Name:" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number:" underline="true" GridPane.rowIndex="3" />
+                              <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Email Address:" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <Text fx:id="customerFirstNameText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="2" />
                               <Text fx:id="customerLastNameText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <Text fx:id="customerPhoneText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="4" />
                               <Text fx:id="customerEmailText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Details">
                                  <font>
-                                    <Font name="System Bold" size="14.0" />
+                                    <Font name="SansSerif Bold Italic" size="14.0" />
                                  </font></Text>
                            </children>
                         </GridPane>
@@ -70,35 +70,14 @@
                                     <TableColumn fx:id="customerOrderIssueColumn" prefWidth="75.0" text="Issue" />
                                 </columns>
                               </TableView>
-                              <VBox alignment="TOP_CENTER" onMouseClicked="#passCustomerKeyboardFocus" prefHeight="200.0" prefWidth="100.0">
+                              <VBox alignment="BOTTOM_CENTER" onMouseClicked="#passCustomerKeyboardFocus" prefHeight="200.0" prefWidth="100.0">
                                  <children>
-                                     <Button fx:id="NewOrder" mnemonicParsing="false" onAction="#handleNewOrder" prefWidth="100.0" text="Add Request" wrapText="true">
-                                       <VBox.margin>
-                                          <Insets bottom="20.0" top="5.0" />
-                                       </VBox.margin>
-                                       <font>
-                                          <Font size="11.0" />
-                                       </font>
-                                    </Button>
-                                    <Button mnemonicParsing="false" onAction="#handleDeleteOrder" prefWidth="100.0" text="Delete Selected" wrapText="true">
-                                       <font>
-                                          <Font size="11.0" />
-                                       </font>
-                                    </Button>
-                                     <Button mnemonicParsing="false" onAction="#handleEditOrder" prefWidth="100.0" text="Edit Selected" wrapText="true">
-                                         <font>
-                                             <Font size="11.0" />
-                                         </font>
-                                       <VBox.margin>
-                                          <Insets top="5.0" />
-                                       </VBox.margin>
-                                     </Button>
                                     <Button mnemonicParsing="false" onAction="#handleExportSingleCustomer" prefWidth="100.0" text="Export Single Customer List" wrapText="true">
                                        <font>
                                           <Font size="11.0" />
                                        </font>
                                        <VBox.margin>
-                                          <Insets top="348.5" />
+                                          <Insets />
                                        </VBox.margin>
                                     </Button>
                                  </children>
@@ -153,18 +132,18 @@
                               <RowConstraints maxHeight="200.0" minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Title:" underline="true" GridPane.rowIndex="1" />
+                              <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Title:" underline="true" GridPane.rowIndex="1" />
                               <Text fx:id="titleFlagNoticeText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Price:" underline="true" GridPane.rowIndex="3" />
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Special Order Notes:" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Price:" underline="true" GridPane.rowIndex="3" />
+                              <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Special Order Notes:" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                               <Text fx:id="titleTitleText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="2" />
                               <Text fx:id="titlePriceText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="4" />
                               <Text fx:id="titleNotesText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Title Details">
                                  <font>
-                                    <Font size="14.0" />
+                                    <Font name="SansSerif Bold Italic" size="14.0" />
                                  </font></Text>
-                              <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Last Flagged:" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Last Flagged:" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Text fx:id="titleDateFlagged" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <Text fx:id="titleDateFlaggedNoticeText" fill="#de7d00" strokeType="OUTSIDE" strokeWidth="0.0" text="This Title Has Not Been Flagged in Over Six Months" visible="false" wrappingWidth="200.0" GridPane.columnIndex="1" />
                               <Text fx:id="titleNumberRequestsText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="213.4580078125" GridPane.columnIndex="1" />
@@ -354,7 +333,7 @@
                         <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                 <children>
-                                    <HBox layoutX="7.0" layoutY="10.0" prefHeight="162.0" prefWidth="666.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                                    <HBox alignment="CENTER_LEFT" layoutX="7.0" layoutY="10.0" prefHeight="162.0" prefWidth="666.0" spacing="170.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
                                         <children>
                                             <TextArea fx:id="databaseOverview" editable="false" prefHeight="162.0" prefWidth="392.0" text="Database currently has:&#10;   X Titles&#10;   X Customers&#10;   X Special Order Notes&#10;   X Pending Issue # Requests&#10;   X Titles have not been flagged for over six months&#10;   X Titles have 0 Customer Requests&#10;" />
                                     <GridPane prefHeight="162.0" prefWidth="419.0">
@@ -381,7 +360,7 @@
                                     </GridPane>
                                         </children>
                                     </HBox>
-                                    <TableView fx:id="monthlyBreakdownTable" layoutY="175.0" prefHeight="442.0" prefWidth="538.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="450.0" AnchorPane.topAnchor="190.0">
+                                    <TableView fx:id="monthlyBreakdownTable" layoutY="175.0" prefHeight="442.0" prefWidth="538.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="190.0">
                                         <columns>
                                             <TableColumn fx:id="breakdownTitleColumn" prefWidth="171.3168179988861" text="Title" />
                                             <TableColumn fx:id="breakdownQuantityColumn" prefWidth="44.183197021484375" text="Qty" />
