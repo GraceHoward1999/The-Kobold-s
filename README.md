@@ -1,7 +1,7 @@
 # Dragon-s-Lair
 Capstone Project UNO 2022
 
-RELEASE NOTES 1.01 (10.06.2022)
+**RELEASE NOTES 1.01 (10.06.2022)**
 
 -UI overhaul completed
 
