@@ -133,7 +133,7 @@
                   <TableView fx:id="titleTable" editable="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="500.0" AnchorPane.topAnchor="80.0">
                     <columns>
                         <TableColumn fx:id="titleFlaggedColumn" prefWidth="51.0" text="Flagged" />
-                      <TableColumn fx:id="titleTitleColumn" editable="false" prefWidth="224.0" text="Title" />
+                      <TableColumn fx:id="titleTitleColumn" editable="false" prefWidth="239.0" text="Title" />
                       <TableColumn fx:id="titlePriceColumn" editable="false" prefWidth="100.0" text="Price" />
                         <TableColumn fx:id="titleNotesColumn" editable="false" prefWidth="100.0" text="Notes" />
                     </columns>
