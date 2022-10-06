@@ -55,7 +55,7 @@
                     </GridPane.margin>
                 </TextField>
 
-                <TextField fx:id="setQuantity" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                <TextField fx:id="setQuantity" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER" text="1">
                     <GridPane.margin>
                         <Insets left="5.0" />
                     </GridPane.margin>

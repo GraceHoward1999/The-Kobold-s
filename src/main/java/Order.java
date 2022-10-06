@@ -22,8 +22,8 @@ public class Order {
      */
     public Order(int customerId, int titleId, String title, int quantity, int issue) {
         this.customerId = customerId;
-        this.titleId =titleId;
-        this.title =title;
+        this.titleId = titleId;
+        this.title = title;
         this.quantity = quantity;
         this.issue = issue;
     }
