@@ -94,12 +94,6 @@ public class NewOrderController {
         setTitle.getSelectionModel().selectFirst();
         setTitle.setEditable(true);
         FxUtilTest.autoCompleteComboBoxPlus(setTitle, (typedText, itemToCompare) -> itemToCompare.toLowerCase().contains(typedText.toLowerCase()) || itemToCompare.equals(typedText));
-        setTitle.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            selectTextIfFocused(setTitle);
-        });
-        setTitle.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            selectTextIfFocused(setTitle);
-        });
     }
 
     /**
@@ -143,13 +137,5 @@ public class NewOrderController {
             }
         }
         return -1;
-    }
-
-    private void selectTextIfFocused(ComboBox<String> box){
-        Platform.runLater(() -> {
-            if ((box.getEditor().isFocused() || box.isFocused()) && !box.getEditor().getText().isEmpty()) {
-                box.getEditor().selectAll();
-            }
-        });
     }
 }
