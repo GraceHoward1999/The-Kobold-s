@@ -92,9 +92,6 @@ public class NewOrderController {
         setTitle.setItems(this.titlesStr);
         setTitle.getSelectionModel().selectFirst();
         setTitle.setEditable(true);
-        // setTitle.getEditor().focusedProperty().addListener(observable -> {
-
-        // });
         FxUtilTest.autoCompleteComboBoxPlus(setTitle, (typedText, itemToCompare) -> itemToCompare.toLowerCase().contains(typedText.toLowerCase()) || itemToCompare.equals(typedText));
     }
 
