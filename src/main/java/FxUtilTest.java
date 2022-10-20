@@ -1,3 +1,4 @@
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.EventHandler;
@@ -30,6 +31,7 @@ public class FxUtilTest {
             if (comboBox.getSelectionModel().getSelectedIndex() < 0) {
                 comboBox.getEditor().setText(null);
             }
+            Platform.runLater(comboBox.getEditor()::selectAll);
         });
         // begin fix for spacebar bug
         ComboBoxListViewSkin<T> comboBoxListViewSkin = new ComboBoxListViewSkin<T>(comboBox);

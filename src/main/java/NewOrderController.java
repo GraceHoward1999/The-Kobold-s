@@ -1,3 +1,4 @@
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -5,7 +6,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import java.sql.*;
@@ -92,6 +92,9 @@ public class NewOrderController {
         setTitle.setItems(this.titlesStr);
         setTitle.getSelectionModel().selectFirst();
         setTitle.setEditable(true);
+        // setTitle.getEditor().focusedProperty().addListener(observable -> {
+
+        // });
         FxUtilTest.autoCompleteComboBoxPlus(setTitle, (typedText, itemToCompare) -> itemToCompare.toLowerCase().contains(typedText.toLowerCase()) || itemToCompare.equals(typedText));
     }
 
