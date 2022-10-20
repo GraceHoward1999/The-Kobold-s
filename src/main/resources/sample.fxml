@@ -107,7 +107,7 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <TextField fx:id="CustomerSearch" layoutX="10.0" layoutY="44.0" prefHeight="26.0" prefWidth="490.0" promptText="Search..." />
+                  <TextField fx:id="CustomerSearch" layoutX="10.0" layoutY="44.0" onKeyReleased="#handleCustomerSearchKeyboardInput" prefHeight="26.0" prefWidth="490.0" promptText="Search..." />
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" onMouseClicked="#passCustomerKeyboardFocus" prefHeight="30.0" prefWidth="490.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <children>
                         <Button fx:id="addCustomerButtonMain" mnemonicParsing="false" onAction="#handleAddCustomer" text="Add New Customer" />
@@ -195,7 +195,7 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <TextField fx:id="TitleSearch" layoutX="10.0" layoutY="44.0" prefHeight="26.0" prefWidth="490.0" promptText="Search..." />
+                  <TextField fx:id="TitleSearch" layoutX="10.0" layoutY="44.0" onKeyReleased="#handleTitleSearchKeyboardInput" prefHeight="26.0" prefWidth="490.0" promptText="Search..." />
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" nodeOrientation="LEFT_TO_RIGHT" onMouseClicked="#passTitleKeyboardFocus" prefHeight="30.0" prefWidth="490.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <children>
                         <Button fx:id="addTitleButtonMain" mnemonicParsing="false" onAction="#handleAddTitle" prefWidth="94.0" text="Add New Title" />

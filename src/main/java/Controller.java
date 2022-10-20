@@ -2230,6 +2230,72 @@ public class Controller implements Initializable {
         }
     }
 
+    @FXML 
+    void handleTitleSearchKeyboardInput(KeyEvent event)
+    {
+        Scene scene = titleTable.getScene();
+        String search = ((TextField)scene.lookup("#TitleSearch")).getText().toLowerCase();
+
+        if (search.equals("") || search == null)
+        {
+            titleTable.getItems().setAll(getTitles());
+        }
+
+        ObservableList<Title> titles = null;
+        if (event.getCode() == KeyCode.BACK_SPACE)
+        {
+            titles = getTitles();
+        }
+        else 
+        {
+            titles = titleTable.getItems();
+        }
+
+        ObservableList<Title> sortedTitles = FXCollections.observableArrayList();
+
+        for (Title title : titles) {
+            if (title.getTitle().toLowerCase().contains(search))
+            {
+                sortedTitles.add(title);
+            }
+        }
+
+        titleTable.getItems().setAll(sortedTitles);
+    }
+
+    @FXML 
+    void handleCustomerSearchKeyboardInput(KeyEvent event)
+    {
+        Scene scene = customerTable.getScene();
+        String search = ((TextField)scene.lookup("#CustomerSearch")).getText().toLowerCase();
+
+        if (search.equals("") || search == null)
+        {
+            customerTable.getItems().setAll(getCustomers());
+        }
+
+        ObservableList<Customer> customers = null;
+        if (event.getCode() == KeyCode.BACK_SPACE)
+        {
+            customers = getCustomers();
+        }
+        else 
+        {
+            customers = customerTable.getItems();
+        }
+
+        ObservableList<Customer> sortedCustomers = FXCollections.observableArrayList();
+
+        for (Customer customer : customers) {
+            if (customer.getFullName().toLowerCase().contains(search))
+            {
+                sortedCustomers.add(customer);
+            }
+        }
+
+        customerTable.getItems().setAll(sortedCustomers);
+    }
+
     /*######################################################################/
 //////////////////////////// Custom Functions ///////////////////////////
 /######################################################################*/
