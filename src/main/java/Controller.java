@@ -593,7 +593,6 @@ public class Controller implements Initializable {
         {
             sqlExcept.printStackTrace();
         }
-        //TODO: adjust unsaved flags alert
         for (Title t : titles) {
             t.flaggedProperty().addListener((obs, wasFlagged, isFlagged) -> {
                 if (isFlagged) {
@@ -2218,6 +2217,12 @@ public class Controller implements Initializable {
 
             TextField search = (TextField) scene.lookup("#TitleSearch");
             search.requestFocus();
+        }
+        else if (event.isControlDown() && event.getCode() == KeyCode.M)
+        {
+            Scene scene = titleTable.getScene();
+
+            titleTable.getSelectionModel().selectedItemProperty().getValue().setFlagged(!titleTable.getSelectionModel().selectedItemProperty().getValue().isFlagged());
         }
     }
 
