@@ -7,8 +7,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -803,22 +801,6 @@ public class Controller implements Initializable {
                 titleNumberRequestsText.setText(numberRequests);
             }
         });
-
-        EventHandler<KeyEvent> eventHandler = new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent e)
-            {
-                if(e.getCode() == KeyCode.F)
-                {
-                    titleTable.getSelectionModel().getSelectedItem().setFlagged(!titleTable.getSelectionModel().getSelectedItem().isFlagged());
-                }
-            }
-        };
-
-
-        //TODO: figure how to access current scene to add key listner
-        //Scene scene = null;//??
-        //scene.addEventFilter(KeyEvent.KEY_TYPED, eventHandler);
 
         //add listener for selected flagged title
         flaggedTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -2447,16 +2429,6 @@ public class Controller implements Initializable {
                 customerOrders.add(allOrders.get(i));
         }
         customerOrderTable.getItems().setAll(customerOrders);
-    }
-
-    /**
-     * Simplification method to flag a title using a hotkey.
-     */
-    public void flagKeyShortcut()
-    {
-        titleTable.getSelectionModel().getSelectedItem().setFlagged(true);
-        //https://stackoverflow.com/questions/48616490/how-to-add-a-javafx-shortcut-key-combinations-for-buttons
-        //https://stackoverflow.com/questions/25397742/javafx-keyboard-event-shortcut-key
     }
 
 }
