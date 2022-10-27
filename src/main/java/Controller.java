@@ -7,6 +7,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -52,6 +54,7 @@ public class Controller implements Initializable {
     @FXML private TableColumn<Customer, String> customerFirstNameColumn;
     @FXML private TableColumn<Customer, String> customerPhoneColumn;
     @FXML private TableColumn<Customer, String> customerEmailColumn;
+    @FXML private TableColumn<Customer, String> customerNotesColumn;
 
     @FXML private TableColumn<Title, Boolean> titleFlaggedColumn;
     @FXML private TableColumn<Title, String> titleTitleColumn;
@@ -82,6 +85,7 @@ public class Controller implements Initializable {
     @FXML private Text customerLastNameText;
     @FXML private Text customerPhoneText;
     @FXML private Text customerEmailText;
+    @FXML private Text customerNotesText;
 
     @FXML private Text titleTitleText;
     @FXML private Text titlePriceText;
@@ -172,7 +176,8 @@ public class Controller implements Initializable {
                 String lastName = results.getString(3);
                 String phone = results.getString(4);
                 String email = results.getString(5);
-                customers.add(new Customer(customerId, firstName, lastName, phone, email));
+                String notes = results.getString(6);
+                customers.add(new Customer(customerId, firstName, lastName, phone, email, notes));
             }
             results.close();
             s.close();
@@ -591,6 +596,7 @@ public class Controller implements Initializable {
         {
             sqlExcept.printStackTrace();
         }
+        //TODO: adjust unsaved flags alert
         for (Title t : titles) {
             t.flaggedProperty().addListener((obs, wasFlagged, isFlagged) -> {
                 if (isFlagged) {
@@ -687,6 +693,7 @@ public class Controller implements Initializable {
         customerFirstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
         customerPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
         customerEmailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        customerNotesColumn.setCellValueFactory(new PropertyValueFactory<>("notes"));
         customerTable.getItems().setAll(this.getCustomers());
 
         //Populate columns for Orders Table
@@ -769,6 +776,7 @@ public class Controller implements Initializable {
                 customerLastNameText.setText(newSelection.getLastName());
                 customerPhoneText.setText(newSelection.getPhone());
                 customerEmailText.setText(newSelection.getEmail());
+                customerNotesText.setText(newSelection.getNotes());
                 updateOrdersTable(newSelection);
             }
         });
@@ -801,6 +809,22 @@ public class Controller implements Initializable {
                 titleNumberRequestsText.setText(numberRequests);
             }
         });
+
+        EventHandler<KeyEvent> eventHandler = new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent e)
+            {
+                if(e.getCode() == KeyCode.F)
+                {
+                    titleTable.getSelectionModel().getSelectedItem().setFlagged(!titleTable.getSelectionModel().getSelectedItem().isFlagged());
+                }
+            }
+        };
+
+
+        //TODO: figure how to access current scene to add key listner
+        //Scene scene = null;//??
+        //scene.addEventFilter(KeyEvent.KEY_TYPED, eventHandler);
 
         //add listener for selected flagged title
         flaggedTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -943,6 +967,7 @@ public class Controller implements Initializable {
             customerLastNameText.setText("");
             customerPhoneText.setText("");
             customerEmailText.setText("");
+            customerNotesText.setText("");
 
             titleTable.getItems().setAll(getTitles());
             if (customerTable.getSelectionModel().getSelectedItem() != null) {
@@ -1091,6 +1116,7 @@ public class Controller implements Initializable {
                     customerLastNameText.setText("");
                     customerPhoneText.setText("");
                     customerEmailText.setText("");
+                    customerNotesText.setText("");
                     this.loadReportsTab();
                     getDatabaseInfo();
                 });
@@ -1468,6 +1494,10 @@ public class Controller implements Initializable {
             cell.setCellStyle(headStyle);
             cell.setCellValue("Email");
 
+            cell = row.createCell(3);
+            cell.setCellStyle(headStyle);
+            cell.setCellValue("Notes");
+
             ResultSet result;
             Statement s = null;
             try
@@ -1490,6 +1520,8 @@ public class Controller implements Initializable {
                     cell.setCellValue(result.getString("PHONE"));
                     cell = row.createCell(2);
                     cell.setCellValue(result.getString("EMAIL"));
+                    cell = row.createCell(3);
+                    cell.setCellValue(result.getString("NOTES"));
                     i++;
                 }
                 result.close();
@@ -2200,12 +2232,6 @@ public class Controller implements Initializable {
             TextField search = (TextField) scene.lookup("#TitleSearch");
             search.requestFocus();
         }
-        else if (event.isControlDown() && event.getCode() == KeyCode.M)
-        {
-            Scene scene = titleTable.getScene();
-
-            titleTable.getSelectionModel().selectedItemProperty().getValue().setFlagged(!titleTable.getSelectionModel().selectedItemProperty().getValue().isFlagged());
-        }
     }
 
     @FXML
@@ -2215,72 +2241,6 @@ public class Controller implements Initializable {
         {
             titleTable.getScene().lookup("#TitleAnchorPane").requestFocus();
         }
-    }
-
-    @FXML 
-    void handleTitleSearchKeyboardInput(KeyEvent event)
-    {
-        Scene scene = titleTable.getScene();
-        String search = ((TextField)scene.lookup("#TitleSearch")).getText().toLowerCase();
-
-        if (search.equals("") || search == null)
-        {
-            titleTable.getItems().setAll(getTitles());
-        }
-
-        ObservableList<Title> titles = null;
-        if (event.getCode() == KeyCode.BACK_SPACE)
-        {
-            titles = getTitles();
-        }
-        else 
-        {
-            titles = titleTable.getItems();
-        }
-
-        ObservableList<Title> sortedTitles = FXCollections.observableArrayList();
-
-        for (Title title : titles) {
-            if (title.getTitle().toLowerCase().contains(search))
-            {
-                sortedTitles.add(title);
-            }
-        }
-
-        titleTable.getItems().setAll(sortedTitles);
-    }
-
-    @FXML 
-    void handleCustomerSearchKeyboardInput(KeyEvent event)
-    {
-        Scene scene = customerTable.getScene();
-        String search = ((TextField)scene.lookup("#CustomerSearch")).getText().toLowerCase();
-
-        if (search.equals("") || search == null)
-        {
-            customerTable.getItems().setAll(getCustomers());
-        }
-
-        ObservableList<Customer> customers = null;
-        if (event.getCode() == KeyCode.BACK_SPACE)
-        {
-            customers = getCustomers();
-        }
-        else 
-        {
-            customers = customerTable.getItems();
-        }
-
-        ObservableList<Customer> sortedCustomers = FXCollections.observableArrayList();
-
-        for (Customer customer : customers) {
-            if (customer.getFullName().toLowerCase().contains(search))
-            {
-                sortedCustomers.add(customer);
-            }
-        }
-
-        customerTable.getItems().setAll(sortedCustomers);
     }
 
     /*######################################################################/
@@ -2495,6 +2455,16 @@ public class Controller implements Initializable {
                 customerOrders.add(allOrders.get(i));
         }
         customerOrderTable.getItems().setAll(customerOrders);
+    }
+
+    /**
+     * Simplification method to flag a title using a hotkey.
+     */
+    public void flagKeyShortcut()
+    {
+        titleTable.getSelectionModel().getSelectedItem().setFlagged(true);
+        //https://stackoverflow.com/questions/48616490/how-to-add-a-javafx-shortcut-key-combinations-for-buttons
+        //https://stackoverflow.com/questions/25397742/javafx-keyboard-event-shortcut-key
     }
 
 }
