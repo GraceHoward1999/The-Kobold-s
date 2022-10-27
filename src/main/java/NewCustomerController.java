@@ -18,6 +18,8 @@ public class NewCustomerController implements Initializable {
 
     private Connection conn;
 
+    int rowsAffected = 0;
+
     @FXML private Button addCustomerButton;
 
     @FXML private TextField newCustomerEmail;
@@ -76,7 +78,7 @@ public class NewCustomerController implements Initializable {
             insert.setString(2, lastName);
             insert.setString(3, phone);
             insert.setString(4, email);
-            int rowsAffected = insert.executeUpdate();
+            rowsAffected = insert.executeUpdate();
 
             insert.close();
         }
