@@ -43,6 +43,7 @@ public class CreateDB {
                         LastName varchar(255),
                         Phone varchar(255),
                         Email varchar(255),
+                        Notes varchar(255),
                         PRIMARY KEY (CustomerID)
                     )""");
             System.out.println("Created table Customer");
