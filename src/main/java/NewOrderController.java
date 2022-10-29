@@ -2,7 +2,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
@@ -60,8 +62,29 @@ public class NewOrderController {
             }
             String quantity = setQuantity.getText();
             int customerId = this.customerId;
+            Statement get = null;
 
             try {
+                get = conn.createStatement();
+                ResultSet result = get.executeQuery("SELECT * FROM ORDERS");
+                while (result.next()) {
+                    Integer testTitle = result.getInt("TITLEID");
+                    Integer testCust = result.getInt("CUSTOMERID");
+                    if (testTitle == titleID && testCust == customerId)
+                    {
+                        String testIssue = result.getString("ISSUE");
+                        if ((testIssue == null && issue == null) ||
+                            (testIssue != null && issue != null && testIssue.equals(issue)))
+                            {
+                                Alert alert = new Alert(Alert.AlertType.WARNING, "Cannot create duplicate Orders. If a customer has ordered multiple issues of the same title, be sure to fill out the issue field.", ButtonType.OK);
+                                alert.setTitle("Duplicate Order");
+                                alert.setHeaderText("");
+                                alert.show();
+                                return;
+                            }
+                    }
+                }
+
                 s = conn.prepareStatement(sql);
                 s.setString(1, Integer.toString(customerId));
                 s.setString(2, Integer.toString(titleID));
