@@ -962,7 +962,8 @@ public class Controller implements Initializable {
      */
     @FXML
     void handleDeleteOrder(ActionEvent event) {
-        String title = titleTitleText.getText();
+        String titleDP = titleTitleText.getText();
+        String title = customerOrderTable.getSelectionModel().getSelectedItem().getTitleName();
 
         if (customerOrderTable.getSelectionModel().getSelectedItem() == null) {
             AlertBox.display("Confirm Delete", "Please select an order.");
