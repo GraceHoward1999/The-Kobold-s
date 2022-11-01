@@ -978,7 +978,8 @@ public class Controller implements Initializable {
      */
     @FXML
     void handleDeleteOrder(ActionEvent event) {
-        String title = titleTitleText.getText();
+        String titleDP = titleTitleText.getText();
+        String title = customerOrderTable.getSelectionModel().getSelectedItem().getTitleName();
 
         if (customerOrderTable.getSelectionModel().getSelectedItem() == null) {
             AlertBox.display("Confirm Delete", "Please select an order.");
@@ -1037,10 +1038,19 @@ public class Controller implements Initializable {
         }
         else {
             int titleId = titleTable.getSelectionModel().getSelectedItem().getId();
-
-            boolean confirmDelete = ConfirmBox.display(
+            int req = getNumberRequests(titleId);
+            boolean confirmDelete;
+            if ( req > 0)
+            {
+                confirmDelete = ConfirmBox.display(
                     "Confirm Delete",
-                    "Are you sure you would like to delete " + title + "?");
+                    "Are you sure you would like to delete " + title + "?\nThere are " + req + "requests for this title!");
+            }
+            else 
+            {
+                confirmDelete = ConfirmBox.display(
+                    "Confirm Delete",
+                    "Are you sure you would like to delete " + title + "?");}
             if (confirmDelete) {
                 PreparedStatement s = null;
                 String sql = "DELETE FROM TITLES WHERE TITLEID = ?";

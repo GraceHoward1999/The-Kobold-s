@@ -55,6 +55,14 @@ public class NewTitleController{
                         alert.show();
                         return;
                     }
+                    else if (title == "")
+                    {
+                        Alert alert = new Alert(Alert.AlertType.WARNING, "Please enter a title for this publication!", ButtonType.OK);
+                        alert.setTitle("No title entered");
+                        alert.setHeaderText("");
+                        alert.show();
+                        return;
+                    }
                 }
 
                 insert = conn.prepareStatement(sql);

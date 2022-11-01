@@ -18,6 +18,8 @@ public class NewCustomerController implements Initializable {
 
     private Connection conn;
 
+    int rowsAffected = 0;
+
     @FXML private Button addCustomerButton;
 
     @FXML private TextField newCustomerEmail;
@@ -63,11 +65,19 @@ public class NewCustomerController implements Initializable {
                     String testEmail = result.getString("EMAIL");
                     if (testPhone.equals(phone) && testEmail.equals(email)) {
                         Alert alert = new Alert(Alert.AlertType.WARNING, "Cannot create duplicate Customers. If two Customers have the exact same name, make sure they have different phones or emails.", ButtonType.OK);
-                        alert.setTitle("Duplicate Customer Entry");
+                            alert.setTitle("Duplicate Customer Entry");
+                            alert.setHeaderText("");
+                            alert.show();
+                            return;
+                    }
+                }
+                else if (firstName == "" & lastName == "")
+                {
+                    Alert alert = new Alert(Alert.AlertType.WARNING, "Cannot create a customer with no name.", ButtonType.OK);
+                        alert.setTitle("No Name Entered");
                         alert.setHeaderText("");
                         alert.show();
                         return;
-                    }
                 }
             }
 
@@ -76,7 +86,7 @@ public class NewCustomerController implements Initializable {
             insert.setString(2, lastName);
             insert.setString(3, phone);
             insert.setString(4, email);
-            int rowsAffected = insert.executeUpdate();
+            rowsAffected = insert.executeUpdate();
 
             insert.close();
 

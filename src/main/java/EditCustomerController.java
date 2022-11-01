@@ -94,7 +94,7 @@ public class EditCustomerController implements Initializable {
             update.setString(3, phone);
             update.setString(4, email);
             update.setString(5, Integer.toString(customer.getId()));
-            int rowsAffected = update.executeUpdate();
+            //int rowsAffected = update.executeUpdate();
 
             update.close();
 
