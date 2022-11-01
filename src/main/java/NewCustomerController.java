@@ -65,11 +65,19 @@ public class NewCustomerController implements Initializable {
                     String testEmail = result.getString("EMAIL");
                     if (testPhone.equals(phone) && testEmail.equals(email)) {
                         Alert alert = new Alert(Alert.AlertType.WARNING, "Cannot create duplicate Customers. If two Customers have the exact same name, make sure they have different phones or emails.", ButtonType.OK);
-                        alert.setTitle("Duplicate Customer Entry");
+                            alert.setTitle("Duplicate Customer Entry");
+                            alert.setHeaderText("");
+                            alert.show();
+                            return;
+                    }
+                }
+                else if (firstName == "" & lastName == "")
+                {
+                    Alert alert = new Alert(Alert.AlertType.WARNING, "Cannot create a customer with no name.", ButtonType.OK);
+                        alert.setTitle("No Name Entered");
                         alert.setHeaderText("");
                         alert.show();
                         return;
-                    }
                 }
             }
 
