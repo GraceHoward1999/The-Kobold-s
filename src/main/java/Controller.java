@@ -40,6 +40,8 @@ public class Controller implements Initializable {
 //////////////////////////// Class Variables ////////////////////////////
 /######################################################################*/
 
+    //#region Class Variables
+
     private boolean unsaved = false;
 
     @FXML private TableView<Customer> customerTable;
@@ -105,9 +107,13 @@ public class Controller implements Initializable {
 
     private static Connection conn = null;
 
+    //#endregion
+
 /*######################################################################/
 ////////////////////////// Getters and Setters //////////////////////////
 /######################################################################*/
+
+    //#region Getters and Setters
 
     /**
      * Searches the database for whether or not the given title has any pending issue requests
@@ -666,9 +672,13 @@ public class Controller implements Initializable {
         return quantity;
     }
 
+    //#endregion
+
 /*######################################################################/
 ///////////////////////////// Initialization ////////////////////////////
 /######################################################################*/
+
+    //#region Initalization
 
     /**
      * Initiializes the state of the application. Creates a connection to the database,
@@ -823,9 +833,13 @@ public class Controller implements Initializable {
         getDatabaseInfo();
     }
 
+    //#endregion
+
 /*######################################################################/
 ///////////////////////////// FXML Functions ////////////////////////////
 /######################################################################*/
+
+    //#region FXML Functions
 
     /**
      * Runs when the Add Customer button is pressed. Creates a new window for
@@ -934,6 +948,8 @@ public class Controller implements Initializable {
                     s.executeUpdate();
                     s.close();
 
+                    Log.LogEvent("Customer Deleted", "Deleted Customer - " + firstName + " " + lastName);
+
                 } catch (SQLException sqlExcept) {
                     sqlExcept.printStackTrace();
                 }
@@ -993,6 +1009,8 @@ public class Controller implements Initializable {
                     }
                     s.executeUpdate();
                     s.close();
+
+                    Log.LogEvent("Deleted Order", "Deleted order - CustomerID: " + customerId + " - Title: " + title + " - Quantity: " + quantity + " - Issue: " + Integer.valueOf(issue));
                 } catch (SQLException sqlExcept) {
                     sqlExcept.printStackTrace();
                 }
@@ -1039,6 +1057,7 @@ public class Controller implements Initializable {
                     s.executeUpdate();
                     s.close();
 
+                    Log.LogEvent("Deleted Title", "Deleted Title - Title: " + title + " - TitleID: " + titleId);
                 } catch (SQLException sqlExcept) {
                     sqlExcept.printStackTrace();
                 }
@@ -1226,6 +1245,7 @@ public class Controller implements Initializable {
                     getDatabaseInfo();
                 });
                 window.show();
+
             } catch (Exception e) {
                 System.out.println("Error when opening window. This is probably a bug");
                 e.printStackTrace();
@@ -1273,6 +1293,9 @@ public class Controller implements Initializable {
             for (Title title : titles) {
                 rowIndex = exportSingleTitle(workbook, title, rowIndex, false, false);
             }
+
+            Log.LogEvent("Export All Requests", "Exported all requests by title");
+
             saveReport(file, workbook);
         }
     }
@@ -1397,6 +1420,9 @@ public class Controller implements Initializable {
                 }
                 result.close();
                 s.close();
+
+                Log.LogEvent("Export All Titles", "Exported all titles");
+
                 saveReport(file, workbook);
             }
             catch (SQLException sqlExcept)
@@ -1494,6 +1520,9 @@ public class Controller implements Initializable {
                 }
                 result.close();
                 s.close();
+
+                Log.LogEvent("Export All Customers", "Exporting all customers");
+
                 saveReport(file, workbook);
             }
             catch (SQLException sqlExcept)
@@ -1550,6 +1579,9 @@ public class Controller implements Initializable {
                 }
                 rowIndex = exportSingleTitle(workbook, tempTitle, rowIndex, false, true);
             }
+
+            Log.LogEvent("Export Flagged Titles", "Exporting all flagged titles");
+
             saveReport(file, workbook);
         }
     }
@@ -1618,6 +1650,9 @@ public class Controller implements Initializable {
             row = sheet.createRow(i+4);
             cell = row.createCell(0);
             cell.setCellValue("Total: " + i);
+
+            Log.LogEvent("Export No Request Titles", "Exporting all titles with no requests");
+
             saveReport(file, workbook);
         }
     }
@@ -1745,6 +1780,9 @@ public class Controller implements Initializable {
                 }
                 result.close();
                 s.close();
+
+                Log.LogEvent("Export Pending Issue Titles", "Exporting all titles with pending issue numbers");
+
                 saveReport(file, workbook);
             }
             catch (SQLException sqlExcept)
@@ -1877,6 +1915,8 @@ public class Controller implements Initializable {
                 cell = row.createCell(2);
                 cell.setCellValue(totalQuantity);
 
+                Log.LogEvent("Export Single Customer", "Exporting a single customer - Customer Name: " + customer.getFirstName() + " " + customer.getLastName());
+
                 saveReport(file, workbook);
             }
             catch (SQLException sqlExcept)
@@ -1977,6 +2017,9 @@ public class Controller implements Initializable {
                 cellStyle.setAlignment(HorizontalAlignment.CENTER);
                 headerCell.setCellStyle(cellStyle);
                 headerCell.setCellValue("Single Title Customer List");
+
+                // TODO: Add a log call?
+
                 exportSingleTitle(workbook, title, 2, true, false);
                 saveReport(file, workbook);
             }
@@ -2059,6 +2102,9 @@ public class Controller implements Initializable {
                     i++;
                 }
             }
+
+            Log.LogEvent("Export Stalled Titles", "Exporting all stalled titles");
+
             saveReport(file, workbook);
         }
     }
@@ -2091,6 +2137,8 @@ public class Controller implements Initializable {
                     getDatabaseInfo();
                 });
         this.unsaved = false;
+
+        Log.LogMessage("Flags Reset");
     }
 
     /**
@@ -2163,6 +2211,8 @@ public class Controller implements Initializable {
         titleTable.getItems().setAll(getTitles());
         this.loadReportsTab();
         getDatabaseInfo();
+
+        Log.LogMessage("Flags Saved");
     }
 
     @FXML
@@ -2283,10 +2333,14 @@ public class Controller implements Initializable {
         customerTable.getItems().setAll(sortedCustomers);
     }
 
-    /*######################################################################/
+    //#endregion
+
+/*######################################################################/
 //////////////////////////// Custom Functions ///////////////////////////
 /######################################################################*/
     
+    //#region Custom Functions
+
     /**
      * Helper method to make the extension of a file .xlsx
      * @param file file to add the extension to
@@ -2428,6 +2482,8 @@ public class Controller implements Initializable {
             cell = row.createCell(2);
             cell.setCellValue(totalQuantity);
             rowIndex = i + 2;
+
+            Log.LogEvent("Export A Single Title Report", "Exported Title: " + title.getTitle());
         } catch (SQLException e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Database Error. Report may not have saved successfully", ButtonType.OK);
             alert.setTitle("Database Error");
@@ -2475,6 +2531,8 @@ public class Controller implements Initializable {
             alert.setHeaderText("");
             alert.show();
 
+            Log.LogEvent("Report Saved", "Saved a report to: " + file.getAbsolutePath());
+
         } catch (Exception e) {
             savingAlert.close();
             Alert alert = new Alert(Alert.AlertType.ERROR, "Error writing to file. Report may not have saved successfully. Make sure the file is not in use by another program.", ButtonType.OK);
@@ -2496,5 +2554,7 @@ public class Controller implements Initializable {
         }
         customerOrderTable.getItems().setAll(customerOrders);
     }
+
+    //#endregion
 
 }

@@ -97,6 +97,8 @@ public class EditCustomerController implements Initializable {
             int rowsAffected = update.executeUpdate();
 
             update.close();
+
+            Log.LogEvent("Customer Edited", "Edited Customer - " + firstName + " " + lastName + " - phone: " + phone + " - email: " + email);
         }
         catch (SQLException sqlExcept)
         {

@@ -57,6 +57,8 @@ public class EditTitleController{
                 int rowsAffected = update.executeUpdate();
 
                 update.close();
+
+                Log.LogEvent("Edited Title", "Edited Title - Title: " + titleText + " - Price: " + price + " - Notes: " + notes + " - TitleID: " + title.getId());
             }
             catch (SQLException sqlExcept)
             {

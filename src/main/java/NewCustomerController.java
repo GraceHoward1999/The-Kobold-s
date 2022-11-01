@@ -79,6 +79,8 @@ public class NewCustomerController implements Initializable {
             int rowsAffected = insert.executeUpdate();
 
             insert.close();
+
+            Log.LogEvent("User Added", "Added User - " + firstName + " " + lastName + " - phone: " + phone + " - email: " + email);
         }
         catch (SQLException sqlExcept)
         {
