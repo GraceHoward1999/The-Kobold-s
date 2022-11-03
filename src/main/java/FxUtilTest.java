@@ -30,6 +30,7 @@ public class FxUtilTest {
         comboBox.getEditor().focusedProperty().addListener(observable -> {
             if (comboBox.getSelectionModel().getSelectedIndex() < 0) {
                 comboBox.getEditor().setText(null);
+                comboBox.getEditor().selectAll();
             }
             Platform.runLater(comboBox.getEditor()::selectAll);
         });

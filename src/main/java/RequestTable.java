@@ -6,6 +6,7 @@ public class RequestTable {
     private String requestLastName;
     private String requestFirstName;
     private int requestQuantity;
+    private int requestIssue;
 
     /**
      * Creates a RequestTable object based on the parameters provided
@@ -13,11 +14,12 @@ public class RequestTable {
      * @param requestFirstName the first name of the requestign customer
      * @param requestQuantity the quantity of the customer's order
      */
-    public RequestTable(String requestLastName, String requestFirstName, int requestQuantity){
+    public RequestTable(String requestLastName, String requestFirstName, int requestQuantity, int issueNumber){
 
         this.requestLastName = requestLastName;
         this.requestFirstName = requestFirstName;
         this.requestQuantity = requestQuantity;
+        this.requestIssue = issueNumber;
     }
 
     /**
@@ -37,4 +39,10 @@ public class RequestTable {
      * @return the quantity of the customer's order
      */
     public String getRequestQuantity(){ return String.valueOf(this.requestQuantity); }
+
+    /**
+     * Gets the issue of the title of the customer's order for this object
+     * @return the issue of the title of the customer's order
+     */
+    public String getRequestIssue() { return String.valueOf(this.requestIssue); }
 }

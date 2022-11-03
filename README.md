@@ -8,7 +8,7 @@ The DragonSlayer program is used to maintain a comic book store Pull List. Custo
 # Release Notes
 **RELEASE NOTES 1.01a (10.20.2022)**
 
--Search function now in semi-working order.
+-Search function now in working order. Search customer's by first or last name and title by name.
 
 -Client can now flag a title using the hotkey **Ctrl+M**.
 

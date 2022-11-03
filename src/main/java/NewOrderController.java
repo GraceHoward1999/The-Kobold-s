@@ -3,19 +3,25 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+
+import java.net.URL;
 import java.sql.*;
+import java.util.ResourceBundle;
 
 /**
  * This Controller controls the New Order window. It allows the window
  * to get the text that is entered in the fields and save it in the
  * database.
  */
-public class NewOrderController {
+public class NewOrderController implements Initializable{
 
     private Connection conn;
     private int customerId;
@@ -31,6 +37,19 @@ public class NewOrderController {
     private ObservableList<Title> titles  = FXCollections.observableArrayList();
     private ObservableList<String> titlesStr  = FXCollections.observableArrayList();
 
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        setTitle.focusedProperty().addListener((obs, oldval, newval) -> {
+            System.out.println("Selecting all New Order Title Text");
+            // setTitle.getEditor().selectAll();
+
+            Platform.runLater(() -> {
+                if ((setTitle.getEditor().isFocused() || setTitle.isFocused()) && !setTitle.getEditor().getText().isEmpty()) {
+                    setTitle.getEditor().selectAll();
+                }
+            });
+        });
+    }
 
     /**
      * Creates an order based on the fields and ComboBox and adds it
@@ -60,8 +79,29 @@ public class NewOrderController {
             }
             String quantity = setQuantity.getText();
             int customerId = this.customerId;
+            Statement get = null;
 
             try {
+                get = conn.createStatement();
+                ResultSet result = get.executeQuery("SELECT * FROM ORDERS");
+                while (result.next()) {
+                    Integer testTitle = result.getInt("TITLEID");
+                    Integer testCust = result.getInt("CUSTOMERID");
+                    if (testTitle == titleID && testCust == customerId)
+                    {
+                        String testIssue = result.getString("ISSUE");
+                        if ((testIssue == null && issue == null) ||
+                            (testIssue != null && issue != null && testIssue.equals(issue)))
+                            {
+                                Alert alert = new Alert(Alert.AlertType.WARNING, "Cannot create duplicate Orders. If a customer has ordered multiple issues of the same title, be sure to fill out the issue field.", ButtonType.OK);
+                                alert.setTitle("Duplicate Order");
+                                alert.setHeaderText("");
+                                alert.show();
+                                return;
+                            }
+                    }
+                }
+
                 s = conn.prepareStatement(sql);
                 s.setString(1, Integer.toString(customerId));
                 s.setString(2, Integer.toString(titleID));
@@ -77,6 +117,8 @@ public class NewOrderController {
                     //TODO: Throw an error
                 }
                 s.close();
+
+                Log.LogEvent("New Order", "Added order - CustomerID: " + customerId + " - Title: " + FxUtilTest.getComboBoxValue(setTitle) + " - Quantity: " + quantity + " - Issue: " + Integer.valueOf(issue));
             } catch (SQLException sqlExcept) {
                 sqlExcept.printStackTrace();
             }
@@ -93,6 +135,7 @@ public class NewOrderController {
         setTitle.getSelectionModel().selectFirst();
         setTitle.setEditable(true);
         FxUtilTest.autoCompleteComboBoxPlus(setTitle, (typedText, itemToCompare) -> itemToCompare.toLowerCase().contains(typedText.toLowerCase()) || itemToCompare.equals(typedText));
+        
     }
 
     /**

@@ -55,6 +55,14 @@ public class NewTitleController{
                         alert.show();
                         return;
                     }
+                    else if (title == "")
+                    {
+                        Alert alert = new Alert(Alert.AlertType.WARNING, "Please enter a title for this publication!", ButtonType.OK);
+                        alert.setTitle("No title entered");
+                        alert.setHeaderText("");
+                        alert.show();
+                        return;
+                    }
                 }
 
                 insert = conn.prepareStatement(sql);
@@ -64,6 +72,8 @@ public class NewTitleController{
                 int rowsAffected = insert.executeUpdate();
 
                 insert.close();
+
+                Log.LogEvent("Edited Title", "Edited Title - Title: " + title + " - Price: " + price + " - Notes: " + notes);
             } catch (SQLException sqlExcept) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Database error. This is either a bug, or you messed with the DragonSlayer/derbyDB folder.", ButtonType.OK);
                 alert.setTitle("Database Error");

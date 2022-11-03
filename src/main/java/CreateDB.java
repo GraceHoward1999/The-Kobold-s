@@ -13,6 +13,7 @@ public class CreateDB {
     public static void main(String args[]) {
         new CreateDB().go();
         System.out.println("CreateDB finished.");
+        Log.LogEvent("Database Created", "Created a new database at: " + System.getProperty("user.home") + "/DragonSlayer/derbyDB;create=true");
     }
 
     /**
