@@ -143,6 +143,7 @@
                            <columnConstraints>
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                               <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                              <ColumnConstraints />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints maxHeight="33.0" minHeight="0.0" prefHeight="33.0" vgrow="SOMETIMES" />
@@ -251,13 +252,13 @@
                                                 </rowConstraints>
                                                 <children>
                                                     <Text fx:id="FlaggedTitlesTotalText" strokeType="OUTSIDE" strokeWidth="0.0" />
-                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Titles Currently Flagged For" underline="true" wrappingWidth="156.62060546875" GridPane.columnIndex="1" />
+                                                    <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Titles Currently Flagged For" underline="true" wrappingWidth="156.62060546875" GridPane.columnIndex="1" />
                                                     <Text fx:id="FlaggedTitlesTotalCustomersText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="1" />
-                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Customers" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                    <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Customers" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                     <Text fx:id="FlaggedIssueNumbersText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="2" />
-                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Titles Have Triggered Issue #'s" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                                    <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Titles Have Triggered Issue #'s" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                     <Text fx:id="FlaggedNoRequestsText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="3" />
-                                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Titles Have No Customer Requests" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                                                    <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Titles Have No Customer Requests" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                                                 </children>
                                             </GridPane>
                                     <VBox alignment="TOP_RIGHT" prefHeight="200.0" prefWidth="200.0" spacing="10.0">
@@ -303,11 +304,11 @@
                                                             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                                         </rowConstraints>
                                                         <children>
-                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Requests for:" underline="true" />
+                                                            <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Requests for:" underline="true" />
                                                             <Text fx:id="RequestTitleText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" />
-                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Total Qty:" underline="true" GridPane.rowIndex="1" />
+                                                            <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Total Qty:" underline="true" GridPane.rowIndex="1" />
                                                             <Text fx:id="RequestQuantityText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                                                            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="# of Customers:" underline="true" GridPane.rowIndex="2" />
+                                                            <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="# of Customers:" underline="true" GridPane.rowIndex="2" />
                                                             <Text fx:id="RequestNumCustomersText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                                         </children>
                                                     </GridPane>
