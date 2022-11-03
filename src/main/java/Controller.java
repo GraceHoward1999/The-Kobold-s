@@ -32,6 +32,7 @@ import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.Comparator;
 import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
@@ -112,6 +113,7 @@ public class Controller implements Initializable {
 
     private static Connection conn = null;
 
+    private boolean setAll;
     //#endregion
 
 /*######################################################################/
@@ -725,7 +727,25 @@ public class Controller implements Initializable {
             }
         });
 
-        //Populate columns for Title Table
+        // Comparator to sort by price, set to columns that contain price information
+        Comparator<String> priceComparator = new Comparator<String>() {
+            @Override
+            public int compare(String o1, String o2) {
+                // avoid empty string exceptions, sort first
+                if (o1.isEmpty()) return -1;
+                if (o2.isEmpty()) return 1;
+                // empty strings avoided, compare doubles
+                Double o1d = Double.valueOf(o1);
+                Double o2d = Double.valueOf(o2);
+                if (o1d < o2d) return -1;
+                if (o1d > o2d) return 1;
+                return 0;
+            }
+        };
+        titlePriceColumn.setComparator(Comparator.nullsFirst(priceComparator));
+        flaggedPriceColumn.setComparator(Comparator.nullsFirst(priceComparator));
+
+        //Populate columns for Title Table, sort by title column
         titleFlaggedColumn.setCellValueFactory(c -> c.getValue().flaggedProperty());
         titleFlaggedColumn.setCellFactory(tc -> new CheckBoxTableCell<>());
         titleTitleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
@@ -739,6 +759,8 @@ public class Controller implements Initializable {
         });
         titleNotesColumn.setCellValueFactory(new PropertyValueFactory<>("notes"));
         titleTable.getItems().setAll(this.getTitles());
+        titleTable.getSortOrder().add(titleTitleColumn);
+        
 
         //Populate columns for flagged titles table in New Week Pulls Tab
         flaggedTitleColumn.setCellValueFactory(new PropertyValueFactory<>("flaggedTitleName"));
@@ -759,7 +781,7 @@ public class Controller implements Initializable {
         flaggedQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("flaggedQuantity"));
         flaggedNumRequestsColumn.setCellValueFactory(new PropertyValueFactory<>("flaggedNumRequests"));
 
-        //for requests table
+        //for requests table, sort by title
         requestLastNameColumn.setCellValueFactory(new PropertyValueFactory<>("RequestLastName"));
         requestFirstNameColumn.setCellValueFactory(new PropertyValueFactory<>("RequestFirstName"));
         requestQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("RequestQuantity"));
@@ -783,6 +805,7 @@ public class Controller implements Initializable {
             return new SimpleStringProperty("Y");
         });
         monthlyBreakdownTable.getItems().setAll(getTitles());
+        monthlyBreakdownTable.getSortOrder().add(breakdownTitleColumn);
 
         //Title Orders table
         titleOrderLastNameColumn.setCellValueFactory(new PropertyValueFactory<>("RequestLastName"));
