@@ -79,12 +79,12 @@ public class FxUtilTest {
                     }
                 } else if (event.getCode() == KeyCode.ENTER) {
                     return;
-                } else if (event.getCode().equals(KeyCode.CONTROL)) {
+                } else if (event.getCode().equals(KeyCode.CONTROL) || event.isControlDown() || event.isShortcutDown()) {
                     skipRelease = true;
                     return;
                 }
 
-                if (event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT || event.getCode().equals(KeyCode.SHIFT) || event.isShortcutDown()
+                if (event.getCode() == KeyCode.RIGHT || event.getCode() == KeyCode.LEFT || event.getCode().equals(KeyCode.SHIFT)
                         || event.getCode() == KeyCode.HOME || event.getCode() == KeyCode.END || event.getCode() == KeyCode.TAB) {
                     return;
                 }
