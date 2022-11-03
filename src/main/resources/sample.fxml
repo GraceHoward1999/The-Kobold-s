@@ -166,8 +166,8 @@
                                  </font></Text>
                               <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Last Flagged:" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Text fx:id="titleDateFlagged" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <Text fx:id="titleDateFlaggedNoticeText" fill="#de7d00" strokeType="OUTSIDE" strokeWidth="0.0" text="This Title Has Not Been Flagged in Over Six Months" visible="false" wrappingWidth="200.0" GridPane.columnIndex="1" />
-                              <Text fx:id="titleNumberRequestsText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="213.4580078125" GridPane.columnIndex="1" />
+                              <Text fx:id="titleDateFlaggedNoticeText" fill="#de7d00" strokeType="OUTSIDE" strokeWidth="0.0" text="This Title Has Not Been Flagged in Over Six Months" visible="false" wrappingWidth="125.0" GridPane.columnIndex="1" />
+                              <Text fx:id="titleNumberRequestsText" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="213.4580078125" GridPane.columnIndex="2" />
                            </children>
                         </GridPane>
                         <HBox prefHeight="486.0" prefWidth="476.0" spacing="10.0">
