@@ -80,7 +80,7 @@ public final class Log
 
             if (promptUser)
             {
-                // TODO: Prompt User
+                AlertBox.display("Error Saving to Log", e.getMessage());
             }
         }
 

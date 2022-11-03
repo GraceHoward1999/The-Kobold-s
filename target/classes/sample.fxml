@@ -172,11 +172,12 @@
                         </GridPane>
                         <HBox prefHeight="486.0" prefWidth="476.0" spacing="10.0">
                            <children>
-                              <TableView fx:id="customerOrderTable1" prefHeight="317.0" prefWidth="375.0">
+                              <TableView fx:id="titleOrdersTable" prefHeight="317.0" prefWidth="375.0">
                                  <columns>
-                                    <TableColumn prefWidth="140.0" text="Requested By" />
-                                    <TableColumn prefWidth="115.0" text="Phone Number" />
-                                    <TableColumn prefWidth="120.0" text="Email" />
+                                    <TableColumn fx:id="titleOrderLastNameColumn" prefWidth="120.0" text="Last Name" />
+                                    <TableColumn fx:id="titleOrderFirstNameColumn" prefWidth="115.0" text="First Name" />
+                                    <TableColumn fx:id="titleOrderQuantityColumn" prefWidth="60.0" text="Quantity" />
+                                    <TableColumn fx:id="titleOrderIssueColumn" text="Issue" />
                                  </columns>
                               </TableView>
                               <VBox alignment="BOTTOM_CENTER" onMouseClicked="#passTitleKeyboardFocus" prefHeight="200.0" prefWidth="100.0">
