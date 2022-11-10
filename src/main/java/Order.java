@@ -68,4 +68,12 @@ public class Order {
         return this.issue;
     }
 
+    /**
+     * Sets the quantity of copies for this order
+     * @param quantity Quantity for this order
+     */
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
 }

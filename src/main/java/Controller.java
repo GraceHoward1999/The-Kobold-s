@@ -14,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
@@ -32,8 +33,13 @@ import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 public class Controller implements Initializable {
 
@@ -90,6 +96,12 @@ public class Controller implements Initializable {
     @FXML private Text customerLastNameText;
     @FXML private Text customerPhoneText;
     @FXML private Text customerEmailText;
+
+    @FXML private Button editCustomerButton;
+    @FXML private Button newOrderButton;
+    @FXML private Button editOrderButton;
+    @FXML private Button deleteOrderButton;
+    @FXML private Button exportSingleCustomerListButton;
 
     @FXML private Text titleTitleText;
     @FXML private Text titlePriceText;
@@ -715,6 +727,7 @@ public class Controller implements Initializable {
         customerPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
         customerEmailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         customerTable.getItems().setAll(this.getCustomers());
+        customerTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         //Populate columns for Orders Table
         customerOrderReqItemsColumn.setCellValueFactory(new PropertyValueFactory<>("TitleName"));
@@ -818,12 +831,40 @@ public class Controller implements Initializable {
 
         //Add Listener for selected Customer
         customerTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                customerFirstNameText.setText(newSelection.getFirstName());
-                customerLastNameText.setText(newSelection.getLastName());
-                customerPhoneText.setText(newSelection.getPhone());
-                customerEmailText.setText(newSelection.getEmail());
-                updateOrdersTable(newSelection);
+            TableViewSelectionModel<Customer> model = customerTable.getSelectionModel();
+            ObservableList<Customer> selectedCustomers = model.getSelectedItems();
+            
+            if (selectedCustomers.size() == 1)
+            {
+                if (newSelection != null) {
+                    customerFirstNameText.setText(newSelection.getFirstName());
+                    customerLastNameText.setText(newSelection.getLastName());
+                    customerPhoneText.setText(newSelection.getPhone());
+                    customerEmailText.setText(newSelection.getEmail());
+
+                    newOrderButton.setDisable(false);
+                    editOrderButton.setDisable(false);
+                    deleteOrderButton.setDisable(false);
+                    exportSingleCustomerListButton.setDisable(false);
+                    editCustomerButton.setDisable(false);
+
+                    updateOrdersTable(newSelection);
+                }
+            }
+            else if (newSelection != null)
+            {
+                customerFirstNameText.setText("Multiple Customers");
+                customerLastNameText.setText("-----");
+                customerPhoneText.setText("-----");
+                customerEmailText.setText("-----");
+
+                newOrderButton.setDisable(true);
+                editOrderButton.setDisable(true);
+                deleteOrderButton.setDisable(true);
+                exportSingleCustomerListButton.setDisable(true);
+                editCustomerButton.setDisable(true);
+
+                updateOrdersTable(selectedCustomers); 
             }
         });
 
@@ -981,35 +1022,51 @@ public class Controller implements Initializable {
         String firstName = customerFirstNameText.getText();
         String lastName = customerLastNameText.getText();
 
-        if (customerTable.getSelectionModel().getSelectedItem() == null) {
+        if (customerTable.getSelectionModel().getSelectedItems() == null) {
             AlertBox.display("Confirm Delete", "Please select a customer.");
         }
         else {
-            int customerId = customerTable.getSelectionModel().getSelectedItem().getId();
+            ObservableList<Customer> selectedCustomers = customerTable.getSelectionModel().getSelectedItems();
 
-            boolean confirmDelete = ConfirmBox.display(
+            boolean confirmDelete = false;
+            if (selectedCustomers.size() == 1)
+            {
+                confirmDelete = ConfirmBox.display(
                     "Confirm Delete",
                     "Are you sure you would like to delete customer " + firstName + " " + lastName + "?");
+            }
+            else 
+            {
+                confirmDelete = ConfirmBox.display(
+                    "Confirm Delete",
+                    "Are you sure you would like to delete " + selectedCustomers.size() + " customers?");
+            }
+
             if (confirmDelete) {
-                PreparedStatement s = null; // To prepare and execute the sql statement to delete the customer
-                String sql = "DELETE FROM Customers WHERE customerId = ?";
-                String sql2 = "DELETE FROM Orders WHERE customerId = ?";
+                for (Customer customer: selectedCustomers)
+                {
+                    int customerId = customer.getId();
+            
+                    PreparedStatement s = null; // To prepare and execute the sql statement to delete the customer
+                    String sql = "DELETE FROM Customers WHERE customerId = ?";
+                    String sql2 = "DELETE FROM Orders WHERE customerId = ?";
 
-                try {
-                    s = conn.prepareStatement(sql2);
-                    s.setString(1, Integer.toString(customerId));
-                    s.executeUpdate();
-                    s.close();
+                    try {
+                        s = conn.prepareStatement(sql2);
+                        s.setString(1, Integer.toString(customerId));
+                        s.executeUpdate();
+                        s.close();
 
-                    s = conn.prepareStatement(sql);
-                    s.setString(1, Integer.toString(customerId));
-                    s.executeUpdate();
-                    s.close();
+                        s = conn.prepareStatement(sql);
+                        s.setString(1, Integer.toString(customerId));
+                        s.executeUpdate();
+                        s.close();
 
-                    Log.LogEvent("Customer Deleted", "Deleted Customer - " + firstName + " " + lastName);
+                        Log.LogEvent("Customer Deleted", "Deleted Customer - " + customer.getFirstName() + " " + customer.getLastName());
 
-                } catch (SQLException sqlExcept) {
-                    sqlExcept.printStackTrace();
+                    } catch (SQLException sqlExcept) {
+                        sqlExcept.printStackTrace();
+                    }
                 }
             }
             customerTable.getItems().setAll(getCustomers());
@@ -2642,6 +2699,85 @@ public class Controller implements Initializable {
             if (allOrders.get(i).getCustomerId() == customer.getId())
                 customerOrders.add(allOrders.get(i));
         }
+        customerOrderTable.getItems().setAll(customerOrders);
+    }
+
+    /**
+     * Adds all orders for a given set of Customers to the Orders table.
+     * @param customer The Customer to update the Order Table for
+     */
+    void updateOrdersTable(ObservableList<Customer> customers) {
+        ObservableList<Order> allOrders = getOrderTable();
+        ObservableList<Order> customerOrders = FXCollections.observableArrayList();
+
+        Hashtable<Integer, ArrayList<Order>> uniqueOrders = new Hashtable<>();
+        HashSet<Integer> customerIDs = new HashSet<>();
+
+        // Generate a set of customer ids from those selected
+        // Grab orders relating to those customer ids
+        // Condense orders for the same title but different customers into a single order object as possible
+
+        for (Customer customer: customers)
+        {
+            customerIDs.add(customer.getId());
+        }
+
+        for(int i=0; i < allOrders.size(); i++) {
+            if (customerIDs.contains(allOrders.get(i).getCustomerId()))
+                customerOrders.add(allOrders.get(i));
+        }
+
+        for (Order order: customerOrders)
+        {
+            int id = order.getTitleId();
+            if (!uniqueOrders.containsKey(id))
+            {
+                ArrayList<Order> newListForTitle = new ArrayList<>();
+                newListForTitle.add(order);
+
+                uniqueOrders.put(id, newListForTitle);
+            }
+            else 
+            {
+                uniqueOrders.get(id).add(order);
+            }
+        }
+
+        customerOrders.clear();
+
+        for (ArrayList<Order> titleList: uniqueOrders.values())
+        {
+            ArrayList<Order> ordersForTitle = new ArrayList<>();
+
+            for (Order order: titleList)
+            {
+                if (ordersForTitle.size() == 0)
+                {
+                    ordersForTitle.add(order);
+                }
+                else
+                {
+                    boolean foundMatch = false;
+                    for (Order testUnique: ordersForTitle)
+                    {
+                        if (order.getIssue() == testUnique.getIssue())
+                        {
+                            // A existing matching order was found, increment the quantity of that order and ignroe the current order
+                            testUnique.setQuantity(testUnique.getQuantity() + 1);
+                            foundMatch = true;
+                            break;
+                        }
+                    }
+
+                    // If no matching order was found, this is a order for the given title with a unique issue number
+                    if (!foundMatch)
+                        ordersForTitle.add(order);
+                }
+            }
+
+            customerOrders.addAll(ordersForTitle);
+        }
+
         customerOrderTable.getItems().setAll(customerOrders);
     }
 
