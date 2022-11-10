@@ -1,0 +1,20 @@
+var searchData=
+[
+  ['setconnection_0',['setConnection',['../class_edit_customer_controller.html#a988fdc11918c7da308a7a69d1daff728',1,'EditCustomerController.setConnection()'],['../class_edit_order_controller.html#a51f5ca1728a99100768e7e5b9327d524',1,'EditOrderController.setConnection()'],['../class_edit_title_controller.html#ad6aef1ca51168cada8d3581e11145a93',1,'EditTitleController.setConnection()'],['../class_new_customer_controller.html#a3051a0bf65946c76bba5c1e2f717aa5c',1,'NewCustomerController.setConnection()'],['../class_new_order_controller.html#aeec08e73b8427109f02161a63abdf964',1,'NewOrderController.setConnection()'],['../class_new_title_controller.html#a2fce4cba830c1df4a5eba4ed6951b488',1,'NewTitleController.setConnection()']]],
+  ['setcustomer_1',['setCustomer',['../class_edit_customer_controller.html#a31be102afb113335859e84621f1f7276',1,'EditCustomerController']]],
+  ['setcustomerid_2',['setCustomerID',['../class_new_order_controller.html#a1f736a61b19f6cc614183979ae95ad0b',1,'NewOrderController']]],
+  ['setemail_3',['setEmail',['../class_customer.html#afc0161323985dd102afa764d2a030e3c',1,'Customer']]],
+  ['setfirstname_4',['setFirstName',['../class_customer.html#a6d457f93db26881853cb29fc7e01647a',1,'Customer']]],
+  ['setflagged_5',['setFlagged',['../class_title.html#a99088582138f947f7ab04420b9d0802a',1,'Title']]],
+  ['setfullname_6',['setFullName',['../class_customer.html#a14b080208a0abb907a51df32ccdc6ce9',1,'Customer']]],
+  ['setissueflagged_7',['setIssueFlagged',['../class_title.html#ae2f3d8bf620e1485398246ce60a3b6cc',1,'Title']]],
+  ['setlastname_8',['setLastName',['../class_customer.html#a595f99233c8dd5ec1325a64e35bcd284',1,'Customer']]],
+  ['setneworder_9',['setNewOrder',['../class_new_order_controller.html#a1a04523c3824a0baf0e54d05beeeb36e',1,'NewOrderController']]],
+  ['setnotes_10',['setNotes',['../class_title.html#a71e7e63d42632a9b5cfea5a579a93c06',1,'Title']]],
+  ['setorder_11',['setOrder',['../class_edit_order_controller.html#a01c39fe081a526cd57122fa4631ab765',1,'EditOrderController']]],
+  ['setphone_12',['setPhone',['../class_customer.html#a1c27697bd678ede935ae348496e02e6a',1,'Customer']]],
+  ['setprice_13',['setPrice',['../class_title.html#a9dfaf3336a6fee362b7e244b073c8517',1,'Title']]],
+  ['settitle_14',['setTitle',['../class_edit_title_controller.html#a90f5896856e2859a8b079db26bc4cd8e',1,'EditTitleController.setTitle()'],['../class_title.html#ac55b4b7c56db84519daa540990ce3066',1,'Title.setTitle()']]],
+  ['setup_15',['setUp',['../class_main_test.html#ac42c08c14f39d00091be08fdb699f82f',1,'MainTest']]],
+  ['start_16',['start',['../class_main.html#aaa75b38812324d0f17c89f139bde6ada',1,'Main.start()'],['../class_main_test.html#a33269a1e751ae999c9a32ce431e76b43',1,'MainTest.start()']]]
+];
