@@ -109,6 +109,31 @@ public class Controller implements Initializable {
 
     private static Connection conn = null;
 
+    public boolean alterTables() {
+        Statement s = null;
+        // alter Customers
+        String sql = "ALTER TABLE Customers ADD Notes VARCHAR(255)";
+        try {
+            s = conn.createStatement();
+            s.execute(sql);
+        } catch (SQLException sqlExcept) {
+            sqlExcept.printStackTrace();
+            return false;
+        }
+
+        try {
+            sql = "ALTER TABLE Titles ADD Notes VARCHAR(8000)";
+
+            s = conn.createStatement();
+            s.execute(sql);
+        } catch (SQLException sqlExcept) {
+            sqlExcept.printStackTrace();
+            return false;
+        }
+        System.out.println("ALTER SUCCESS");
+        return true;
+    }
+
 /*######################################################################/
 ////////////////////////// Getters and Setters //////////////////////////
 /######################################################################*/
@@ -687,6 +712,9 @@ public class Controller implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
 
         createConnection();
+
+        // alter tables for notes
+        // alterTables();
 
         //Populate columns for Customer Table
         customerLastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
