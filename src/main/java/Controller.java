@@ -14,6 +14,7 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.TableView.TableViewSelectionModel;
 import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
@@ -32,8 +33,14 @@ import java.text.DateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.List;
+import java.util.Observable;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 public class Controller implements Initializable {
 
@@ -91,12 +98,20 @@ public class Controller implements Initializable {
     @FXML private Text customerPhoneText;
     @FXML private Text customerEmailText;
 
+    @FXML private Button editCustomerButton;
+    @FXML private Button newOrderButton;
+    @FXML private Button editOrderButton;
+    @FXML private Button deleteOrderButton;
+    @FXML private Button exportSingleCustomerListButton;
+
     @FXML private Text titleTitleText;
     @FXML private Text titlePriceText;
     @FXML private Text titleNotesText;
     @FXML private Text titleDateFlagged;
     @FXML private Text titleDateFlaggedNoticeText;
     @FXML private Text titleNumberRequestsText;
+
+    @FXML private Button editTitleButton;
 
     //for the summary info in "new week pulls" tab in "reports" tab
     @FXML private Text FlaggedTitlesTotalText;
@@ -715,6 +730,11 @@ public class Controller implements Initializable {
         customerPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
         customerEmailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
         customerTable.getItems().setAll(this.getCustomers());
+        customerTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
+
+        // Make Customer Order Table Multi-Selectable
+        customerOrderTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
         //Populate columns for Orders Table
         customerOrderReqItemsColumn.setCellValueFactory(new PropertyValueFactory<>("TitleName"));
@@ -758,6 +778,7 @@ public class Controller implements Initializable {
             }
         });
         titleNotesColumn.setCellValueFactory(new PropertyValueFactory<>("notes"));
+        titleTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         titleTable.getItems().setAll(this.getTitles());
         titleTable.getSortOrder().add(titleTitleColumn);
         
@@ -818,47 +839,131 @@ public class Controller implements Initializable {
 
         //Add Listener for selected Customer
         customerTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                customerFirstNameText.setText(newSelection.getFirstName());
-                customerLastNameText.setText(newSelection.getLastName());
-                customerPhoneText.setText(newSelection.getPhone());
-                customerEmailText.setText(newSelection.getEmail());
-                updateOrdersTable(newSelection);
+            TableViewSelectionModel<Customer> model = customerTable.getSelectionModel();
+            ObservableList<Customer> selectedCustomers = model.getSelectedItems();
+            
+            if (selectedCustomers.size() == 1)
+            {
+                if (newSelection != null) {
+                    customerFirstNameText.setText(newSelection.getFirstName());
+                    customerLastNameText.setText(newSelection.getLastName());
+                    customerPhoneText.setText(newSelection.getPhone());
+                    customerEmailText.setText(newSelection.getEmail());
+
+                    newOrderButton.setDisable(false);
+                    editOrderButton.setDisable(false);
+                    deleteOrderButton.setDisable(false);
+                    exportSingleCustomerListButton.setDisable(false);
+                    editCustomerButton.setDisable(false);
+
+                    updateOrdersTable(newSelection);
+                }
+            }
+            else if (newSelection != null)
+            {
+                customerFirstNameText.setText("Multiple Customers");
+                customerLastNameText.setText("-----");
+                customerPhoneText.setText("-----");
+                customerEmailText.setText("-----");
+
+                newOrderButton.setDisable(true);
+                editOrderButton.setDisable(true);
+                deleteOrderButton.setDisable(true);
+                exportSingleCustomerListButton.setDisable(true);
+                editCustomerButton.setDisable(true);
+
+                updateOrdersTable(selectedCustomers); 
+            }
+        });
+
+        //Add Listener for Customer Order Table
+        customerOrderTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            TableViewSelectionModel<Order> model = customerOrderTable.getSelectionModel();
+            ObservableList<Order> selectedOrders = model.getSelectedItems();
+            
+            if (selectedOrders.size() == 1)
+            {
+                ObservableList<Customer> selectedCustomers = customerTable.getSelectionModel().getSelectedItems();
+
+                // Re-enable the edit order button if and only if there are not multiple customers selected
+                if (selectedCustomers == null || selectedCustomers.size() == 1)
+                    editOrderButton.setDisable(false);
+                
+            }
+            else if (selectedOrders.size() > 0)
+            {
+                editOrderButton.setDisable(true);
             }
         });
 
         //Add Listener for Titles table
         titleTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                titleTitleText.setText(newSelection.getTitle());
-                if (newSelection.getPrice() > 0) {
-                    titlePriceText.setText(newSelection.getPriceDollars());
-                } else {
-                    titlePriceText.setText("");
-                }
-                titleNotesText.setText(newSelection.getNotes());
-                String numberRequests = String.format("This Title Currently has %s Customer Requests", getNumberRequests(newSelection.getId()));
-                LocalDate sixMonthsAgo = LocalDate.now().minusMonths(6);
-                if (newSelection.getDateFlagged() != null) {
-                    titleDateFlagged.setText(newSelection.getDateFlagged().toString());
-                    if (newSelection.getDateFlagged().isBefore(sixMonthsAgo)) {
-                        titleDateFlaggedNoticeText.setVisible(true);
+            ObservableList<Title> selectedTitles = titleTable.getSelectionModel().getSelectedItems();
+
+            if (newSelection != null) 
+            {
+                if (selectedTitles.size() == 1)
+                {
+                    titleTitleText.setText(newSelection.getTitle());
+
+                    if (newSelection.getPrice() > 0) {
+                        titlePriceText.setText(newSelection.getPriceDollars());
+                    } 
+                    else {
+                        titlePriceText.setText("");
+                    }
+
+                    titleNotesText.setText(newSelection.getNotes());
+                    String numberRequests = String.format("This Title Currently has %s Customer Requests", getNumberRequests(newSelection.getId()));
+                    LocalDate sixMonthsAgo = LocalDate.now().minusMonths(6);
+
+                    if (newSelection.getDateFlagged() != null) {
+                        titleDateFlagged.setText(newSelection.getDateFlagged().toString());
+                        if (newSelection.getDateFlagged().isBefore(sixMonthsAgo)) {
+                            titleDateFlaggedNoticeText.setVisible(true);
+                        }
+                        else {
+                            titleDateFlaggedNoticeText.setVisible(false);
+                        }
                     }
                     else {
-                        titleDateFlaggedNoticeText.setVisible(false);
+                        titleDateFlagged.setText("Never");
+                        titleDateFlaggedNoticeText.setVisible(true);
                     }
-                }
-                else {
-                    titleDateFlagged.setText("Never");
-                    titleDateFlaggedNoticeText.setVisible(true);
-                }
-                titleNumberRequestsText.setText(numberRequests);
+                    titleNumberRequestsText.setText(numberRequests);
 
-                // System.out.println(titleOrderFirstNameColumn.toString());
-                // System.out.println(titleOrderLastNameColumn.toString());
-                // System.out.println(titleOrderQuantityColumn.toString());
-                // System.out.println(this.getRequests(newSelection.getId(), -1).size() + " : " + newSelection.getId());
-                titleOrdersTable.getItems().setAll(this.getRequests(newSelection.getId(), -9));
+                    editTitleButton.setDisable(false);
+
+                    titleOrderIssueColumn.setVisible(true);
+
+                    titleOrdersTable.getItems().setAll(this.getRequests(newSelection.getId(), -9));
+                }
+                else if (newSelection != null)
+                {
+                    titleTitleText.setText("Multiple Titles");
+                    titlePriceText.setText("-----");
+                    titleNotesText.setText("-----");
+                    titleDateFlagged.setText("-----");
+                    titleNumberRequestsText.setText("");
+
+                    boolean oldTitleFlag = false;
+                    LocalDate sixMonthsAgo = LocalDate.now().minusMonths(6);
+                    for (Title title: selectedTitles)
+                    {
+                        if (title.getDateFlagged() == null || title.getDateFlagged().isBefore(sixMonthsAgo)) {
+                            oldTitleFlag = true;
+                            break;
+                        }
+                    }
+
+                    titleDateFlaggedNoticeText.setVisible(oldTitleFlag);
+
+                    editTitleButton.setDisable(true);
+
+                    titleOrderIssueColumn.setVisible(false);
+
+                    getTitleOrders(selectedTitles);
+                }
             }
         });
 
@@ -981,35 +1086,51 @@ public class Controller implements Initializable {
         String firstName = customerFirstNameText.getText();
         String lastName = customerLastNameText.getText();
 
-        if (customerTable.getSelectionModel().getSelectedItem() == null) {
+        if (customerTable.getSelectionModel().getSelectedItems() == null) {
             AlertBox.display("Confirm Delete", "Please select a customer.");
         }
         else {
-            int customerId = customerTable.getSelectionModel().getSelectedItem().getId();
+            ObservableList<Customer> selectedCustomers = customerTable.getSelectionModel().getSelectedItems();
 
-            boolean confirmDelete = ConfirmBox.display(
+            boolean confirmDelete = false;
+            if (selectedCustomers.size() == 1)
+            {
+                confirmDelete = ConfirmBox.display(
                     "Confirm Delete",
                     "Are you sure you would like to delete customer " + firstName + " " + lastName + "?");
+            }
+            else 
+            {
+                confirmDelete = ConfirmBox.display(
+                    "Confirm Delete",
+                    "Are you sure you would like to delete " + selectedCustomers.size() + " customers?");
+            }
+
             if (confirmDelete) {
-                PreparedStatement s = null; // To prepare and execute the sql statement to delete the customer
-                String sql = "DELETE FROM Customers WHERE customerId = ?";
-                String sql2 = "DELETE FROM Orders WHERE customerId = ?";
+                for (Customer customer: selectedCustomers)
+                {
+                    int customerId = customer.getId();
+            
+                    PreparedStatement s = null; // To prepare and execute the sql statement to delete the customer
+                    String sql = "DELETE FROM Customers WHERE customerId = ?";
+                    String sql2 = "DELETE FROM Orders WHERE customerId = ?";
 
-                try {
-                    s = conn.prepareStatement(sql2);
-                    s.setString(1, Integer.toString(customerId));
-                    s.executeUpdate();
-                    s.close();
+                    try {
+                        s = conn.prepareStatement(sql2);
+                        s.setString(1, Integer.toString(customerId));
+                        s.executeUpdate();
+                        s.close();
 
-                    s = conn.prepareStatement(sql);
-                    s.setString(1, Integer.toString(customerId));
-                    s.executeUpdate();
-                    s.close();
+                        s = conn.prepareStatement(sql);
+                        s.setString(1, Integer.toString(customerId));
+                        s.executeUpdate();
+                        s.close();
 
-                    Log.LogEvent("Customer Deleted", "Deleted Customer - " + firstName + " " + lastName);
+                        Log.LogEvent("Customer Deleted", "Deleted Customer - " + customer.getFirstName() + " " + customer.getLastName());
 
-                } catch (SQLException sqlExcept) {
-                    sqlExcept.printStackTrace();
+                    } catch (SQLException sqlExcept) {
+                        sqlExcept.printStackTrace();
+                    }
                 }
             }
             customerTable.getItems().setAll(getCustomers());
@@ -1036,42 +1157,56 @@ public class Controller implements Initializable {
      */
     @FXML
     void handleDeleteOrder(ActionEvent event) {
-        String titleDP = titleTitleText.getText();
-        String title = customerOrderTable.getSelectionModel().getSelectedItem().getTitleName();
 
-        if (customerOrderTable.getSelectionModel().getSelectedItem() == null) {
+        if (customerOrderTable.getSelectionModel().getSelectedItems() == null) {
             AlertBox.display("Confirm Delete", "Please select an order.");
         } else {
-            int customerId = customerOrderTable.getSelectionModel().getSelectedItem().getCustomerId();
-            int titleId = customerOrderTable.getSelectionModel().getSelectedItem().getTitleId();
-            int quantity = customerOrderTable.getSelectionModel().getSelectedItem().getQuantity();
-            int issue = customerOrderTable.getSelectionModel().getSelectedItem().getIssue();
 
+            ObservableList<Order> selectedOrders = customerOrderTable.getSelectionModel().getSelectedItems();
 
-            boolean confirmDelete = ConfirmBox.display(
+            boolean confirmDelete = false;
+            if (selectedOrders.size() == 1)
+            {
+                confirmDelete = ConfirmBox.display(
                     "Confirm Delete",
-                    "Are you sure you would like to delete " + title + "?");
-            if (confirmDelete) {
-                PreparedStatement s = null;
-                String sql;
-                if (issue == 0) {
-                    sql = "DELETE FROM ORDERS WHERE CUSTOMERID = ? AND TITLEID = ? AND ISSUE IS NULL";
-                } else {
-                    sql = "DELETE FROM ORDERS WHERE CUSTOMERID = ? AND TITLEID = ? AND ISSUE = ?";
-                }
-                try {
-                    s = conn.prepareStatement(sql);
-                    s.setInt(1, customerId);
-                    s.setInt(2, titleId);
-                    if (issue != 0) {
-                        s.setInt(3, issue);
-                    }
-                    s.executeUpdate();
-                    s.close();
+                    "Are you sure you would like to delete " + selectedOrders.get(0).getTitleName() + "?");
+            }
+            else 
+            {
+                confirmDelete = ConfirmBox.display(
+                    "Confirm Delete",
+                    "Are you sure you would like to delete " + selectedOrders.size() + " orders?");
+            }
 
-                    Log.LogEvent("Deleted Order", "Deleted order - CustomerID: " + customerId + " - Title: " + title + " - Quantity: " + quantity + " - Issue: " + Integer.valueOf(issue));
-                } catch (SQLException sqlExcept) {
-                    sqlExcept.printStackTrace();
+            if (confirmDelete) {
+                for (Order order: selectedOrders)
+                {
+                    int customerId = order.getCustomerId();
+                    int titleId = order.getTitleId();
+                    int quantity = order.getQuantity();
+                    int issue = order.getIssue();
+
+                    PreparedStatement s = null;
+                    String sql;
+                    if (issue == 0) {
+                        sql = "DELETE FROM ORDERS WHERE CUSTOMERID = ? AND TITLEID = ? AND ISSUE IS NULL";
+                    } else {
+                        sql = "DELETE FROM ORDERS WHERE CUSTOMERID = ? AND TITLEID = ? AND ISSUE = ?";
+                    }
+                    try {
+                        s = conn.prepareStatement(sql);
+                        s.setInt(1, customerId);
+                        s.setInt(2, titleId);
+                        if (issue != 0) {
+                            s.setInt(3, issue);
+                        }
+                        s.executeUpdate();
+                        s.close();
+
+                        Log.LogEvent("Deleted Order", "Deleted order - CustomerID: " + customerId + " - Title: " + order.getTitleName() + " - Quantity: " + quantity + " - Issue: " + Integer.valueOf(issue));
+                    } catch (SQLException sqlExcept) {
+                        sqlExcept.printStackTrace();
+                    }
                 }
             }
             titleTable.getItems().setAll(getTitles());
@@ -1092,9 +1227,8 @@ public class Controller implements Initializable {
      */
     @FXML
     void handleDeleteTitle(ActionEvent event) {
-        String title = titleTitleText.getText();
 
-        if (titleTable.getSelectionModel().getSelectedItem() == null) {
+        if (titleTable.getSelectionModel().getSelectedItems() == null) {
             AlertBox.display("Confirm Delete", "Please select a title.");
         }
         else if (unsaved)
@@ -1102,39 +1236,70 @@ public class Controller implements Initializable {
             AlertBox.display("Flags Have Not Been Saved", "Please save or reset flags before deleting a title.");
         }
         else {
-            int titleId = titleTable.getSelectionModel().getSelectedItem().getId();
-            int req = getNumberRequests(titleId);
-            boolean confirmDelete;
-            if ( req > 0)
+            ObservableList<Title> selectedTitles = titleTable.getSelectionModel().getSelectedItems();
+
+            int req = 0;
+
+            for (Title title: selectedTitles)
             {
-                confirmDelete = ConfirmBox.display(
-                    "Confirm Delete",
-                    "Are you sure you would like to delete " + title + "?\nThere are " + req + "requests for this title!");
+                req += getNumberRequests(title.getId());
+            }
+
+            boolean confirmDelete;
+            if (req > 0)
+            {
+                if (selectedTitles.size() == 1)
+                {
+                    confirmDelete = ConfirmBox.display(
+                        "Confirm Delete",
+                        "Are you sure you would like to delete " + selectedTitles.get(0).getTitle() + "?\nThere are " + req + " requests for this title!");
+                }
+                else 
+                {
+                    confirmDelete = ConfirmBox.display(
+                        "Confirm Delete",
+                        "Are you sure you would like to delete " + selectedTitles.size() + " titles?\nThere are " + req + " requests for these titles!");
+                }
             }
             else 
             {
-                confirmDelete = ConfirmBox.display(
-                    "Confirm Delete",
-                    "Are you sure you would like to delete " + title + "?");}
+                if (selectedTitles.size() == 1)
+                {
+                    confirmDelete = ConfirmBox.display(
+                        "Confirm Delete",
+                        "Are you sure you would like to delete " + selectedTitles.get(0).getTitle() + "?");
+                }
+                else 
+                {
+                    confirmDelete = ConfirmBox.display(
+                        "Confirm Delete",
+                        "Are you sure you would like to delete " + selectedTitles.size() + " titles?");
+                }
+            }
             if (confirmDelete) {
-                PreparedStatement s = null;
-                String sql = "DELETE FROM TITLES WHERE TITLEID = ?";
-                String sql2 = "DELETE FROM ORDERS WHERE TITLEID = ?";
+                for (Title title: selectedTitles)
+                {
+                    int titleId = title.getId();
 
-                try {
-                    s = conn.prepareStatement(sql2);
-                    s.setString(1, Integer.toString(titleId));
-                    s.executeUpdate();
-                    s.close();
+                    PreparedStatement s = null;
+                    String sql = "DELETE FROM TITLES WHERE TITLEID = ?";
+                    String sql2 = "DELETE FROM ORDERS WHERE TITLEID = ?";
 
-                    s = conn.prepareStatement(sql);
-                    s.setString(1, Integer.toString(titleId));
-                    s.executeUpdate();
-                    s.close();
+                    try {
+                        s = conn.prepareStatement(sql2);
+                        s.setString(1, Integer.toString(titleId));
+                        s.executeUpdate();
+                        s.close();
 
-                    Log.LogEvent("Deleted Title", "Deleted Title - Title: " + title + " - TitleID: " + titleId);
-                } catch (SQLException sqlExcept) {
-                    sqlExcept.printStackTrace();
+                        s = conn.prepareStatement(sql);
+                        s.setString(1, Integer.toString(titleId));
+                        s.executeUpdate();
+                        s.close();
+
+                        Log.LogEvent("Deleted Title", "Deleted Title - Title: " + title.getTitle() + " - TitleID: " + titleId);
+                    } catch (SQLException sqlExcept) {
+                        sqlExcept.printStackTrace();
+                    }
                 }
             }
             titleTable.getItems().setAll(getTitles());
@@ -2308,7 +2473,7 @@ public class Controller implements Initializable {
     @FXML
     void handleCustomerKeyboardInput(KeyEvent event)
     {
-        System.out.println("Customer keyboard input triggered: " + event.getCode().toString());
+        // System.out.println("Customer keyboard input triggered: " + event.getCode().toString());
 
         if (event.isControlDown() && event.getCode() == KeyCode.F)
         {
@@ -2331,7 +2496,7 @@ public class Controller implements Initializable {
     @FXML
     void handleTitleKeyboardInput(KeyEvent event)
     {
-        System.out.println("Title keyboard input triggered: " + event.getCode().toString());
+        // System.out.println("Title keyboard input triggered: " + event.getCode().toString());
 
         if (event.isControlDown() && event.getCode() == KeyCode.F)
         {
@@ -2646,27 +2811,140 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Adds all orders for a given Title to the Title Orders table.
+     * Adds all orders for a given set of Customers to the Orders table.
      * @param customer The Customer to update the Order Table for
      */
-    // void getTitleOrders(Title title){
-    //     ObservableList<RequestTable> = getRequests(title.getId(), -1);
+    void updateOrdersTable(ObservableList<Customer> customers) {
+        ObservableList<Order> allOrders = getOrderTable();
+        ObservableList<Order> customerOrders = FXCollections.observableArrayList();
 
-    //     String titleName = title.getTitle();
+        Hashtable<Integer, ArrayList<Order>> uniqueOrders = new Hashtable<>();
+        HashSet<Integer> customerIDs = new HashSet<>();
 
-    //     for(int i=0; i < allOrders.size(); i++) 
-    //     {
-    //         if (allOrders.get(i).getTitleName().equals(titleName))
-    //         {
-    //             for (Customer customer: customers)
-    //             {
-    //                 if (allOrders.get(i).getCustomerId() == customer.getId())
-    //                     customersOrdering.add(allOrders.get(i));
-    //             }
-    //         }
-    //     }
-    //     customerOrderTable.getItems().setAll(customersOrdering);
-    // }
+        // Generate a set of customer ids from those selected
+        // Grab orders relating to those customer ids
+        // Condense orders for the same title but different customers into a single order object as possible
+
+        for (Customer customer: customers)
+        {
+            customerIDs.add(customer.getId());
+        }
+
+        for(int i=0; i < allOrders.size(); i++) {
+            if (customerIDs.contains(allOrders.get(i).getCustomerId()))
+                customerOrders.add(allOrders.get(i));
+        }
+
+        for (Order order: customerOrders)
+        {
+            int id = order.getTitleId();
+            if (!uniqueOrders.containsKey(id))
+            {
+                ArrayList<Order> newListForTitle = new ArrayList<>();
+                newListForTitle.add(order);
+
+                uniqueOrders.put(id, newListForTitle);
+            }
+            else 
+            {
+                uniqueOrders.get(id).add(order);
+            }
+        }
+
+        customerOrders.clear();
+
+        for (ArrayList<Order> titleList: uniqueOrders.values())
+        {
+            ArrayList<Order> ordersForTitle = new ArrayList<>();
+
+            for (Order order: titleList)
+            {
+                if (ordersForTitle.size() == 0)
+                {
+                    ordersForTitle.add(order);
+                }
+                else
+                {
+                    boolean foundMatch = false;
+                    for (Order testUnique: ordersForTitle)
+                    {
+                        if (order.getIssue() == testUnique.getIssue())
+                        {
+                            // A existing matching order was found, increment the quantity of that order and ignroe the current order
+                            testUnique.setQuantity(testUnique.getQuantity() + 1);
+                            foundMatch = true;
+                            break;
+                        }
+                    }
+
+                    // If no matching order was found, this is a order for the given title with a unique issue number
+                    if (!foundMatch)
+                        ordersForTitle.add(order);
+                }
+            }
+
+            customerOrders.addAll(ordersForTitle);
+        }
+
+        customerOrderTable.getItems().setAll(customerOrders);
+    }
+
+    /**
+     * Adds all orders for a given selection of titles to the Title Orders table.
+     * @param customer The Customer to update the Order Table for
+     */
+    void getTitleOrders(ObservableList<Title> titles)
+    {
+        ArrayList<RequestTable> allRequests = new ArrayList<>();
+        ObservableList<RequestTable> requestingCustomers = FXCollections.observableArrayList();
+
+        Hashtable<String, ArrayList<RequestTable>> uniqueRequests = new Hashtable<>();
+        
+        // Get all the requsts for every selected title
+        for (Title title: titles)
+        {
+            allRequests.addAll(getRequests(title.getId(), -9));
+        }
+
+        // Sort the requests into the appropriate hashtable positions based on "firstName+lastName"
+        for (RequestTable table: allRequests)
+        {
+            String tableKey = table.getRequestFirstName() + table.getRequestLastName();
+            if (!uniqueRequests.containsKey(tableKey))
+            {
+                ArrayList<RequestTable> requestList = new ArrayList<>();
+                requestList.add(table);
+
+                uniqueRequests.put(tableKey, requestList);
+            }
+            else 
+            {
+                uniqueRequests.get(tableKey).add(table);
+            }
+        }
+
+        // Condense requests down to unique entries with an adjusted quantity if duplicates exist
+        for (ArrayList<RequestTable> requestList: uniqueRequests.values())
+        {
+            RequestTable baseTable = null;
+
+            for (RequestTable table: requestList)
+            {
+                if (baseTable == null)
+                {
+                    table.setRequestIssue(-1);
+                    baseTable = table;
+                    continue;
+                }
+
+                baseTable.setRequestQuantity(Integer.parseInt(baseTable.getRequestQuantity()) + Integer.parseInt(table.getRequestQuantity()));
+            }
+
+            requestingCustomers.add(baseTable);
+        }
+
+        titleOrdersTable.getItems().setAll(requestingCustomers);
+    }
 
     //#endregion
 

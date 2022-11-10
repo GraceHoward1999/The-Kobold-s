@@ -71,7 +71,7 @@
                               </TableView>
                               <VBox alignment="TOP_CENTER" onMouseClicked="#passCustomerKeyboardFocus" prefHeight="200.0" prefWidth="100.0">
                                  <children>
-                                     <Button fx:id="NewOrder" mnemonicParsing="false" onAction="#handleNewOrder" prefWidth="100.0" text="Add Request" wrapText="true">
+                                     <Button fx:id="newOrderButton" mnemonicParsing="false" onAction="#handleNewOrder" prefWidth="100.0" text="Add Request" wrapText="true">
                                        <VBox.margin>
                                           <Insets bottom="20.0" top="5.0" />
                                        </VBox.margin>
@@ -79,12 +79,12 @@
                                           <Font size="11.0" />
                                        </font>
                                     </Button>
-                                    <Button mnemonicParsing="false" onAction="#handleDeleteOrder" prefWidth="100.0" text="Delete Selected" wrapText="true">
+                                    <Button fx:id="deleteOrderButton" mnemonicParsing="false" onAction="#handleDeleteOrder" prefWidth="100.0" text="Delete Selected" wrapText="true">
                                        <font>
                                           <Font size="11.0" />
                                        </font>
                                     </Button>
-                                     <Button mnemonicParsing="false" onAction="#handleEditOrder" prefWidth="100.0" text="Edit Selected" wrapText="true">
+                                     <Button fx:id="editOrderButton" mnemonicParsing="false" onAction="#handleEditOrder" prefWidth="100.0" text="Edit Selected" wrapText="true">
                                          <font>
                                              <Font size="11.0" />
                                          </font>
@@ -92,7 +92,7 @@
                                           <Insets top="5.0" />
                                        </VBox.margin>
                                      </Button>
-                                    <Button mnemonicParsing="false" onAction="#handleExportSingleCustomer" prefWidth="100.0" text="Export Single Customer List" wrapText="true">
+                                    <Button fx:id="exportSingleCustomerListButton" mnemonicParsing="false" onAction="#handleExportSingleCustomer" prefWidth="100.0" text="Export Single Customer List" wrapText="true">
                                        <font>
                                           <Font size="11.0" />
                                        </font>
