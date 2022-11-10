@@ -38,6 +38,7 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Observable;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -109,6 +110,8 @@ public class Controller implements Initializable {
     @FXML private Text titleDateFlagged;
     @FXML private Text titleDateFlaggedNoticeText;
     @FXML private Text titleNumberRequestsText;
+
+    @FXML private Button editTitleButton;
 
     //for the summary info in "new week pulls" tab in "reports" tab
     @FXML private Text FlaggedTitlesTotalText;
@@ -775,6 +778,7 @@ public class Controller implements Initializable {
             }
         });
         titleNotesColumn.setCellValueFactory(new PropertyValueFactory<>("notes"));
+        titleTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         titleTable.getItems().setAll(this.getTitles());
         titleTable.getSortOrder().add(titleTitleColumn);
         
@@ -894,36 +898,70 @@ public class Controller implements Initializable {
 
         //Add Listener for Titles table
         titleTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-            if (newSelection != null) {
-                titleTitleText.setText(newSelection.getTitle());
-                if (newSelection.getPrice() > 0) {
-                    titlePriceText.setText(newSelection.getPriceDollars());
-                } else {
-                    titlePriceText.setText("");
-                }
-                titleNotesText.setText(newSelection.getNotes());
-                String numberRequests = String.format("This Title Currently has %s Customer Requests", getNumberRequests(newSelection.getId()));
-                LocalDate sixMonthsAgo = LocalDate.now().minusMonths(6);
-                if (newSelection.getDateFlagged() != null) {
-                    titleDateFlagged.setText(newSelection.getDateFlagged().toString());
-                    if (newSelection.getDateFlagged().isBefore(sixMonthsAgo)) {
-                        titleDateFlaggedNoticeText.setVisible(true);
+            ObservableList<Title> selectedTitles = titleTable.getSelectionModel().getSelectedItems();
+
+            if (newSelection != null) 
+            {
+                if (selectedTitles.size() == 1)
+                {
+                    titleTitleText.setText(newSelection.getTitle());
+
+                    if (newSelection.getPrice() > 0) {
+                        titlePriceText.setText(newSelection.getPriceDollars());
+                    } 
+                    else {
+                        titlePriceText.setText("");
+                    }
+
+                    titleNotesText.setText(newSelection.getNotes());
+                    String numberRequests = String.format("This Title Currently has %s Customer Requests", getNumberRequests(newSelection.getId()));
+                    LocalDate sixMonthsAgo = LocalDate.now().minusMonths(6);
+
+                    if (newSelection.getDateFlagged() != null) {
+                        titleDateFlagged.setText(newSelection.getDateFlagged().toString());
+                        if (newSelection.getDateFlagged().isBefore(sixMonthsAgo)) {
+                            titleDateFlaggedNoticeText.setVisible(true);
+                        }
+                        else {
+                            titleDateFlaggedNoticeText.setVisible(false);
+                        }
                     }
                     else {
-                        titleDateFlaggedNoticeText.setVisible(false);
+                        titleDateFlagged.setText("Never");
+                        titleDateFlaggedNoticeText.setVisible(true);
                     }
-                }
-                else {
-                    titleDateFlagged.setText("Never");
-                    titleDateFlaggedNoticeText.setVisible(true);
-                }
-                titleNumberRequestsText.setText(numberRequests);
+                    titleNumberRequestsText.setText(numberRequests);
 
-                // System.out.println(titleOrderFirstNameColumn.toString());
-                // System.out.println(titleOrderLastNameColumn.toString());
-                // System.out.println(titleOrderQuantityColumn.toString());
-                // System.out.println(this.getRequests(newSelection.getId(), -1).size() + " : " + newSelection.getId());
-                titleOrdersTable.getItems().setAll(this.getRequests(newSelection.getId(), -9));
+                    editTitleButton.setDisable(false);
+
+                    titleOrdersTable.getItems().setAll(this.getRequests(newSelection.getId(), -9));
+                }
+                else if (newSelection != null)
+                {
+                    titleTitleText.setText("Multiple Titles");
+                    titlePriceText.setText("-----");
+                    titleNotesText.setText("-----");
+                    titleDateFlagged.setText("-----");
+                    titleNumberRequestsText.setText("");
+
+                    boolean oldTitleFlag = false;
+                    LocalDate sixMonthsAgo = LocalDate.now().minusMonths(6);
+                    for (Title title: selectedTitles)
+                    {
+                        if (title.getDateFlagged() == null || title.getDateFlagged().isBefore(sixMonthsAgo)) {
+                            oldTitleFlag = true;
+                            break;
+                        }
+                    }
+
+                    titleDateFlaggedNoticeText.setVisible(oldTitleFlag);
+
+                    editTitleButton.setDisable(true);
+
+                    // TODO: Handle table when multiple titles selected
+                    // titleOrdersTable.getItems().setAll(this.getRequests(newSelection.getId(), -9));
+                    titleOrdersTable.getItems().clear();
+                }
             }
         });
 
@@ -1187,9 +1225,8 @@ public class Controller implements Initializable {
      */
     @FXML
     void handleDeleteTitle(ActionEvent event) {
-        String title = titleTitleText.getText();
 
-        if (titleTable.getSelectionModel().getSelectedItem() == null) {
+        if (titleTable.getSelectionModel().getSelectedItems() == null) {
             AlertBox.display("Confirm Delete", "Please select a title.");
         }
         else if (unsaved)
@@ -1197,39 +1234,70 @@ public class Controller implements Initializable {
             AlertBox.display("Flags Have Not Been Saved", "Please save or reset flags before deleting a title.");
         }
         else {
-            int titleId = titleTable.getSelectionModel().getSelectedItem().getId();
-            int req = getNumberRequests(titleId);
-            boolean confirmDelete;
-            if ( req > 0)
+            ObservableList<Title> selectedTitles = titleTable.getSelectionModel().getSelectedItems();
+
+            int req = 0;
+
+            for (Title title: selectedTitles)
             {
-                confirmDelete = ConfirmBox.display(
-                    "Confirm Delete",
-                    "Are you sure you would like to delete " + title + "?\nThere are " + req + "requests for this title!");
+                req += getNumberRequests(title.getId());
+            }
+
+            boolean confirmDelete;
+            if (req > 0)
+            {
+                if (selectedTitles.size() == 1)
+                {
+                    confirmDelete = ConfirmBox.display(
+                        "Confirm Delete",
+                        "Are you sure you would like to delete " + selectedTitles.get(0).getTitle() + "?\nThere are " + req + " requests for this title!");
+                }
+                else 
+                {
+                    confirmDelete = ConfirmBox.display(
+                        "Confirm Delete",
+                        "Are you sure you would like to delete " + selectedTitles.size() + " titles?\nThere are " + req + " requests for these titles!");
+                }
             }
             else 
             {
-                confirmDelete = ConfirmBox.display(
-                    "Confirm Delete",
-                    "Are you sure you would like to delete " + title + "?");}
+                if (selectedTitles.size() == 1)
+                {
+                    confirmDelete = ConfirmBox.display(
+                        "Confirm Delete",
+                        "Are you sure you would like to delete " + selectedTitles.get(0).getTitle() + "?");
+                }
+                else 
+                {
+                    confirmDelete = ConfirmBox.display(
+                        "Confirm Delete",
+                        "Are you sure you would like to delete " + selectedTitles.size() + " titles?");
+                }
+            }
             if (confirmDelete) {
-                PreparedStatement s = null;
-                String sql = "DELETE FROM TITLES WHERE TITLEID = ?";
-                String sql2 = "DELETE FROM ORDERS WHERE TITLEID = ?";
+                for (Title title: selectedTitles)
+                {
+                    int titleId = title.getId();
 
-                try {
-                    s = conn.prepareStatement(sql2);
-                    s.setString(1, Integer.toString(titleId));
-                    s.executeUpdate();
-                    s.close();
+                    PreparedStatement s = null;
+                    String sql = "DELETE FROM TITLES WHERE TITLEID = ?";
+                    String sql2 = "DELETE FROM ORDERS WHERE TITLEID = ?";
 
-                    s = conn.prepareStatement(sql);
-                    s.setString(1, Integer.toString(titleId));
-                    s.executeUpdate();
-                    s.close();
+                    try {
+                        s = conn.prepareStatement(sql2);
+                        s.setString(1, Integer.toString(titleId));
+                        s.executeUpdate();
+                        s.close();
 
-                    Log.LogEvent("Deleted Title", "Deleted Title - Title: " + title + " - TitleID: " + titleId);
-                } catch (SQLException sqlExcept) {
-                    sqlExcept.printStackTrace();
+                        s = conn.prepareStatement(sql);
+                        s.setString(1, Integer.toString(titleId));
+                        s.executeUpdate();
+                        s.close();
+
+                        Log.LogEvent("Deleted Title", "Deleted Title - Title: " + title.getTitle() + " - TitleID: " + titleId);
+                    } catch (SQLException sqlExcept) {
+                        sqlExcept.printStackTrace();
+                    }
                 }
             }
             titleTable.getItems().setAll(getTitles());
@@ -2403,7 +2471,7 @@ public class Controller implements Initializable {
     @FXML
     void handleCustomerKeyboardInput(KeyEvent event)
     {
-        System.out.println("Customer keyboard input triggered: " + event.getCode().toString());
+        // System.out.println("Customer keyboard input triggered: " + event.getCode().toString());
 
         if (event.isControlDown() && event.getCode() == KeyCode.F)
         {
@@ -2426,7 +2494,7 @@ public class Controller implements Initializable {
     @FXML
     void handleTitleKeyboardInput(KeyEvent event)
     {
-        System.out.println("Title keyboard input triggered: " + event.getCode().toString());
+        // System.out.println("Title keyboard input triggered: " + event.getCode().toString());
 
         if (event.isControlDown() && event.getCode() == KeyCode.F)
         {
