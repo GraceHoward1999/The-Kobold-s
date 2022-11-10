@@ -729,6 +729,10 @@ public class Controller implements Initializable {
         customerTable.getItems().setAll(this.getCustomers());
         customerTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
+
+        // Make Customer Order Table Multi-Selectable
+        customerOrderTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+
         //Populate columns for Orders Table
         customerOrderReqItemsColumn.setCellValueFactory(new PropertyValueFactory<>("TitleName"));
         customerOrderQuantityColumn.setCellValueFactory(new PropertyValueFactory<>("quantity"));
@@ -865,6 +869,26 @@ public class Controller implements Initializable {
                 editCustomerButton.setDisable(true);
 
                 updateOrdersTable(selectedCustomers); 
+            }
+        });
+
+        //Add Listener for Customer Order Table
+        customerOrderTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            TableViewSelectionModel<Order> model = customerOrderTable.getSelectionModel();
+            ObservableList<Order> selectedOrders = model.getSelectedItems();
+            
+            if (selectedOrders.size() == 1)
+            {
+                ObservableList<Customer> selectedCustomers = customerTable.getSelectionModel().getSelectedItems();
+
+                // Re-enable the edit order button if and only if there are not multiple customers selected
+                if (selectedCustomers == null || selectedCustomers.size() == 1)
+                    editOrderButton.setDisable(false);
+                
+            }
+            else if (selectedOrders.size() > 0)
+            {
+                editOrderButton.setDisable(true);
             }
         });
 
@@ -1093,42 +1117,56 @@ public class Controller implements Initializable {
      */
     @FXML
     void handleDeleteOrder(ActionEvent event) {
-        String titleDP = titleTitleText.getText();
-        String title = customerOrderTable.getSelectionModel().getSelectedItem().getTitleName();
 
-        if (customerOrderTable.getSelectionModel().getSelectedItem() == null) {
+        if (customerOrderTable.getSelectionModel().getSelectedItems() == null) {
             AlertBox.display("Confirm Delete", "Please select an order.");
         } else {
-            int customerId = customerOrderTable.getSelectionModel().getSelectedItem().getCustomerId();
-            int titleId = customerOrderTable.getSelectionModel().getSelectedItem().getTitleId();
-            int quantity = customerOrderTable.getSelectionModel().getSelectedItem().getQuantity();
-            int issue = customerOrderTable.getSelectionModel().getSelectedItem().getIssue();
 
+            ObservableList<Order> selectedOrders = customerOrderTable.getSelectionModel().getSelectedItems();
 
-            boolean confirmDelete = ConfirmBox.display(
+            boolean confirmDelete = false;
+            if (selectedOrders.size() == 1)
+            {
+                confirmDelete = ConfirmBox.display(
                     "Confirm Delete",
-                    "Are you sure you would like to delete " + title + "?");
-            if (confirmDelete) {
-                PreparedStatement s = null;
-                String sql;
-                if (issue == 0) {
-                    sql = "DELETE FROM ORDERS WHERE CUSTOMERID = ? AND TITLEID = ? AND ISSUE IS NULL";
-                } else {
-                    sql = "DELETE FROM ORDERS WHERE CUSTOMERID = ? AND TITLEID = ? AND ISSUE = ?";
-                }
-                try {
-                    s = conn.prepareStatement(sql);
-                    s.setInt(1, customerId);
-                    s.setInt(2, titleId);
-                    if (issue != 0) {
-                        s.setInt(3, issue);
-                    }
-                    s.executeUpdate();
-                    s.close();
+                    "Are you sure you would like to delete " + selectedOrders.get(0).getTitleName() + "?");
+            }
+            else 
+            {
+                confirmDelete = ConfirmBox.display(
+                    "Confirm Delete",
+                    "Are you sure you would like to delete " + selectedOrders.size() + " orders?");
+            }
 
-                    Log.LogEvent("Deleted Order", "Deleted order - CustomerID: " + customerId + " - Title: " + title + " - Quantity: " + quantity + " - Issue: " + Integer.valueOf(issue));
-                } catch (SQLException sqlExcept) {
-                    sqlExcept.printStackTrace();
+            if (confirmDelete) {
+                for (Order order: selectedOrders)
+                {
+                    int customerId = order.getCustomerId();
+                    int titleId = order.getTitleId();
+                    int quantity = order.getQuantity();
+                    int issue = order.getIssue();
+
+                    PreparedStatement s = null;
+                    String sql;
+                    if (issue == 0) {
+                        sql = "DELETE FROM ORDERS WHERE CUSTOMERID = ? AND TITLEID = ? AND ISSUE IS NULL";
+                    } else {
+                        sql = "DELETE FROM ORDERS WHERE CUSTOMERID = ? AND TITLEID = ? AND ISSUE = ?";
+                    }
+                    try {
+                        s = conn.prepareStatement(sql);
+                        s.setInt(1, customerId);
+                        s.setInt(2, titleId);
+                        if (issue != 0) {
+                            s.setInt(3, issue);
+                        }
+                        s.executeUpdate();
+                        s.close();
+
+                        Log.LogEvent("Deleted Order", "Deleted order - CustomerID: " + customerId + " - Title: " + order.getTitleName() + " - Quantity: " + quantity + " - Issue: " + Integer.valueOf(issue));
+                    } catch (SQLException sqlExcept) {
+                        sqlExcept.printStackTrace();
+                    }
                 }
             }
             titleTable.getItems().setAll(getTitles());
