@@ -934,6 +934,8 @@ public class Controller implements Initializable {
 
                     editTitleButton.setDisable(false);
 
+                    titleOrderIssueColumn.setVisible(true);
+
                     titleOrdersTable.getItems().setAll(this.getRequests(newSelection.getId(), -9));
                 }
                 else if (newSelection != null)
@@ -957,6 +959,8 @@ public class Controller implements Initializable {
                     titleDateFlaggedNoticeText.setVisible(oldTitleFlag);
 
                     editTitleButton.setDisable(true);
+
+                    titleOrderIssueColumn.setVisible(false);
 
                     getTitleOrders(selectedTitles);
                 }
