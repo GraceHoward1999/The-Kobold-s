@@ -45,4 +45,16 @@ public class RequestTable {
      * @return the issue of the title of the customer's order
      */
     public String getRequestIssue() { return String.valueOf(this.requestIssue); }
+
+    /**
+     * Sets the quantity of the customer's order for this object
+     * @param quantity the quantity of the customer's order
+     */
+    public void setRequestQuantity(int quantity) { this.requestQuantity = quantity; }
+
+    /**
+     * Sets the issue of the title of the customer's order for this object
+     * @return the issue of the title of the customer's order
+     */
+    public void setRequestIssue(int issue) { this.requestIssue = issue; }
 }

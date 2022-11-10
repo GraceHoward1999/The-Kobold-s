@@ -958,9 +958,7 @@ public class Controller implements Initializable {
 
                     editTitleButton.setDisable(true);
 
-                    // TODO: Handle table when multiple titles selected
-                    // titleOrdersTable.getItems().setAll(this.getRequests(newSelection.getId(), -9));
-                    titleOrdersTable.getItems().clear();
+                    getTitleOrders(selectedTitles);
                 }
             }
         });
@@ -2888,27 +2886,61 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Adds all orders for a given Title to the Title Orders table.
+     * Adds all orders for a given selection of titles to the Title Orders table.
      * @param customer The Customer to update the Order Table for
      */
-    // void getTitleOrders(Title title){
-    //     ObservableList<RequestTable> = getRequests(title.getId(), -1);
+    void getTitleOrders(ObservableList<Title> titles)
+    {
+        ArrayList<RequestTable> allRequests = new ArrayList<>();
+        ObservableList<RequestTable> requestingCustomers = FXCollections.observableArrayList();
 
-    //     String titleName = title.getTitle();
+        Hashtable<String, ArrayList<RequestTable>> uniqueRequests = new Hashtable<>();
+        
+        // Get all the requsts for every selected title
+        for (Title title: titles)
+        {
+            allRequests.addAll(getRequests(title.getId(), -9));
+        }
 
-    //     for(int i=0; i < allOrders.size(); i++) 
-    //     {
-    //         if (allOrders.get(i).getTitleName().equals(titleName))
-    //         {
-    //             for (Customer customer: customers)
-    //             {
-    //                 if (allOrders.get(i).getCustomerId() == customer.getId())
-    //                     customersOrdering.add(allOrders.get(i));
-    //             }
-    //         }
-    //     }
-    //     customerOrderTable.getItems().setAll(customersOrdering);
-    // }
+        // Sort the requests into the appropriate hashtable positions based on "firstName+lastName"
+        for (RequestTable table: allRequests)
+        {
+            String tableKey = table.getRequestFirstName() + table.getRequestLastName();
+            if (!uniqueRequests.containsKey(tableKey))
+            {
+                ArrayList<RequestTable> requestList = new ArrayList<>();
+                requestList.add(table);
+
+                uniqueRequests.put(tableKey, requestList);
+            }
+            else 
+            {
+                uniqueRequests.get(tableKey).add(table);
+            }
+        }
+
+        // Condense requests down to unique entries with an adjusted quantity if duplicates exist
+        for (ArrayList<RequestTable> requestList: uniqueRequests.values())
+        {
+            RequestTable baseTable = null;
+
+            for (RequestTable table: requestList)
+            {
+                if (baseTable == null)
+                {
+                    table.setRequestIssue(-1);
+                    baseTable = table;
+                    continue;
+                }
+
+                baseTable.setRequestQuantity(Integer.parseInt(baseTable.getRequestQuantity()) + Integer.parseInt(table.getRequestQuantity()));
+            }
+
+            requestingCustomers.add(baseTable);
+        }
+
+        titleOrdersTable.getItems().setAll(requestingCustomers);
+    }
 
     //#endregion
 
