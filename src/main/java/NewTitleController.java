@@ -17,6 +17,7 @@ import java.sql.*;
 public class NewTitleController{
 
     private Connection conn;
+    int rowsAffected = 0;
 
     @FXML private Button addTitleButton;
 
@@ -69,7 +70,7 @@ public class NewTitleController{
                 insert.setString(1, title);
                 insert.setObject(2, dollarsToCents(price), Types.INTEGER);
                 insert.setString(3, notes);
-                int rowsAffected = insert.executeUpdate();
+                rowsAffected = insert.executeUpdate();
 
                 insert.close();
 

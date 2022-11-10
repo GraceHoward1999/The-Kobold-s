@@ -1,11 +1,11 @@
 ----------------------------------------------------------------
-Thu Nov 03 17:57:16 CDT 2022:
-Booting Derby version The Apache Software Foundation - Apache Derby - 10.15.2.0 - (1873585): instance a816c00e-0184-3fb6-7e49-0000065d4ab8 
-on database directory C:\Users\Luke\DragonSlayer\derbyDB with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@73d16e93 
-Loaded from file:/C:/Users/Luke/.m2/repository/org/apache/derby/derby/10.15.2.0/derby-10.15.2.0.jar
-java.vendor=Oracle Corporation
-java.runtime.version=18+36-2087
-user.dir=C:\Users\Luke\Documents\GitHub\The-Kobold-s
+Thu Nov 10 14:14:06 CST 2022:
+Booting Derby version The Apache Software Foundation - Apache Derby - 10.15.2.0 - (1873585): instance a816c00e-0184-632d-a384-00000632d628 
+on database directory C:\Users\grace\DragonSlayer\derbyDB with class loader jdk.internal.loader.ClassLoaders$AppClassLoader@6d5380c2 
+Loaded from file:/C:/Users/grace/.m2/repository/org/apache/derby/derby/10.15.2.0/derby-10.15.2.0.jar
+java.vendor=Eclipse Adoptium
+java.runtime.version=17.0.4.1+1
+user.dir=C:\Users\grace\Documents\GitHub\The-Kobold-s
 os.name=Windows 10
 os.arch=amd64
 os.version=10.0
