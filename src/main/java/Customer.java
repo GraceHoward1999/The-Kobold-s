@@ -10,6 +10,7 @@ public class Customer {
     private String fullName;
     private String phone;
     private String email;
+    private String notes;
     private int id;
 
     /**
@@ -18,12 +19,14 @@ public class Customer {
      * @param lastName Last name of the customer
      * @param phone phone number of the customer
      * @param email Email address of the customer
+     * @param notes Notes for the customer
      */
-    public Customer(String firstName, String lastName, String phone, String email) {
+    public Customer(String firstName, String lastName, String phone, String email, String notes) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
         this.email = email;
+        this.notes = notes;
         this.fullName = lastName + ", " + firstName;
     }
 
@@ -34,13 +37,15 @@ public class Customer {
      * @param lastName Last name of the customer
      * @param phone phone number of the customer
      * @param email Email address of the customer
+     * @param notes notes for the customer
      */
-    public Customer(int id, String firstName, String lastName, String phone, String email) {
+    public Customer(int id, String firstName, String lastName, String phone, String email, String notes) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
         this.email = email;
+        this.notes = notes;
         this.fullName = lastName + ", " + firstName;
     }
 
@@ -123,6 +128,22 @@ public class Customer {
      */
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    /**
+     * Gets the notes for the Customer
+     * @return The customer's notes
+     */
+    public String getNotes() {
+        return notes;
+    }
+
+    /**
+     * Sets the email address of the customer
+     * @param email The customer's email address
+     */
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     /**

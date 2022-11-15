@@ -29,6 +29,7 @@
                       <TableColumn fx:id="customerFirstNameColumn" prefWidth="100.0" text="First Name" />
                       <TableColumn fx:id="customerPhoneColumn" prefWidth="125.0" text="Phone Number" />
                         <TableColumn fx:id="customerEmailColumn" prefWidth="165.0" text="Email" />
+                        <TableColumn fx:id="customerNotesColumn" prefWidth="165.0" text="Notes" />
                     </columns>
                   </TableView>
                   <VBox alignment="CENTER" prefHeight="749.0" prefWidth="476.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
@@ -50,10 +51,12 @@
                               <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Last Name:" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number:" underline="true" GridPane.rowIndex="3" />
                               <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Email Address:" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Notes:" underline="true" GridPane.rowIndex="5" />
                               <Text fx:id="customerFirstNameText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="2" />
                               <Text fx:id="customerLastNameText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <Text fx:id="customerPhoneText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="4" />
                               <Text fx:id="customerEmailText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Text fx:id="customerNotesText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="6" />
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Customer Details">
                                  <font>
                                     <Font name="SansSerif Bold Italic" size="14.0" />
@@ -106,7 +109,7 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <TextField fx:id="CustomerSearch" layoutX="10.0" layoutY="44.0" onKeyReleased="#handleCustomerSearchKeyboardInput" prefHeight="26.0" prefWidth="490.0" promptText="Search..." />
+                  <TextField fx:id="CustomerSearch" layoutX="10.0" layoutY="44.0" onKeyReleased="#handleCustomerKeyboardInput" prefHeight="26.0" prefWidth="490.0" promptText="Search..." />
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" onMouseClicked="#passCustomerKeyboardFocus" prefHeight="30.0" prefWidth="490.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <children>
                         <Button fx:id="addCustomerButtonMain" mnemonicParsing="false" onAction="#handleAddCustomer" text="Add New Customer" />
@@ -196,7 +199,7 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <TextField fx:id="TitleSearch" layoutX="10.0" layoutY="44.0" onKeyReleased="#handleTitleSearchKeyboardInput" prefHeight="26.0" prefWidth="490.0" promptText="Search..." />
+                  <TextField fx:id="TitleSearch" layoutX="10.0" layoutY="44.0" onKeyReleased="#handleTitleKeyboardInput" prefHeight="26.0" prefWidth="490.0" promptText="Search..." />
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" nodeOrientation="LEFT_TO_RIGHT" onMouseClicked="#passTitleKeyboardFocus" prefHeight="30.0" prefWidth="490.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <children>
                         <Button fx:id="addTitleButtonMain" mnemonicParsing="false" onAction="#handleAddTitle" prefWidth="94.0" text="Add New Title" />

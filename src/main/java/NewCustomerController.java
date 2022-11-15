@@ -26,6 +26,7 @@ public class NewCustomerController implements Initializable {
     @FXML private TextField newCustomerFirstName;
     @FXML private TextField newCustomerLastName;
     @FXML private TextField newCustomerPhone;
+    @FXML private TextField newCustomerNotes;
 
     /**
      * Initialize the window by setting a TextFormatter for the phone number
@@ -49,10 +50,11 @@ public class NewCustomerController implements Initializable {
         String lastName = newCustomerLastName.getText();
         String phone = newCustomerPhone.getText();
         String email = newCustomerEmail.getText();
+        String notes = newCustomerNotes.getText();
 
         Statement get = null;
         PreparedStatement insert = null;
-        String sql = "INSERT INTO Customers (firstname, lastname, phone, email) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Customers (firstname, lastname, phone, email, notes) VALUES (?, ?, ?, ?, ?)";
         try
         {
             get = conn.createStatement();
@@ -86,7 +88,8 @@ public class NewCustomerController implements Initializable {
             insert.setString(2, lastName);
             insert.setString(3, phone);
             insert.setString(4, email);
-            rowsAffected = insert.executeUpdate();
+            insert.setString(5, notes);
+            int rowsAffected = insert.executeUpdate();
 
             insert.close();
 
