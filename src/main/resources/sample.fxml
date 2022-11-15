@@ -41,8 +41,9 @@
                           <rowConstraints>
                               <RowConstraints maxHeight="33.0" minHeight="0.0" prefHeight="33.0" vgrow="SOMETIMES" />
                             <RowConstraints maxHeight="67.0" minHeight="0.0" prefHeight="33.0" vgrow="SOMETIMES" />
-                            <RowConstraints maxHeight="134.0" minHeight="10.0" prefHeight="29.0" vgrow="SOMETIMES" />
+                            <RowConstraints maxHeight="33.0" minHeight="10.0" prefHeight="29.0" vgrow="SOMETIMES" />
                             <RowConstraints maxHeight="67.0" minHeight="33.0" prefHeight="33.0" vgrow="SOMETIMES" />
+                           <RowConstraints maxHeight="33.0" minHeight="10.0" prefHeight="29.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="200.0" minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
@@ -50,6 +51,10 @@
                               <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Last Name:" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                               <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Phone Number:" underline="true" GridPane.rowIndex="3" />
                               <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Email Address:" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Text fx:id="delinqNoticeText" fill="#8B0000" strokeType="OUTSIDE" strokeWidth="0.0" text="Delinquent Customer" visible="false" GridPane.rowIndex="5">
+                              <font>
+                                    <Font name="SansSerif Bold" size="14.0" />
+                                 </font></Text>
                               <Text fx:id="customerFirstNameText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="2" />
                               <Text fx:id="customerLastNameText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                               <Text fx:id="customerPhoneText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="4" />
@@ -111,8 +116,16 @@
                      <children>
                         <Button fx:id="addCustomerButtonMain" mnemonicParsing="false" onAction="#handleAddCustomer" text="Add New Customer" />
                         <Button fx:id="editCustomerButton" mnemonicParsing="false" onAction="#handleEditCustomer" prefWidth="60.0" text="Edit">
+                                                <Button fx:id="Delinq" mnemonicParsing="false" onAction="#handleMarkDelinquent" prefWidth="100.0" text="Mark Delinquent" wrapText="true">
+                                 <font>
+                                    <Font size="11.0" />
+                                 </font>
                            <HBox.margin>
-                              <Insets left="241.0" />
+                              <Insets left="141.0" />
+                           </HBox.margin>
+                        </Button>
+                           <HBox.margin>
+                              <Insets left="5.0" />
                            </HBox.margin>
                         </Button>
                         <Button fx:id="deleteCustomerButton" mnemonicParsing="false" onAction="#handleDeleteCustomer" prefWidth="60.0" text="Delete">

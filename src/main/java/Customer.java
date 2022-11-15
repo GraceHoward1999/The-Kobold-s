@@ -11,6 +11,7 @@ public class Customer {
     private String phone;
     private String email;
     private int id;
+    private boolean delinquent;
 
     /**
      * Constructor. Assigns the values provided to their associated fields.
@@ -25,6 +26,7 @@ public class Customer {
         this.phone = phone;
         this.email = email;
         this.fullName = lastName + ", " + firstName;
+        this.delinquent = false;
     }
 
     /**
@@ -42,6 +44,7 @@ public class Customer {
         this.phone = phone;
         this.email = email;
         this.fullName = lastName + ", " + firstName;
+        this.delinquent = false;
     }
 
     /**
@@ -131,5 +134,23 @@ public class Customer {
      */
     public int getId() {
         return id;
+    }
+        
+    /**
+     * Gets the delinquent status of the customer
+     * @return boolean "delinquent"
+     */
+    public boolean getDelinquent()
+    {
+        return delinquent;
+    }
+
+    /**
+     * Sets the delinquent status of the cusotmer.
+     * @param customerSucks whether the customer sucks or not
+     */
+    public void setDelinquent(boolean customerSucks)
+    {
+        delinquent = customerSucks;
     }
 }
