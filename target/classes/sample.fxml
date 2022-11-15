@@ -348,7 +348,7 @@
                                                     <Button fx:id="exportAllTitlesButton" mnemonicParsing="false" onAction="#handleExportAllRequestsByTitle" prefWidth="166.0" text="Export All Requests by Title" />
                                                     <Button mnemonicParsing="false" onAction="#handleExportCustomerList" prefHeight="26.0" prefWidth="166.0" text="Export Customer List" GridPane.rowIndex="1" />
                                                     <Button mnemonicParsing="false" onAction="#handleExportPendingIssueNumbers" text="Export All Pending Issue #'s" GridPane.rowIndex="2" />
-                                                    <Button mnemonicParsing="false" onAction="#handleExportStalledTitles" prefWidth="166.0" text="Export Stalled Titles" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                                    <Button mnemonicParsing="false" onAction="#handleExportStalledTitles" prefWidth="166.0" text="Export Unflagged Six Month Titles" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                                                     <Button mnemonicParsing="false" onAction="#handleExportNoRequestTitles" prefWidth="166.0" text="Export 0 Request Titles" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                                           <Button mnemonicParsing="false" onAction="#handleExportAllTitles" prefWidth="166.0" text="Export All Titles with Qtys" GridPane.columnIndex="1" />
                                        </children>
