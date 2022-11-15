@@ -97,6 +97,7 @@ public class Controller implements Initializable {
     @FXML private Text customerLastNameText;
     @FXML private Text customerPhoneText;
     @FXML private Text customerEmailText;
+    @FXML private Text delinqNoticeText;
 
     @FXML private Button editCustomerButton;
     @FXML private Button newOrderButton;
@@ -849,6 +850,12 @@ public class Controller implements Initializable {
                     customerLastNameText.setText(newSelection.getLastName());
                     customerPhoneText.setText(newSelection.getPhone());
                     customerEmailText.setText(newSelection.getEmail());
+
+                    if(newSelection.getDelinquent())
+                    {
+                        delinqNoticeText.setVisible(true);
+                    }
+                    else delinqNoticeText.setVisible(false);
 
                     newOrderButton.setDisable(false);
                     editOrderButton.setDisable(false);
@@ -2587,6 +2594,17 @@ public class Controller implements Initializable {
 
         customerTable.getItems().setAll(sortedCustomers);
     }
+    @FXML
+    void handleMarkDelinquent()
+    {
+        if(customerTable.getSelectionModel().getSelectedItem() == null)
+        {
+            //should not be possible
+        }
+        customerTable.getSelectionModel().getSelectedItem().setDelinquent(!customerTable.getSelectionModel().getSelectedItem().getDelinquent());
+        //update SQL
+    }
+
 
     //#endregion
 
