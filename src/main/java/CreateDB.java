@@ -58,6 +58,8 @@ public class CreateDB {
                         FLAGGED boolean default false not null,
                         DATE_FLAGGED date,
                         ISSUE_FLAGGED int,
+                        ProductId varchar(255),
+                        DateCreated datetime2(0),
                         PRIMARY KEY (TitleID)
                     )""");
             System.out.println("Created table Title");

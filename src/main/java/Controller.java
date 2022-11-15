@@ -132,35 +132,55 @@ public class Controller implements Initializable {
 
     private static Connection conn = null;
 
-<<<<<<< HEAD
     private boolean setAll;
     //#endregion
-=======
-    public boolean alterTables() {
+    private boolean alterTables() {
         Statement s = null;
-        // alter Customers
+        // make sure Customers table has notes column
         String sql = "ALTER TABLE Customers ADD Notes VARCHAR(255)";
         try {
             s = conn.createStatement();
             s.execute(sql);
         } catch (SQLException sqlExcept) {
-            sqlExcept.printStackTrace();
-            return false;
+            if (sqlExcept.getSQLState().equals("X0Y32")) {
+                System.out.println("Customer table already contains Notes");
+            }
+            else {
+                sqlExcept.printStackTrace();
+                return false;
+            }
         }
-
+        // make sure Titles table has productId
         try {
-            sql = "ALTER TABLE Titles ADD Notes VARCHAR(8000)";
-
+            sql = "ALTER TABLE Titles ADD ProductId VARCHAR(255)";
             s = conn.createStatement();
             s.execute(sql);
         } catch (SQLException sqlExcept) {
-            sqlExcept.printStackTrace();
-            return false;
+            if (sqlExcept.getSQLState().equals("X0Y32")) {
+                System.out.println("Titles table already contains ProductId");
+            }
+            else {
+                sqlExcept.printStackTrace();
+                return false;
+            }
         }
-        System.out.println("ALTER SUCCESS");
+        // make sure Titles table contains date created
+        try {
+            sql = "ALTER TABLE Titles ADD DateCreated DATE";
+            s = conn.createStatement();
+            s.execute(sql);
+        } catch (SQLException sqlExcept) {
+            if (sqlExcept.getSQLState().equals("X0Y32")) {
+                System.out.println("Titles table already contains DateCreated");
+            }
+            else {
+                sqlExcept.printStackTrace();
+                return false;
+            }
+        }
+        System.out.println("DATABASE SCHEMA UP TO-DATE");
         return true;
     }
->>>>>>> Don't-merge-this-lol
 
 /*######################################################################/
 ////////////////////////// Getters and Setters //////////////////////////
@@ -758,7 +778,7 @@ public class Controller implements Initializable {
         createConnection();
 
         // alter tables for notes
-        // alterTables();
+        alterTables();
 
         //Populate columns for Customer Table
         customerLastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
@@ -876,7 +896,6 @@ public class Controller implements Initializable {
 
         //Add Listener for selected Customer
         customerTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
-<<<<<<< HEAD
             TableViewSelectionModel<Customer> model = customerTable.getSelectionModel();
             ObservableList<Customer> selectedCustomers = model.getSelectedItems();
             
@@ -904,7 +923,7 @@ public class Controller implements Initializable {
                 customerLastNameText.setText("-----");
                 customerPhoneText.setText("-----");
                 customerEmailText.setText("-----");
-                customerNotesText.setTest("-----");
+                customerNotesText.setText("-----");
 
                 newOrderButton.setDisable(true);
                 editOrderButton.setDisable(true);
@@ -2580,7 +2599,6 @@ public class Controller implements Initializable {
         }
     }
 
-<<<<<<< HEAD
     @FXML 
     void handleTitleSearchKeyboardInput(KeyEvent event)
     {
@@ -2650,9 +2668,6 @@ public class Controller implements Initializable {
     //#endregion
 
 /*######################################################################/
-=======
-    /*######################################################################/
->>>>>>> Don't-merge-this-lol
 //////////////////////////// Custom Functions ///////////////////////////
 /######################################################################*/
     
@@ -3011,8 +3026,8 @@ public class Controller implements Initializable {
 
     //#endregion
 
-}
-=======
+
+    /*
      * Simplification method to flag a title using a hotkey.
      */
     public void flagKeyShortcut()
@@ -3023,4 +3038,3 @@ public class Controller implements Initializable {
     }
 
 }
->>>>>>> Don't-merge-this-lol
