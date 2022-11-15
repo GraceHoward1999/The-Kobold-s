@@ -21,8 +21,9 @@ import java.sql.Types;
 public class EditOrderController {
 
     private Connection conn;
-    private Order order;
+    Order order;
     private int customerId;
+    int rowsAffected;
 
     @FXML private Button updateOrderButton;
 
@@ -96,7 +97,7 @@ public class EditOrderController {
                 if (Integer.parseInt(prevIssue) != 0) {
                     s.setObject(7, prevIssue, Types.INTEGER);
                 }
-                int rowsAffected = s.executeUpdate();
+                rowsAffected = s.executeUpdate();
                 s.close();
 
                 Log.LogEvent("Edited Order", "Edited order - CustomerID: " + customerId + " - Title: " + FxUtilTest.getComboBoxValue(setTitle) + " - Quantity: " + quantity + " - Issue: " + Integer.valueOf(issue) 

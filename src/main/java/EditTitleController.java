@@ -18,6 +18,8 @@ public class EditTitleController{
 
     private Connection conn;
     private Title title;
+    int rowsAffected;
+    Statement get;
 
     @FXML private Button updateTitleButton;
 
@@ -39,7 +41,7 @@ public class EditTitleController{
         if(isValidPrice(updateTitlePrice.getText())) {
             String price = updateTitlePrice.getText();
 
-            Statement get = null;
+            get = null;
             PreparedStatement update = null;
             String sql = """
             UPDATE TITLES
@@ -54,7 +56,7 @@ public class EditTitleController{
                 update.setObject(2, dollarsToCents(price), Types.INTEGER);
                 update.setString(3, notes);
                 update.setString(4, Integer.toString(title.getId()));
-                int rowsAffected = update.executeUpdate();
+                rowsAffected = update.executeUpdate();
 
                 update.close();
 
