@@ -13,6 +13,8 @@ public class Title {
     private String title;
     private int price;
     private String notes;
+    private String productId;
+    private LocalDate dateCreated;
     private int id;
     private BooleanProperty flagged;
     private LocalDate dateFlagged;
@@ -27,11 +29,13 @@ public class Title {
      * @param productId The Dragon's Lair productId of the Title (NOT the TABLE ID)
      * @param dateCreated The date that this Title entry was created
      */
-    public Title(int id, String title, int price, String notes, String productId) {
+    public Title(int id, String title, int price, String notes, String productId, LocalDate dateCreated) {
         this.id = id;
         this.title = title;
         this.price = price;
         this.notes = notes;
+        this.productId = productId;
+        this.dateCreated = dateCreated;
         this.flagged = new SimpleBooleanProperty(false);
     }
 
@@ -41,15 +45,19 @@ public class Title {
      * @param title The title of the Title
      * @param price The price of the Title
      * @param notes Notes for the Title
+     * @param productId The Dragon's Lair productId of the Title (NOT the TABLE ID)
+     * @param dateCreated The date that this Title entry was created
      * @param flagged Whether the title is flagged as a new release
      * @param dateFlagged The date that this title was last flagged
      * @param issueFlagged The specific issue number that this title is flagged for
      */
-    public Title(int id, String title, int price, String notes, boolean flagged, LocalDate dateFlagged, int issueFlagged) {
+    public Title(int id, String title, int price, String notes, String productId, LocalDate dateCreated, boolean flagged, LocalDate dateFlagged, int issueFlagged) {
         this.id = id;
         this.title = title;
         this.price = price;
         this.notes = notes;
+        this.productId = productId;
+        this.dateCreated = dateCreated;
         this.flagged = new SimpleBooleanProperty(flagged);
         this.dateFlagged = dateFlagged;
         this.issueFlagged = issueFlagged;
@@ -126,6 +134,38 @@ public class Title {
      */
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    /**
+     * Gets the product Id for this title
+     * @return The product Id for this title
+     */
+    public String getProductId() {
+        return productId;
+    }
+
+    /**
+     * Sets the product Id for this title
+     * @param productId The product Id for this title
+     */
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
+    /**
+     * Gets the date created for this title
+     * @return The date created for this title
+     */
+    public LocalDate getDateCreated() {
+        return dateCreated;
+    }
+
+    /**
+     * Sets the date created for this title
+     * @param dateCreated The date created for this title
+     */
+    public void setDateCreated(LocalDate dateCreated) {
+        this.dateCreated = dateCreated;
     }
 
     /**
