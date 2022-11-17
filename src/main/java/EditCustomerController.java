@@ -92,7 +92,7 @@ public class EditCustomerController implements Initializable {
             update.setString(2, lastName);
             update.setString(3, phone);
             update.setString(4, email);
-            update.setString(4, notes);
+            update.setString(5, notes);
             update.setString(6, Integer.toString(customer.getId()));
             //int rowsAffected = 
             update.executeUpdate();

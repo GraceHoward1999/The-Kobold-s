@@ -669,14 +669,19 @@ public class Controller implements Initializable {
                 String title = results.getString("TITLE");
                 int price= results.getInt("PRICE");
                 String notes = results.getString("NOTES");
+                String productId = results.getString("PRODUCTID");
+                Date dateCreated = results.getDate("DATECREATED");
                 boolean flagged = results.getBoolean("FLAGGED");
                 Date dateFlagged = results.getDate("DATE_FLAGGED");
                 int issueFlagged = results.getInt("ISSUE_FLAGGED");
                 if (dateFlagged != null) {
-                    titles.add(new Title(titleId, title, price, notes, flagged, dateFlagged.toLocalDate(), issueFlagged));
+                    if (dateCreated == null) {
+
+                    }
+                    titles.add(new Title(titleId, title, price, notes, productId, (dateCreated == null ? null : dateCreated.toLocalDate()), flagged, dateFlagged.toLocalDate(), issueFlagged));
                 }
                 else {
-                    titles.add(new Title(titleId, title, price, notes, flagged, null, issueFlagged));
+                    titles.add(new Title(titleId, title, price, notes, productId, (dateCreated == null ? null : dateCreated.toLocalDate()), flagged, null, issueFlagged));
                 }
             }
             results.close();
@@ -2332,7 +2337,7 @@ public class Controller implements Initializable {
             selectedAlert.setHeaderText("");
             selectedAlert.show();
         } else {
-            Title title = new Title(flaggedTableTitle.getTitleId(), flaggedTableTitle.getFlaggedTitleName(), flaggedTableTitle.getFlaggedPriceCents(), "");
+            Title title = new Title(flaggedTableTitle.getTitleId(), flaggedTableTitle.getFlaggedTitleName(), flaggedTableTitle.getFlaggedPriceCents(), "", "", null);
 
             LocalDate today = LocalDate.now();
             String fileName = title.getTitle() + " Requests " + today + ".xlsx";
