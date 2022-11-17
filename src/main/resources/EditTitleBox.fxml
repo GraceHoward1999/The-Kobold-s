@@ -33,12 +33,17 @@
                         <Insets right="5.0" />
                     </GridPane.margin>
                 </Label>
-                <Label text="Price" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                <Label text="Product ID" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                     <GridPane.margin>
                         <Insets right="5.0" />
                     </GridPane.margin>
                 </Label>
-                <Label text="Notes" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                <Label text="Price" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                    <GridPane.margin>
+                        <Insets right="5.0" />
+                    </GridPane.margin>
+                </Label>
+                <Label text="Notes" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
                     <GridPane.margin>
                         <Insets right="5.0" />
                     </GridPane.margin>
@@ -48,27 +53,22 @@
                         <Insets left="5.0" />
                     </GridPane.margin>
                 </TextField>
-                <TextField fx:id="updateTitlePrice" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                <TextField fx:id="updateTitleProductId" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                     <GridPane.margin>
                         <Insets left="5.0" />
                     </GridPane.margin>
                 </TextField>
-                <TextField fx:id="updateTitleNotes" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                <TextField fx:id="updateTitlePrice" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                    <GridPane.margin>
+                        <Insets left="5.0" />
+                    </GridPane.margin>
+                </TextField>
+                <TextField fx:id="updateTitleNotes" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
                     <GridPane.margin>
                         <Insets left="5.0" />
                     </GridPane.margin>
                 </TextField>
             <Text fx:id="priceValidText" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Must be a valid price (i.e. 13.99) or empty" textAlignment="CENTER" visible="false" wrappingWidth="206.32666015625" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <Label layoutX="34.0" layoutY="77.0" text="ID" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
-               <GridPane.margin>
-                  <Insets right="5.0" />
-               </GridPane.margin>
-            </Label>
-            <TextField fx:id="updateTitleNotes1" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
-               <GridPane.margin>
-                  <Insets left="5.0" />
-               </GridPane.margin>
-            </TextField>
             </children>
         </GridPane>
         <Button fx:id="updateTitleButton" mnemonicParsing="false" onAction="#updateTitle" text="Confirm" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="110.0" AnchorPane.rightAnchor="110.0" />

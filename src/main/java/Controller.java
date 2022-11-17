@@ -7,6 +7,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -57,11 +59,14 @@ public class Controller implements Initializable {
     @FXML private TableColumn<Customer, String> customerFirstNameColumn;
     @FXML private TableColumn<Customer, String> customerPhoneColumn;
     @FXML private TableColumn<Customer, String> customerEmailColumn;
+    @FXML private TableColumn<Customer, String> customerNotesColumn;
 
     @FXML private TableView<Title> titleTable;
     @FXML private TableColumn<Title, Boolean> titleFlaggedColumn;
     @FXML private TableColumn<Title, String> titleTitleColumn;
+    @FXML private TableColumn<Title, String> titleProductIdColumn;
     @FXML private TableColumn<Title, String> titlePriceColumn;
+    @FXML private TableColumn<Title, String> titleDateCreatedColumn;
     @FXML private TableColumn<Title, String> titleNotesColumn;
 
     @FXML private TableView<Order> customerOrderTable;
@@ -97,6 +102,7 @@ public class Controller implements Initializable {
     @FXML private Text customerLastNameText;
     @FXML private Text customerPhoneText;
     @FXML private Text customerEmailText;
+    @FXML private Text customerNotesText;
     @FXML private Text delinqNoticeText;
 
     @FXML private Button editCustomerButton;
@@ -106,7 +112,9 @@ public class Controller implements Initializable {
     @FXML private Button exportSingleCustomerListButton;
 
     @FXML private Text titleTitleText;
+    @FXML private Text titleProductIdText;
     @FXML private Text titlePriceText;
+    @FXML private Text titleDateCreatedText;
     @FXML private Text titleNotesText;
     @FXML private Text titleDateFlagged;
     @FXML private Text titleDateFlaggedNoticeText;
@@ -131,6 +139,58 @@ public class Controller implements Initializable {
 
     private boolean setAll;
     //#endregion
+
+    /**
+     * Runs after connection is opened to database, checks to make sure database schema is up to date
+     * @return true if tables up to date, false if error
+     */
+    private boolean alterTables() {
+        Statement s = null;
+        // make sure Customers table has notes column
+        String sql = "ALTER TABLE Customers ADD Notes VARCHAR(255)";
+        try {
+            s = conn.createStatement();
+            s.execute(sql);
+        } catch (SQLException sqlExcept) {
+            if (sqlExcept.getSQLState().equals("X0Y32")) {
+                System.out.println("Customer table already contains Notes");
+            }
+            else {
+                sqlExcept.printStackTrace();
+                return false;
+            }
+        }
+        // make sure Titles table has productId
+        try {
+            sql = "ALTER TABLE Titles ADD ProductId VARCHAR(255)";
+            s = conn.createStatement();
+            s.execute(sql);
+        } catch (SQLException sqlExcept) {
+            if (sqlExcept.getSQLState().equals("X0Y32")) {
+                System.out.println("Titles table already contains ProductId");
+            }
+            else {
+                sqlExcept.printStackTrace();
+                return false;
+            }
+        }
+        // make sure Titles table contains date created
+        try {
+            sql = "ALTER TABLE Titles ADD DateCreated DATE";
+            s = conn.createStatement();
+            s.execute(sql);
+        } catch (SQLException sqlExcept) {
+            if (sqlExcept.getSQLState().equals("X0Y32")) {
+                System.out.println("Titles table already contains DateCreated");
+            }
+            else {
+                sqlExcept.printStackTrace();
+                return false;
+            }
+        }
+        System.out.println("DATABASE SCHEMA UP TO-DATE");
+        return true;
+    }
 
 /*######################################################################/
 ////////////////////////// Getters and Setters //////////////////////////
@@ -201,7 +261,8 @@ public class Controller implements Initializable {
                 String lastName = results.getString(3);
                 String phone = results.getString(4);
                 String email = results.getString(5);
-                customers.add(new Customer(customerId, firstName, lastName, phone, email));
+                String notes = results.getString(6);
+                customers.add(new Customer(customerId, firstName, lastName, phone, email, notes));
             }
             results.close();
             s.close();
@@ -613,14 +674,19 @@ public class Controller implements Initializable {
                 String title = results.getString("TITLE");
                 int price= results.getInt("PRICE");
                 String notes = results.getString("NOTES");
+                String productId = results.getString("PRODUCTID");
+                Date dateCreated = results.getDate("DATECREATED");
                 boolean flagged = results.getBoolean("FLAGGED");
                 Date dateFlagged = results.getDate("DATE_FLAGGED");
                 int issueFlagged = results.getInt("ISSUE_FLAGGED");
                 if (dateFlagged != null) {
-                    titles.add(new Title(titleId, title, price, notes, flagged, dateFlagged.toLocalDate(), issueFlagged));
+                    if (dateCreated == null) {
+
+                    }
+                    titles.add(new Title(titleId, title, price, notes, productId, (dateCreated == null ? null : dateCreated.toLocalDate()), flagged, dateFlagged.toLocalDate(), issueFlagged));
                 }
                 else {
-                    titles.add(new Title(titleId, title, price, notes, flagged, null, issueFlagged));
+                    titles.add(new Title(titleId, title, price, notes, productId, (dateCreated == null ? null : dateCreated.toLocalDate()), flagged, null, issueFlagged));
                 }
             }
             results.close();
@@ -630,6 +696,7 @@ public class Controller implements Initializable {
         {
             sqlExcept.printStackTrace();
         }
+        //TODO: adjust unsaved flags alert
         for (Title t : titles) {
             t.flaggedProperty().addListener((obs, wasFlagged, isFlagged) -> {
                 if (isFlagged) {
@@ -725,11 +792,15 @@ public class Controller implements Initializable {
 
         createConnection();
 
+        // alter tables for notes
+        alterTables();
+
         //Populate columns for Customer Table
         customerLastNameColumn.setCellValueFactory(new PropertyValueFactory<>("lastName"));
         customerFirstNameColumn.setCellValueFactory(new PropertyValueFactory<>("firstName"));
         customerPhoneColumn.setCellValueFactory(new PropertyValueFactory<>("phone"));
         customerEmailColumn.setCellValueFactory(new PropertyValueFactory<>("email"));
+        customerNotesColumn.setCellValueFactory(new PropertyValueFactory<>("notes"));
         customerTable.getItems().setAll(this.getCustomers());
         customerTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
@@ -756,13 +827,10 @@ public class Controller implements Initializable {
                 if (o1.isEmpty()) return -1;
                 if (o2.isEmpty()) return 1;
                 // empty strings avoided, compare doubles
-                Double o1d = Double.valueOf(o1);
-                Double o2d = Double.valueOf(o2);
-                if (o1d < o2d) return -1;
-                if (o1d > o2d) return 1;
-                return 0;
+                return Double.valueOf(o1).compareTo(Double.valueOf(o2));
             }
         };
+
         titlePriceColumn.setComparator(Comparator.nullsFirst(priceComparator));
         flaggedPriceColumn.setComparator(Comparator.nullsFirst(priceComparator));
 
@@ -770,6 +838,7 @@ public class Controller implements Initializable {
         titleFlaggedColumn.setCellValueFactory(c -> c.getValue().flaggedProperty());
         titleFlaggedColumn.setCellFactory(tc -> new CheckBoxTableCell<>());
         titleTitleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+        titleProductIdColumn.setCellValueFactory(new PropertyValueFactory<>("productId"));
         titlePriceColumn.setCellValueFactory(new PropertyValueFactory<>("priceDollars"));
         titlePriceColumn.setCellValueFactory(cell -> {
             if (cell.getValue().getPrice() > 0) {
@@ -778,6 +847,7 @@ public class Controller implements Initializable {
                 return new SimpleStringProperty("");
             }
         });
+        titleDateCreatedColumn.setCellValueFactory(new PropertyValueFactory<>("dateCreated"));
         titleNotesColumn.setCellValueFactory(new PropertyValueFactory<>("notes"));
         titleTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         titleTable.getItems().setAll(this.getTitles());
@@ -850,6 +920,7 @@ public class Controller implements Initializable {
                     customerLastNameText.setText(newSelection.getLastName());
                     customerPhoneText.setText(newSelection.getPhone());
                     customerEmailText.setText(newSelection.getEmail());
+                    customerNotesText.setText(newSelection.getNotes());
 
                     if(newSelection.getDelinquent())
                     {
@@ -872,6 +943,7 @@ public class Controller implements Initializable {
                 customerLastNameText.setText("-----");
                 customerPhoneText.setText("-----");
                 customerEmailText.setText("-----");
+                customerNotesText.setText("-----");
 
                 newOrderButton.setDisable(true);
                 editOrderButton.setDisable(true);
@@ -912,12 +984,20 @@ public class Controller implements Initializable {
                 if (selectedTitles.size() == 1)
                 {
                     titleTitleText.setText(newSelection.getTitle());
+                    titleProductIdText.setText(newSelection.getProductId());
 
                     if (newSelection.getPrice() > 0) {
                         titlePriceText.setText(newSelection.getPriceDollars());
                     } 
                     else {
                         titlePriceText.setText("");
+                    }
+
+                    if (newSelection.getDateCreated() != null) {
+                        titleDateCreatedText.setText(newSelection.getDateCreated().toString());
+                    }
+                    else {
+                        titleDateCreatedText.setText("Unknown");
                     }
 
                     titleNotesText.setText(newSelection.getNotes());
@@ -948,7 +1028,9 @@ public class Controller implements Initializable {
                 else if (newSelection != null)
                 {
                     titleTitleText.setText("Multiple Titles");
+                    titleProductIdText.setText("-----");
                     titlePriceText.setText("-----");
+                    titleDateCreatedText.setText("-----");
                     titleNotesText.setText("-----");
                     titleDateFlagged.setText("-----");
                     titleNumberRequestsText.setText("");
@@ -973,6 +1055,22 @@ public class Controller implements Initializable {
                 }
             }
         });
+
+        EventHandler<KeyEvent> eventHandler = new EventHandler<KeyEvent>() {
+            @Override
+            public void handle(KeyEvent e)
+            {
+                if(e.getCode() == KeyCode.F)
+                {
+                    titleTable.getSelectionModel().getSelectedItem().setFlagged(!titleTable.getSelectionModel().getSelectedItem().isFlagged());
+                }
+            }
+        };
+
+
+        //TODO: figure how to access current scene to add key listner
+        //Scene scene = null;//??
+        //scene.addEventFilter(KeyEvent.KEY_TYPED, eventHandler);
 
         //add listener for selected flagged title
         flaggedTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -1145,6 +1243,7 @@ public class Controller implements Initializable {
             customerLastNameText.setText("");
             customerPhoneText.setText("");
             customerEmailText.setText("");
+            customerNotesText.setText("");
 
             titleTable.getItems().setAll(getTitles());
             if (customerTable.getSelectionModel().getSelectedItem() != null) {
@@ -1359,6 +1458,7 @@ public class Controller implements Initializable {
                     customerLastNameText.setText("");
                     customerPhoneText.setText("");
                     customerEmailText.setText("");
+                    customerNotesText.setText("");
                     this.loadReportsTab();
                     getDatabaseInfo();
                 });
@@ -1756,6 +1856,10 @@ public class Controller implements Initializable {
             cell.setCellStyle(headStyle);
             cell.setCellValue("Email");
 
+            cell = row.createCell(3);
+            cell.setCellStyle(headStyle);
+            cell.setCellValue("Notes");
+
             ResultSet result;
             Statement s = null;
             try
@@ -1778,6 +1882,8 @@ public class Controller implements Initializable {
                     cell.setCellValue(result.getString("PHONE"));
                     cell = row.createCell(2);
                     cell.setCellValue(result.getString("EMAIL"));
+                    cell = row.createCell(3);
+                    cell.setCellValue(result.getString("NOTES"));
                     i++;
                 }
                 result.close();
@@ -2251,7 +2357,7 @@ public class Controller implements Initializable {
             selectedAlert.setHeaderText("");
             selectedAlert.show();
         } else {
-            Title title = new Title(flaggedTableTitle.getTitleId(), flaggedTableTitle.getFlaggedTitleName(), flaggedTableTitle.getFlaggedPriceCents(), "");
+            Title title = new Title(flaggedTableTitle.getTitleId(), flaggedTableTitle.getFlaggedTitleName(), flaggedTableTitle.getFlaggedPriceCents(), "", "", null);
 
             LocalDate today = LocalDate.now();
             String fileName = title.getTitle() + " Requests " + today + ".xlsx";
@@ -2511,12 +2617,6 @@ public class Controller implements Initializable {
 
             TextField search = (TextField) scene.lookup("#TitleSearch");
             search.requestFocus();
-        }
-        else if (event.isControlDown() && event.getCode() == KeyCode.M)
-        {
-            Scene scene = titleTable.getScene();
-
-            titleTable.getSelectionModel().selectedItemProperty().getValue().setFlagged(!titleTable.getSelectionModel().selectedItemProperty().getValue().isFlagged());
         }
     }
 
@@ -2829,6 +2929,7 @@ public class Controller implements Initializable {
     }
 
     /**
+<<<<<<< HEAD
      * Adds all orders for a given set of Customers to the Orders table.
      * @param customer The Customer to update the Order Table for
      */
@@ -2965,5 +3066,16 @@ public class Controller implements Initializable {
     }
 
     //#endregion
+
+
+    /*
+     * Simplification method to flag a title using a hotkey.
+     */
+    public void flagKeyShortcut()
+    {
+        titleTable.getSelectionModel().getSelectedItem().setFlagged(true);
+        //https://stackoverflow.com/questions/48616490/how-to-add-a-javafx-shortcut-key-combinations-for-buttons
+        //https://stackoverflow.com/questions/25397742/javafx-keyboard-event-shortcut-key
+    }
 
 }

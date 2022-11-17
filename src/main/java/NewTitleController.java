@@ -24,6 +24,7 @@ public class NewTitleController{
     @FXML private TextField newTitleTitle;
     @FXML private TextField newTitlePrice;
     @FXML private TextField newTitleNotes;
+    @FXML private TextField newTitleProductId;
 
     @FXML private Text priceValidText;
 
@@ -36,13 +37,15 @@ public class NewTitleController{
     void addTitle(ActionEvent event) {
         String title = newTitleTitle.getText();
         String notes = newTitleNotes.getText();
+        String productId = newTitleProductId.getText();
+        Date dateCreated = new Date(System.currentTimeMillis());
 
         if(isValidPrice(newTitlePrice.getText())) {
             String price = newTitlePrice.getText();
 
             Statement get = null;
             PreparedStatement insert = null;
-            String sql = "INSERT INTO Titles (TITLE, PRICE, NOTES) VALUES (?, ?, ?)";
+            String sql = "INSERT INTO Titles (TITLE, PRICE, NOTES, PRODUCTID, DATECREATED) VALUES (?, ?, ?, ?, ?)";
 
             try {
                 get = conn.createStatement();
@@ -70,11 +73,13 @@ public class NewTitleController{
                 insert.setString(1, title);
                 insert.setObject(2, dollarsToCents(price), Types.INTEGER);
                 insert.setString(3, notes);
+                insert.setString(4, productId);
+                insert.setDate(5, dateCreated);
                 rowsAffected = insert.executeUpdate();
 
                 insert.close();
 
-                Log.LogEvent("Edited Title", "Edited Title - Title: " + title + " - Price: " + price + " - Notes: " + notes);
+                Log.LogEvent("Edited Title", "Edited Title - Title: " + title + " - Price: " + price + " - Notes: " + notes + " - Product ID: " + productId + " - Date Created: " + dateCreated);
             } catch (SQLException sqlExcept) {
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Database error. This is either a bug, or you messed with the DragonSlayer/derbyDB folder.", ButtonType.OK);
                 alert.setTitle("Database Error");

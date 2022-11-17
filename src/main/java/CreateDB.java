@@ -44,6 +44,7 @@ public class CreateDB {
                         LastName varchar(255),
                         Phone varchar(255),
                         Email varchar(255),
+                        Notes varchar(255),
                         PRIMARY KEY (CustomerID)
                     )""");
             System.out.println("Created table Customer");
@@ -57,6 +58,8 @@ public class CreateDB {
                         FLAGGED boolean default false not null,
                         DATE_FLAGGED date,
                         ISSUE_FLAGGED int,
+                        ProductId varchar(255),
+                        DateCreated date(0),
                         PRIMARY KEY (TitleID)
                     )""");
             System.out.println("Created table Title");

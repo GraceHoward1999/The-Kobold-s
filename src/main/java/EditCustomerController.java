@@ -25,6 +25,7 @@ public class EditCustomerController implements Initializable {
     @FXML private TextField updateCustomerFirstName;
     @FXML private TextField updateCustomerLastName;
     @FXML private TextField updateCustomerPhone;
+    @FXML private TextField updateCustomerNotes;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -46,6 +47,7 @@ public class EditCustomerController implements Initializable {
         String lastName = updateCustomerLastName.getText();
         String phone = updateCustomerPhone.getText();
         String email = updateCustomerEmail.getText();
+        String notes = updateCustomerNotes.getText();
         if (phone.length() > 0 && phone.length() < 12) {
             Alert alert = new Alert(Alert.AlertType.WARNING, "Phone number must be 10 digits", ButtonType.OK);
             alert.setTitle("Invalid Phone Number");
@@ -58,7 +60,7 @@ public class EditCustomerController implements Initializable {
         PreparedStatement update = null;
         String sql = """
         UPDATE Customers
-        SET firstname = ?, lastname = ?, phone = ?, email= ?
+        SET firstname = ?, lastname = ?, phone = ?, email= ?, notes = ?
         WHERE CUSTOMERID = ?
         """;
 
@@ -74,14 +76,11 @@ public class EditCustomerController implements Initializable {
                     String testPhone = result.getString("PHONE");
                     String testEmail = result.getString("EMAIL");
                     if (testPhone.equals(phone) && testEmail.equals(email)) {
-                        if(this.customer.getId() != result.getInt("CustomerID"))
-                        {
-                            Alert alert = new Alert(Alert.AlertType.WARNING, "Cannot create duplicate Customers. If two Customers have the exact same name, make sure they have different phones or emails.", ButtonType.OK);
-                            alert.setTitle("Duplicate Customer Entry");
-                            alert.setHeaderText("");
-                            alert.show();
-                            return;
-                        }
+                        /**Alert alert = new Alert(Alert.AlertType.WARNING, "Cannot create duplicate Customers. If two Customers have the exact same name, make sure they have different phones or emails.", ButtonType.OK);
+                        alert.setTitle("Duplicate Customer Entry");
+                        alert.setHeaderText("");
+                        alert.show();
+                        return;*/
                         update.close();
                         window.close();
                     }
@@ -93,13 +92,14 @@ public class EditCustomerController implements Initializable {
             update.setString(2, lastName);
             update.setString(3, phone);
             update.setString(4, email);
-            update.setString(5, Integer.toString(customer.getId()));
+            update.setString(5, notes);
+            update.setString(6, Integer.toString(customer.getId()));
             //int rowsAffected = 
             update.executeUpdate();
 
             update.close();
 
-            Log.LogEvent("Customer Edited", "Edited Customer - " + firstName + " " + lastName + " - phone: " + phone + " - email: " + email);
+            Log.LogEvent("Customer Edited", "Edited Customer - " + firstName + " " + lastName + " - phone: " + phone + " - email: " + email + " - notes: " + notes);
         }
         catch (SQLException sqlExcept)
         {
@@ -134,5 +134,6 @@ public class EditCustomerController implements Initializable {
             updateCustomerPhone.setText(phone);
         }
         updateCustomerEmail.setText(customer.getEmail());
+        updateCustomerNotes.setText(customer.getNotes());
     }
 }

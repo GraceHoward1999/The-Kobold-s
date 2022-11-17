@@ -25,6 +25,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
+            <!-- labels -->
             <Label text="First Name:" GridPane.halignment="RIGHT" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets right="5.0" />
@@ -45,6 +46,12 @@
                   <Insets right="5.0" />
                </GridPane.margin>
             </Label>
+            <Label layoutX="83.0" layoutY="128.0" text="Notes:" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+               <GridPane.margin>
+                  <Insets right="5.0" />
+               </GridPane.margin>
+            </Label>
+            <!-- Text fields -->
             <TextField fx:id="newCustomerFirstName" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets left="5.0" />
@@ -65,12 +72,7 @@
                   <Insets left="5.0" />
                </GridPane.margin>
             </TextField>
-            <Label layoutX="83.0" layoutY="128.0" text="Notes:" GridPane.halignment="RIGHT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
-               <GridPane.margin>
-                  <Insets right="5.0" />
-               </GridPane.margin>
-            </Label>
-            <TextField fx:id="newCustomerEmail1" layoutX="173.0" layoutY="123.0" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+            <TextField fx:id="newCustomerNotes" layoutX="200.0" layoutY="200.0" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="4" GridPane.valignment="CENTER">
                <GridPane.margin>
                   <Insets left="5.0" />
                </GridPane.margin>
