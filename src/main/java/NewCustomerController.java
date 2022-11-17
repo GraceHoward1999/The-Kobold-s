@@ -89,11 +89,12 @@ public class NewCustomerController implements Initializable {
             insert.setString(3, phone);
             insert.setString(4, email);
             insert.setString(5, notes);
-            int rowsAffected = insert.executeUpdate();
+            //int rowsAffected = 
+            insert.executeUpdate();
 
             insert.close();
 
-            Log.LogEvent("User Added", "Added User - " + firstName + " " + lastName + " - phone: " + phone + " - email: " + email);
+            Log.LogEvent("User Added", "Added User - " + firstName + " " + lastName + " - phone: " + phone + " - email: " + email + " - notes:" + notes);
         }
         catch (SQLException sqlExcept)
         {

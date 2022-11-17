@@ -134,6 +134,11 @@ public class Controller implements Initializable {
 
     private boolean setAll;
     //#endregion
+
+    /**
+     * Runs after connection is opened to database, checks to make sure database schema is up to date
+     * @return true if tables up to date, false if error
+     */
     private boolean alterTables() {
         Statement s = null;
         // make sure Customers table has notes column

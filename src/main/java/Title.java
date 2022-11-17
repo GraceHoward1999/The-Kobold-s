@@ -24,8 +24,10 @@ public class Title {
      * @param title The title of the Title
      * @param price The price of the Title
      * @param notes The notes of the Title
+     * @param productId The Dragon's Lair productId of the Title (NOT the TABLE ID)
+     * @param dateCreated The date that this Title entry was created
      */
-    public Title(int id, String title, int price, String notes) {
+    public Title(int id, String title, int price, String notes, String productId) {
         this.id = id;
         this.title = title;
         this.price = price;
