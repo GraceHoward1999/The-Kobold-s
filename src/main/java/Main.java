@@ -55,7 +55,7 @@ public class Main extends Application {
 
         window.setScene(scene);
         window.setMinHeight(700);
-        window.setMinWidth(1000);
+        window.setMinWidth(1200);
         window.show();
     }
 }

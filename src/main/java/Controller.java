@@ -64,7 +64,9 @@ public class Controller implements Initializable {
     @FXML private TableView<Title> titleTable;
     @FXML private TableColumn<Title, Boolean> titleFlaggedColumn;
     @FXML private TableColumn<Title, String> titleTitleColumn;
+    @FXML private TableColumn<Title, String> titleProductIdColumn;
     @FXML private TableColumn<Title, String> titlePriceColumn;
+    @FXML private TableColumn<Title, String> titleDateCreatedColumn;
     @FXML private TableColumn<Title, String> titleNotesColumn;
 
     @FXML private TableView<Order> customerOrderTable;
@@ -109,7 +111,9 @@ public class Controller implements Initializable {
     @FXML private Button exportSingleCustomerListButton;
 
     @FXML private Text titleTitleText;
+    @FXML private Text titleProductIdText;
     @FXML private Text titlePriceText;
+    @FXML private Text titleDateCreatedText;
     @FXML private Text titleNotesText;
     @FXML private Text titleDateFlagged;
     @FXML private Text titleDateFlaggedNoticeText;
@@ -822,13 +826,10 @@ public class Controller implements Initializable {
                 if (o1.isEmpty()) return -1;
                 if (o2.isEmpty()) return 1;
                 // empty strings avoided, compare doubles
-                Double o1d = Double.valueOf(o1);
-                Double o2d = Double.valueOf(o2);
-                if (o1d < o2d) return -1;
-                if (o1d > o2d) return 1;
-                return 0;
+                return Double.valueOf(o1).compareTo(Double.valueOf(o2));
             }
         };
+
         titlePriceColumn.setComparator(Comparator.nullsFirst(priceComparator));
         flaggedPriceColumn.setComparator(Comparator.nullsFirst(priceComparator));
 
@@ -836,6 +837,7 @@ public class Controller implements Initializable {
         titleFlaggedColumn.setCellValueFactory(c -> c.getValue().flaggedProperty());
         titleFlaggedColumn.setCellFactory(tc -> new CheckBoxTableCell<>());
         titleTitleColumn.setCellValueFactory(new PropertyValueFactory<>("title"));
+        titleProductIdColumn.setCellValueFactory(new PropertyValueFactory<>("productId"));
         titlePriceColumn.setCellValueFactory(new PropertyValueFactory<>("priceDollars"));
         titlePriceColumn.setCellValueFactory(cell -> {
             if (cell.getValue().getPrice() > 0) {
@@ -844,6 +846,7 @@ public class Controller implements Initializable {
                 return new SimpleStringProperty("");
             }
         });
+        titleDateCreatedColumn.setCellValueFactory(new PropertyValueFactory<>("dateCreated"));
         titleNotesColumn.setCellValueFactory(new PropertyValueFactory<>("notes"));
         titleTable.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         titleTable.getItems().setAll(this.getTitles());
@@ -974,12 +977,20 @@ public class Controller implements Initializable {
                 if (selectedTitles.size() == 1)
                 {
                     titleTitleText.setText(newSelection.getTitle());
+                    titleProductIdText.setText(newSelection.getProductId());
 
                     if (newSelection.getPrice() > 0) {
                         titlePriceText.setText(newSelection.getPriceDollars());
                     } 
                     else {
                         titlePriceText.setText("");
+                    }
+
+                    if (newSelection.getDateCreated() != null) {
+                        titleDateCreatedText.setText(newSelection.getDateCreated().toString());
+                    }
+                    else {
+                        titleDateCreatedText.setText("Unknown");
                     }
 
                     titleNotesText.setText(newSelection.getNotes());
@@ -1010,7 +1021,9 @@ public class Controller implements Initializable {
                 else if (newSelection != null)
                 {
                     titleTitleText.setText("Multiple Titles");
+                    titleProductIdText.setText("-----");
                     titlePriceText.setText("-----");
+                    titleDateCreatedText.setText("-----");
                     titleNotesText.setText("-----");
                     titleDateFlagged.setText("-----");
                     titleNumberRequestsText.setText("");
