@@ -31,12 +31,17 @@
                         <Insets right="5.0" />
                     </GridPane.margin>
                 </Label>
-                <Label text="Price" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                <Label text="Product ID" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                    <GridPane.margin>
+                       <Insets right="5.0" />
+                    </GridPane.margin>
+                 </Label>
+                <Label text="Price" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                     <GridPane.margin>
                         <Insets right="5.0" />
                     </GridPane.margin>
                 </Label>
-                <Label text="Notes" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                <Label text="Notes" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
                     <GridPane.margin>
                         <Insets right="5.0" />
                     </GridPane.margin>
@@ -46,27 +51,22 @@
                         <Insets left="5.0" />
                     </GridPane.margin>
                 </TextField>
-                <TextField fx:id="newTitlePrice" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                <TextField fx:id="newTitleProductId" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="1" GridPane.valignment="CENTER">
                     <GridPane.margin>
                         <Insets left="5.0" />
                     </GridPane.margin>
                 </TextField>
-                <TextField fx:id="newTitleNotes" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                <TextField fx:id="newTitlePrice" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" GridPane.valignment="CENTER">
                     <GridPane.margin>
                         <Insets left="5.0" />
                     </GridPane.margin>
                 </TextField>
-            <Text fx:id="priceValidText" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Must be a valid price (i.e. 13.99) or empty" textAlignment="CENTER" visible="false" wrappingWidth="206.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <TextField fx:id="newTitleNotes1" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
-               <GridPane.margin>
-                  <Insets left="5.0" />
-               </GridPane.margin>
-            </TextField>
-            <Label text="ID" GridPane.halignment="RIGHT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
-               <GridPane.margin>
-                  <Insets right="5.0" />
-               </GridPane.margin>
-            </Label>
+                <TextField fx:id="newTitleNotes" maxWidth="200.0" minWidth="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                    <GridPane.margin>
+                        <Insets left="5.0" />
+                    </GridPane.margin>
+                </TextField>
+                <Text fx:id="priceValidText" fill="RED" strokeType="OUTSIDE" strokeWidth="0.0" text="Must be a valid price (i.e. 13.99) or empty" textAlignment="CENTER" visible="false" wrappingWidth="206.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
             </children>
         </GridPane>
         <Button fx:id="addTitleButton" mnemonicParsing="false" onAction="#addTitle" text="Add Title" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="120.0" AnchorPane.rightAnchor="120.0" />

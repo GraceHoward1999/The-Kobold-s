@@ -135,8 +135,10 @@
                   <TableView fx:id="titleTable" editable="true" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="500.0" AnchorPane.topAnchor="80.0">
                     <columns>
                         <TableColumn fx:id="titleFlaggedColumn" prefWidth="51.0" text="Flagged" />
-                      <TableColumn fx:id="titleTitleColumn" editable="false" prefWidth="239.0" text="Title" />
-                      <TableColumn fx:id="titlePriceColumn" editable="false" prefWidth="100.0" text="Price" />
+                        <TableColumn fx:id="titleTitleColumn" editable="false" prefWidth="239.0" text="Title" />
+                        <TableColumn fx:id="titleProductIdColumn" editable="false" prefWidth="100.0" text="Product ID"/>
+                        <TableColumn fx:id="titlePriceColumn" editable="false" prefWidth="100.0" text="Price" />
+                        <TableColumn fx:id="titleDateCreatedColumn" editable="false" prefWidth="100.0" text="Date Created" />
                         <TableColumn fx:id="titleNotesColumn" editable="false" prefWidth="100.0" text="Notes" />
                     </columns>
                   </TableView>
@@ -158,11 +160,15 @@
                            <children>
                               <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Title:" underline="true" GridPane.rowIndex="1" />
                               <Text fx:id="titleFlagNoticeText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Price:" underline="true" GridPane.rowIndex="3" />
-                              <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Special Order Notes:" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Product ID:" underline="true" GridPane.rowIndex="3" />
+                              <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Price:" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                              <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Date Created:" underline="true" GridPane.rowIndex="5" />
+                              <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Special Order Notes:" underline="true" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                               <Text fx:id="titleTitleText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="2" />
-                              <Text fx:id="titlePriceText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="4" />
-                              <Text fx:id="titleNotesText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Text fx:id="titleProductIdText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="4" />
+                              <Text fx:id="titlePriceText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                              <Text fx:id="titleDateCreatedText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.rowIndex="6" />
+                              <Text fx:id="titleNotesText" strokeType="OUTSIDE" strokeWidth="0.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                               <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Title Details">
                                  <font>
                                     <Font name="SansSerif Bold Italic" size="14.0" />

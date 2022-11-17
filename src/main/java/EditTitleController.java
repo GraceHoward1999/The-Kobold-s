@@ -26,6 +26,7 @@ public class EditTitleController{
     @FXML private TextField updateTitleTitle;
     @FXML private TextField updateTitlePrice;
     @FXML private TextField updateTitleNotes;
+    @FXML private TextField updateTitleProductId;
 
     @FXML private Text priceValidText;
 
@@ -37,6 +38,7 @@ public class EditTitleController{
     void updateTitle(ActionEvent event) {
         String titleText = updateTitleTitle.getText();
         String notes = updateTitleNotes.getText();
+        String productId = updateTitleProductId.getText();
 
         if(isValidPrice(updateTitlePrice.getText())) {
             String price = updateTitlePrice.getText();
@@ -45,7 +47,7 @@ public class EditTitleController{
             PreparedStatement update = null;
             String sql = """
             UPDATE TITLES
-            SET TITLE = ?, PRICE = ?, NOTES = ?
+            SET TITLE = ?, PRICE = ?, NOTES = ?, PRODUCTID = ?
             WHERE TITLEID = ?
             """;
 
@@ -55,12 +57,13 @@ public class EditTitleController{
                 update.setString(1, titleText);
                 update.setObject(2, dollarsToCents(price), Types.INTEGER);
                 update.setString(3, notes);
-                update.setString(4, Integer.toString(title.getId()));
+                update.setString(4, productId);
+                update.setString(5, Integer.toString(title.getId()));
                 rowsAffected = update.executeUpdate();
 
                 update.close();
 
-                Log.LogEvent("Edited Title", "Edited Title - Title: " + titleText + " - Price: " + price + " - Notes: " + notes + " - TitleID: " + title.getId());
+                Log.LogEvent("Edited Title", "Edited Title - Title: " + titleText + " - Price: " + price + " - Notes: " + notes + " - Product ID: " + productId + " - TitleID: " + title.getId());
             }
             catch (SQLException sqlExcept)
             {
@@ -93,6 +96,7 @@ public class EditTitleController{
             updateTitlePrice.setText(title.getPriceDollars());
         }
         updateTitleNotes.setText(title.getNotes());
+        updateTitleProductId.setText(title.getProductId());
     }
 
     /**
