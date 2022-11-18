@@ -104,3 +104,4 @@ target/test-classes
 *.DS_Store
 *.class
 derby.log
+*.class
