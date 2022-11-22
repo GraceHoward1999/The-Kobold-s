@@ -1021,12 +1021,15 @@ public class Controller implements Initializable {
 
                     if (newSelection.getDateFlagged() != null) {
                         titleDateFlagged.setText(newSelection.getDateFlagged().toString());
-                        if (newSelection.getDateFlagged().isBefore(sixMonthsAgo)) {
+                        if (newSelection.getDateFlagged().isBefore(sixMonthsAgo) && newSelection.getDateCreated() == null && newSelection.getDateCreated().isBefore(sixMonthsAgo)) {
                             titleDateFlaggedNoticeText.setVisible(true);
                         }
                         else {
                             titleDateFlaggedNoticeText.setVisible(false);
                         }
+                    }
+                    else if (newSelection.getDateCreated() != null && newSelection.getDateCreated().isAfter(sixMonthsAgo)) {
+                        titleDateFlaggedNoticeText.setVisible(false);
                     }
                     else {
                         titleDateFlagged.setText("Never");
@@ -1054,7 +1057,7 @@ public class Controller implements Initializable {
                     LocalDate sixMonthsAgo = LocalDate.now().minusMonths(6);
                     for (Title title: selectedTitles)
                     {
-                        if (title.getDateFlagged() == null || title.getDateFlagged().isBefore(sixMonthsAgo)) {
+                        if ((title.getDateCreated() == null || title.getDateCreated().isBefore(sixMonthsAgo)) && (title.getDateFlagged() == null || title.getDateFlagged().isBefore(sixMonthsAgo))) {
                             oldTitleFlag = true;
                             break;
                         }
