@@ -2630,7 +2630,7 @@ public class Controller implements Initializable {
     }
 
     @FXML 
-    void handleTitleSearchKeyboardInput(KeyEvent event)
+    void handleTitleSearching(KeyEvent event)
     {
         Scene scene = titleTable.getScene();
         String search = ((TextField)scene.lookup("#TitleSearch")).getText().toLowerCase();
@@ -2663,7 +2663,7 @@ public class Controller implements Initializable {
     }
 
     @FXML 
-    void handleCustomerSearchKeyboardInput(KeyEvent event)
+    void handleCustomerSearching(KeyEvent event)
     {
         Scene scene = customerTable.getScene();
         String search = ((TextField)scene.lookup("#CustomerSearch")).getText().toLowerCase();

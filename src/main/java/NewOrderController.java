@@ -118,7 +118,7 @@ public class NewOrderController implements Initializable{
                 }
                 s.close();
 
-                Log.LogEvent("New Order", "Added order - CustomerID: " + customerId + " - Title: " + FxUtilTest.getComboBoxValue(setTitle) + " - Quantity: " + quantity + " - Issue: " + Integer.valueOf(issue));
+                Log.LogEvent("New Order", "Added order - CustomerID: " + customerId + " - Title: " + FxUtilTest.getComboBoxValue(setTitle) + " - Quantity: " + quantity + " - Issue: " + (issue == null ? null : Integer.valueOf(issue)));
             } catch (SQLException sqlExcept) {
                 sqlExcept.printStackTrace();
             }

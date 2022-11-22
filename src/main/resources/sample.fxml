@@ -46,6 +46,7 @@
                             <RowConstraints maxHeight="67.0" minHeight="33.0" prefHeight="33.0" vgrow="SOMETIMES" />
                            <RowConstraints maxHeight="33.0" minHeight="10.0" prefHeight="29.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="200.0" minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                              <RowConstraints />
                           </rowConstraints>
                            <children>
                               <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="First Name:" underline="true" GridPane.rowIndex="1" />
@@ -114,7 +115,7 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <TextField fx:id="CustomerSearch" layoutX="10.0" layoutY="44.0" onKeyReleased="#handleCustomerKeyboardInput" prefHeight="26.0" prefWidth="490.0" promptText="Search..." />
+                  <TextField fx:id="CustomerSearch" layoutX="10.0" layoutY="44.0" onKeyReleased="#handleCustomerSearching" prefHeight="26.0" prefWidth="490.0" promptText="Search..." />
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" onMouseClicked="#passCustomerKeyboardFocus" prefHeight="30.0" prefWidth="490.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <children>
                         <Button fx:id="addCustomerButtonMain" mnemonicParsing="false" onAction="#handleAddCustomer" text="Add New Customer" />
@@ -149,7 +150,7 @@
                     <columns>
                         <TableColumn fx:id="titleFlaggedColumn" prefWidth="51.0" text="Flagged" />
                         <TableColumn fx:id="titleTitleColumn" editable="false" prefWidth="239.0" text="Title" />
-                        <TableColumn fx:id="titleProductIdColumn" editable="false" prefWidth="100.0" text="Product ID"/>
+                        <TableColumn fx:id="titleProductIdColumn" editable="false" prefWidth="100.0" text="Product ID" />
                         <TableColumn fx:id="titlePriceColumn" editable="false" prefWidth="100.0" text="Price" />
                         <TableColumn fx:id="titleDateCreatedColumn" editable="false" prefWidth="100.0" text="Date Created" />
                         <TableColumn fx:id="titleNotesColumn" editable="false" prefWidth="100.0" text="Notes" />
@@ -169,6 +170,8 @@
                               <RowConstraints maxHeight="134.0" minHeight="10.0" prefHeight="29.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="67.0" minHeight="33.0" prefHeight="33.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="200.0" minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                              <RowConstraints />
+                              <RowConstraints />
                            </rowConstraints>
                            <children>
                               <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Title:" underline="true" GridPane.rowIndex="1" />
@@ -218,7 +221,7 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <TextField fx:id="TitleSearch" layoutX="10.0" layoutY="44.0" onKeyReleased="#handleTitleKeyboardInput" prefHeight="26.0" prefWidth="490.0" promptText="Search..." />
+                  <TextField fx:id="TitleSearch" layoutX="10.0" layoutY="44.0" onKeyReleased="#handleTitleSearching" prefHeight="26.0" prefWidth="490.0" promptText="Search..." />
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" nodeOrientation="LEFT_TO_RIGHT" onMouseClicked="#passTitleKeyboardFocus" prefHeight="30.0" prefWidth="490.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <children>
                         <Button fx:id="addTitleButtonMain" mnemonicParsing="false" onAction="#handleAddTitle" prefWidth="94.0" text="Add New Title" />
