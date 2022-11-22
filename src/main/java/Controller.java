@@ -2716,11 +2716,20 @@ public class Controller implements Initializable {
         {
             AlertBox.display("You cannot mark the void delinquent.", "Please select a customer.");
         }
+        boolean currentStatus = customerTable.getSelectionModel().getSelectedItem().getDelinquent();
         Integer customerID = customerTable.getSelectionModel().getSelectedItem().getId();
         PreparedStatement s = null;
-        String sql = """
+        String sql;
+        if (currentStatus == false)
+            sql = """
             UPDATE Customers
             SET DELINQUENT = TRUE
+            WHERE CUSTOMERID = ?
+            """;
+        else 
+            sql = """
+            UPDATE Customers
+            SET DELINQUENT = FALSE
             WHERE CUSTOMERID = ?
             """;
         try {

@@ -136,9 +136,4 @@ public class EditCustomerController implements Initializable {
         updateCustomerEmail.setText(customer.getEmail());
         updateCustomerNotes.setText(customer.getNotes());
     }
-
-    public void delinquize(Customer customer)
-    {
-        
-    }
 }
