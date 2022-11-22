@@ -1,4 +1,4 @@
-import org.apache.poi.ss.formula.functions.T;
+//import org.apache.poi.ss.formula.functions.T;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -39,10 +39,10 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.Hashtable;
-import java.util.List;
-import java.util.Observable;
+//import java.util.List;
+//import java.util.Observable;
 import java.util.ResourceBundle;
-import java.util.Set;
+//import java.util.Set;
 
 public class Controller implements Initializable {
 
@@ -75,10 +75,10 @@ public class Controller implements Initializable {
     @FXML private TableColumn<Order, String> customerOrderIssueColumn;
 
     @FXML private TableView<FlaggedTable> flaggedTable;  
-    @FXML private TableColumn<FlaggedTable, String> flaggedTitleColumn;             //Jack
-    @FXML private TableColumn<FlaggedTable, String> flaggedIssueColumn;             //Jack
-    @FXML private TableColumn<FlaggedTable, String> flaggedPriceColumn;             //Jack
-    @FXML private TableColumn<FlaggedTable, String> flaggedQuantityColumn;          //Jack
+    @FXML private TableColumn<FlaggedTable, String> flaggedTitleColumn;             
+    @FXML private TableColumn<FlaggedTable, String> flaggedIssueColumn;             
+    @FXML private TableColumn<FlaggedTable, String> flaggedPriceColumn;             
+    @FXML private TableColumn<FlaggedTable, String> flaggedQuantityColumn;          
     @FXML private TableColumn<FlaggedTable, String> flaggedNumRequestsColumn;
 
     @FXML private TableView<RequestTable> requestsTable;
@@ -103,6 +103,7 @@ public class Controller implements Initializable {
     @FXML private Text customerPhoneText;
     @FXML private Text customerEmailText;
     @FXML private Text customerNotesText;
+    @FXML private Text delinqNoticeText;
 
     @FXML private Button editCustomerButton;
     @FXML private Button newOrderButton;
@@ -187,6 +188,20 @@ public class Controller implements Initializable {
                 return false;
             }
         }
+        //make sure customers has delinquent
+        try {
+            sql = "ALTER TABLE Customers ADD Delinquent BOOLEAN";
+            s = conn.createStatement();
+            s.execute(sql);
+        } catch (SQLException sqlExcept) {
+            if (sqlExcept.getSQLState().equals("X0Y32")) {
+                System.out.println("Customer table already contains Delinqunt");
+            }
+            else {
+                sqlExcept.printStackTrace();
+                return false;
+            }
+        }
         System.out.println("DATABASE SCHEMA UP TO-DATE");
         return true;
     }
@@ -261,7 +276,8 @@ public class Controller implements Initializable {
                 String phone = results.getString(4);
                 String email = results.getString(5);
                 String notes = results.getString(6);
-                customers.add(new Customer(customerId, firstName, lastName, phone, email, notes));
+                boolean delinquent = results.getBoolean(7);
+                customers.add(new Customer(customerId, firstName, lastName, phone, email, notes, delinquent));
             }
             results.close();
             s.close();
@@ -920,6 +936,12 @@ public class Controller implements Initializable {
                     customerPhoneText.setText(newSelection.getPhone());
                     customerEmailText.setText(newSelection.getEmail());
                     customerNotesText.setText(newSelection.getNotes());
+
+                    if(newSelection.getDelinquent())
+                    {
+                        delinqNoticeText.setVisible(true);
+                    }
+                    else delinqNoticeText.setVisible(false);
 
                     newOrderButton.setDisable(false);
                     editOrderButton.setDisable(false);
@@ -2623,7 +2645,7 @@ public class Controller implements Initializable {
     }
 
     @FXML 
-    void handleTitleSearchKeyboardInput(KeyEvent event)
+    void handleTitleSearching(KeyEvent event)
     {
         Scene scene = titleTable.getScene();
         String search = ((TextField)scene.lookup("#TitleSearch")).getText().toLowerCase();
@@ -2656,7 +2678,7 @@ public class Controller implements Initializable {
     }
 
     @FXML 
-    void handleCustomerSearchKeyboardInput(KeyEvent event)
+    void handleCustomerSearching(KeyEvent event)
     {
         Scene scene = customerTable.getScene();
         String search = ((TextField)scene.lookup("#CustomerSearch")).getText().toLowerCase();
@@ -2687,6 +2709,42 @@ public class Controller implements Initializable {
 
         customerTable.getItems().setAll(sortedCustomers);
     }
+    @FXML
+    void handleMarkDelinquent()
+    {
+        if(customerTable.getSelectionModel().getSelectedItem() == null)
+        {
+            AlertBox.display("You cannot mark the void delinquent.", "Please select a customer.");
+        }
+        boolean currentStatus = customerTable.getSelectionModel().getSelectedItem().getDelinquent();
+        Integer customerID = customerTable.getSelectionModel().getSelectedItem().getId();
+        PreparedStatement s = null;
+        String sql;
+        if (currentStatus == false)
+            sql = """
+            UPDATE Customers
+            SET DELINQUENT = TRUE
+            WHERE CUSTOMERID = ?
+            """;
+        else 
+            sql = """
+            UPDATE Customers
+            SET DELINQUENT = FALSE
+            WHERE CUSTOMERID = ?
+            """;
+        try {
+            s = conn.prepareStatement(sql);
+            s.setString(1, Integer.toString(customerID));
+            s.executeUpdate();
+            s.close();
+        } catch (SQLException sqlExcept) {
+            sqlExcept.printStackTrace();
+        }
+
+        delinqNoticeText.setVisible(!delinqNoticeText.isVisible());
+        customerTable.getSelectionModel().getSelectedItem().setDelinquent(!customerTable.getSelectionModel().getSelectedItem().getDelinquent());
+    }
+
 
     //#endregion
 

@@ -12,6 +12,7 @@ public class Customer {
     private String email;
     private String notes;
     private int id;
+    private boolean delinquent;
 
     /**
      * Constructor. Assigns the values provided to their associated fields.
@@ -21,13 +22,14 @@ public class Customer {
      * @param email Email address of the customer
      * @param notes Notes for the customer
      */
-    public Customer(String firstName, String lastName, String phone, String email, String notes) {
+    public Customer(String firstName, String lastName, String phone, String email, String notes, boolean delinquent) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
         this.email = email;
         this.notes = notes;
         this.fullName = lastName + ", " + firstName;
+        this.delinquent = delinquent;
     }
 
     /**
@@ -39,7 +41,7 @@ public class Customer {
      * @param email Email address of the customer
      * @param notes notes for the customer
      */
-    public Customer(int id, String firstName, String lastName, String phone, String email, String notes) {
+    public Customer(int id, String firstName, String lastName, String phone, String email, String notes, boolean delinquent) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -47,6 +49,7 @@ public class Customer {
         this.email = email;
         this.notes = notes;
         this.fullName = lastName + ", " + firstName;
+        this.delinquent = delinquent;
     }
 
     /**
@@ -152,5 +155,23 @@ public class Customer {
      */
     public int getId() {
         return id;
+    }
+        
+    /**
+     * Gets the delinquent status of the customer
+     * @return boolean "delinquent"
+     */
+    public boolean getDelinquent()
+    {
+        return delinquent;
+    }
+
+    /**
+     * Sets the delinquent status of the cusotmer.
+     * @param customerSucks whether the customer sucks or not
+     */
+    public void setDelinquent(boolean customerSucks)
+    {
+        delinquent = customerSucks;
     }
 }

@@ -104,8 +104,4 @@ target/test-classes
 *.DS_Store
 *.class
 derby.log
-<<<<<<< Updated upstream
-=======
 *.class
-derby.log
->>>>>>> Stashed changes

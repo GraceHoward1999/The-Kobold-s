@@ -100,7 +100,8 @@ public class EditOrderController {
                 rowsAffected = s.executeUpdate();
                 s.close();
 
-                Log.LogEvent("Edited Order", "Edited order - CustomerID: " + customerId + " - Title: " + FxUtilTest.getComboBoxValue(setTitle) + " - Quantity: " + quantity + " - Issue: " + Integer.valueOf(issue) 
+                Log.LogEvent("Edited Order", "Edited order - CustomerID: " + customerId + " - Title: " + FxUtilTest.getComboBoxValue(setTitle) + " - Quantity: " + quantity + " - Issue: " 
+                                        + (issue == null ? null : Integer.valueOf(issue))
                                         + " - Previous Title: " + prevTitle + " - Previous Quantity: " + prevQuantity + " - Previous Issue: " + prevIssue);
             } catch (SQLException sqlExcept) {
                 sqlExcept.printStackTrace();
