@@ -119,8 +119,12 @@
                   <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" onMouseClicked="#passCustomerKeyboardFocus" prefHeight="30.0" prefWidth="490.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <children>
                         <Button fx:id="addCustomerButtonMain" mnemonicParsing="false" onAction="#handleAddCustomer" text="Add New Customer" />
-                        <Button fx:id="editCustomerButton" mnemonicParsing="false" onAction="#handleEditCustomer" prefWidth="60.0" text="Edit">
-                                                <Button fx:id="Delinq" mnemonicParsing="false" onAction="#handleMarkDelinquent" prefWidth="100.0" text="Mark Delinquent" wrapText="true">
+                        <Button fx:id="editCustomerButton" mnemonicParsing="false" onAction="#handleEditCustomer" prefWidth="60.0" text="Edit" >
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
+                        </Button>
+                        <Button fx:id="Delinq" mnemonicParsing="false" onAction="#handleMarkDelinquent" prefWidth="100.0" text="Mark Delinquent" wrapText="true">
                                  <font>
                                     <Font size="11.0" />
                                  </font>
@@ -128,10 +132,7 @@
                               <Insets left="141.0" />
                            </HBox.margin>
                         </Button>
-                           <HBox.margin>
-                              <Insets left="5.0" />
-                           </HBox.margin>
-                        </Button>
+
                         <Button fx:id="deleteCustomerButton" mnemonicParsing="false" onAction="#handleDeleteCustomer" prefWidth="60.0" text="Delete">
                            <HBox.margin>
                               <Insets left="5.0" />
