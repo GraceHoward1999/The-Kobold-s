@@ -22,14 +22,14 @@ public class Customer {
      * @param email Email address of the customer
      * @param notes Notes for the customer
      */
-    public Customer(String firstName, String lastName, String phone, String email, String notes) {
+    public Customer(String firstName, String lastName, String phone, String email, String notes, boolean delinquent) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.phone = phone;
         this.email = email;
         this.notes = notes;
         this.fullName = lastName + ", " + firstName;
-        this.delinquent = false;
+        this.delinquent = delinquent;
     }
 
     /**
@@ -41,7 +41,7 @@ public class Customer {
      * @param email Email address of the customer
      * @param notes notes for the customer
      */
-    public Customer(int id, String firstName, String lastName, String phone, String email, String notes) {
+    public Customer(int id, String firstName, String lastName, String phone, String email, String notes, boolean delinquent) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -49,7 +49,7 @@ public class Customer {
         this.email = email;
         this.notes = notes;
         this.fullName = lastName + ", " + firstName;
-        this.delinquent = false;
+        this.delinquent = delinquent;
     }
 
     /**

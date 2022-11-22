@@ -45,6 +45,7 @@ public class CreateDB {
                         Phone varchar(255),
                         Email varchar(255),
                         Notes varchar(255),
+                        DELINQUENT boolean default false not null,
                         PRIMARY KEY (CustomerID)
                     )""");
             System.out.println("Created table Customer");

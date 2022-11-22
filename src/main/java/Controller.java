@@ -188,6 +188,20 @@ public class Controller implements Initializable {
                 return false;
             }
         }
+        //make sure customers has delinquent
+        try {
+            sql = "ALTER TABLE Customers ADD Delinquent BOOLEAN";
+            s = conn.createStatement();
+            s.execute(sql);
+        } catch (SQLException sqlExcept) {
+            if (sqlExcept.getSQLState().equals("X0Y32")) {
+                System.out.println("Customer table already contains Delinqunt");
+            }
+            else {
+                sqlExcept.printStackTrace();
+                return false;
+            }
+        }
         System.out.println("DATABASE SCHEMA UP TO-DATE");
         return true;
     }
@@ -262,7 +276,8 @@ public class Controller implements Initializable {
                 String phone = results.getString(4);
                 String email = results.getString(5);
                 String notes = results.getString(6);
-                customers.add(new Customer(customerId, firstName, lastName, phone, email, notes));
+                boolean delinquent = results.getBoolean(7);
+                customers.add(new Customer(customerId, firstName, lastName, phone, email, notes, delinquent));
             }
             results.close();
             s.close();
@@ -2699,10 +2714,26 @@ public class Controller implements Initializable {
     {
         if(customerTable.getSelectionModel().getSelectedItem() == null)
         {
-            //should not be possible
+            AlertBox.display("You cannot mark the void delinquent.", "Please select a customer.");
         }
+        Integer customerID = customerTable.getSelectionModel().getSelectedItem().getId();
+        PreparedStatement s = null;
+        String sql = """
+            UPDATE Customers
+            SET DELINQUENT = TRUE
+            WHERE CUSTOMERID = ?
+            """;
+        try {
+            s = conn.prepareStatement(sql);
+            s.setString(1, Integer.toString(customerID));
+            s.executeUpdate();
+            s.close();
+        } catch (SQLException sqlExcept) {
+            sqlExcept.printStackTrace();
+        }
+
+        delinqNoticeText.setVisible(!delinqNoticeText.isVisible());
         customerTable.getSelectionModel().getSelectedItem().setDelinquent(!customerTable.getSelectionModel().getSelectedItem().getDelinquent());
-        //update SQL
     }
 
 
