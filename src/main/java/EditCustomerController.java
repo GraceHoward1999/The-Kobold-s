@@ -16,6 +16,8 @@ import java.util.ResourceBundle;
  */
 public class EditCustomerController implements Initializable {
 
+    public boolean customerWasEdited = false;
+
     private Connection conn;
     private Customer customer;
 
@@ -99,6 +101,7 @@ public class EditCustomerController implements Initializable {
 
             update.close();
 
+            customerWasEdited = true;
             Log.LogEvent("Customer Edited", "Edited Customer - " + firstName + " " + lastName + " - phone: " + phone + " - email: " + email + " - notes: " + notes);
         }
         catch (SQLException sqlExcept)

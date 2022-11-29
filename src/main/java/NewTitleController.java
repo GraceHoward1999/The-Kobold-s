@@ -16,6 +16,8 @@ import java.sql.*;
  */
 public class NewTitleController{
 
+    public boolean titleWasAdded = false;
+    
     private Connection conn;
     int rowsAffected = 0;
 
@@ -86,6 +88,8 @@ public class NewTitleController{
                 alert.setHeaderText("");
                 alert.show();
             }
+
+            titleWasAdded = true;
             Stage window = (Stage) addTitleButton.getScene().getWindow();
             window.close();
         }

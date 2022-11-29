@@ -16,6 +16,8 @@ import java.sql.*;
  */
 public class EditTitleController{
 
+    public boolean titleWasEdited = false;
+
     private Connection conn;
     private Title title;
     int rowsAffected;
@@ -36,6 +38,8 @@ public class EditTitleController{
      */
     @FXML
     void updateTitle(ActionEvent event) {
+        titleWasEdited = true;
+
         String titleText = updateTitleTitle.getText();
         String notes = updateTitleNotes.getText();
         String productId = updateTitleProductId.getText();
