@@ -139,10 +139,6 @@ public class Controller implements Initializable {
     private ObservableList<Title> storedTitles;
     private ObservableList<Order> storedOrders;
 
-    private boolean customerListValid;
-    private boolean titleListValid;
-    private boolean orderListValid;
-
     private static Connection conn = null;
 
     private boolean setAll;
@@ -271,47 +267,15 @@ public class Controller implements Initializable {
         ObservableList<Customer> customers = FXCollections.observableArrayList();
 
         // Update the customer list if a change has happened to make it invalid.
-        if (!customerListValid)
+        if (storedCustomers == null)
         {
-            if (storedCustomers == null)
-            {
-                storedCustomers = FXCollections.observableArrayList();
-            }
-
-            storedCustomers.clear();
-
-            Statement s = null;
-            try
-            {
-                s = conn.createStatement();
-                ResultSet results = s.executeQuery("select * from Customers ORDER BY LASTNAME");
-
-                while(results.next())
-                {
-                    int customerId = results.getInt(1);
-                    String firstName = results.getString(2);
-                    String lastName = results.getString(3);
-                    String phone = results.getString(4);
-                    String email = results.getString(5);
-                    String notes = results.getString(6);
-                    boolean delinquent = results.getBoolean(7);
-                    storedCustomers.add(new Customer(customerId, firstName, lastName, phone, email, notes, delinquent));
-                }
-                results.close();
-                s.close();
-
-                customerListValid = true;
-            }
-            catch (SQLException sqlExcept)
-            {
-                sqlExcept.printStackTrace();
-            }
+            invalidateCustomers();
         }
 
         // For data safety, create a copy of the customer to avoid data modification of the original list.
         for (Customer c: storedCustomers)
         {
-            Customer copy = new Customer(c.getFirstName(), c.getLastName(), c.getPhone(), c.getEmail(), c.getNotes(), c.getDelinquent());
+            Customer copy = new Customer(c.getId(), c.getFirstName(), c.getLastName(), c.getPhone(), c.getEmail(), c.getNotes(), c.getDelinquent());
             customers.add(copy);
         }
 
@@ -608,41 +572,9 @@ public class Controller implements Initializable {
     public ObservableList<Order> getOrderTable() {
         ObservableList<Order> orders = FXCollections.observableArrayList();
 
-        if (!orderListValid)
+        if (storedOrders == null)
         {
-            if (storedOrders == null)
-            {
-                storedOrders = FXCollections.observableArrayList();
-            }
-
-            storedOrders.clear();
-
-            Statement s = null;
-            try
-            {
-                s = conn.createStatement();
-                ResultSet results = s.executeQuery("SELECT ORDERS.CUSTOMERID, ORDERS.TITLEID, TITLES.title, ORDERS.QUANTITY, ORDERS.ISSUE FROM TITLES" +
-                        " INNER JOIN ORDERS ON Orders.titleID=TITLES.TitleId ORDER BY TITLE");
-
-                while(results.next())
-                {
-                    int customerId = results.getInt(1);
-                    int titleId = results.getInt(2);
-                    String title = results.getString(3);
-                    int quantity = results.getInt(4);
-                    int issue = results.getInt(5);
-
-                    storedOrders.add(new Order(customerId, titleId, title, quantity, issue));
-                }
-                results.close();
-                s.close();
-
-                orderListValid = true;
-            }
-            catch (SQLException sqlExcept)
-            {
-                sqlExcept.printStackTrace();
-            }
+            invalidateOrders();
         }
 
         for (Order o: storedOrders)
@@ -724,50 +656,9 @@ public class Controller implements Initializable {
 
         ObservableList<Title> titles = FXCollections.observableArrayList();
 
-        if (!titleListValid)
+        if (storedTitles == null)
         {
-            if (storedTitles == null)
-            {
-                storedTitles = FXCollections.observableArrayList();
-            }
-
-            storedTitles.clear();
-
-            try
-            {
-                Statement s = conn.createStatement();
-                ResultSet results = s.executeQuery("select * from Titles order by TITLE");
-
-                while(results.next())
-                {
-                    int titleId = results.getInt("TITLEID");
-                    String title = results.getString("TITLE");
-                    int price= results.getInt("PRICE");
-                    String notes = results.getString("NOTES");
-                    String productId = results.getString("PRODUCTID");
-                    Date dateCreated = results.getDate("DATECREATED");
-                    boolean flagged = results.getBoolean("FLAGGED");
-                    Date dateFlagged = results.getDate("DATE_FLAGGED");
-                    int issueFlagged = results.getInt("ISSUE_FLAGGED");
-                    if (dateFlagged != null) {
-                        if (dateCreated == null) {
-                            // TODO: Is something supposed to be here?
-                        }
-                        storedTitles.add(new Title(titleId, title, price, notes, productId, (dateCreated == null ? null : dateCreated.toLocalDate()), flagged, dateFlagged.toLocalDate(), issueFlagged));
-                    }
-                    else {
-                        storedTitles.add(new Title(titleId, title, price, notes, productId, (dateCreated == null ? null : dateCreated.toLocalDate()), flagged, null, issueFlagged));
-                    }
-                }
-                results.close();
-                s.close();
-
-                titleListValid = true;
-            }
-            catch (SQLException sqlExcept)
-            {
-                sqlExcept.printStackTrace();
-            }
+            invalidateTitles();
         }
 
         for (Title t: storedTitles)
@@ -1206,7 +1097,7 @@ public class Controller implements Initializable {
             window.setOnHidden( e -> {
                 if (newCustomerController.customerWasAdded)
                 {
-                    customerListValid = false;
+                    invalidateCustomers();
                     customerTable.getItems().setAll(getCustomers());
                     this.loadReportsTab();
                     getDatabaseInfo();
@@ -1251,7 +1142,7 @@ public class Controller implements Initializable {
                 window.setOnHidden( e -> {
                     if (newTitleController.titleWasAdded)
                     {
-                        titleListValid = false;
+                        invalidateTitles();
                         titleTable.getItems().setAll(getTitles());
                         this.loadReportsTab();
                         getDatabaseInfo();
@@ -1319,14 +1210,15 @@ public class Controller implements Initializable {
                         s.executeUpdate();
                         s.close();
 
-                        customerListValid = false;
                         Log.LogEvent("Customer Deleted", "Deleted Customer - " + customer.getFirstName() + " " + customer.getLastName());
 
                     } catch (SQLException sqlExcept) {
+                        System.err.println("Error deleting customer");
                         sqlExcept.printStackTrace();
                     }
                 }
 
+                invalidateCustomers();
                 customerTable.getItems().setAll(getCustomers());
                 customerFirstNameText.setText("");
                 customerLastNameText.setText("");
@@ -1400,13 +1292,13 @@ public class Controller implements Initializable {
                         s.executeUpdate();
                         s.close();
 
-                        orderListValid = false;
                         Log.LogEvent("Deleted Order", "Deleted order - CustomerID: " + customerId + " - Title: " + order.getTitleName() + " - Quantity: " + quantity + " - Issue: " + Integer.valueOf(issue));
                     } catch (SQLException sqlExcept) {
                         sqlExcept.printStackTrace();
                     }
                 }
 
+                invalidateOrders();
                 updateOrdersTable(customerTable.getSelectionModel().getSelectedItem());
 
                 titleOrdersTable.getItems().clear();
@@ -1493,13 +1385,13 @@ public class Controller implements Initializable {
                         s.executeUpdate();
                         s.close();
 
-                        titleListValid = false;
                         Log.LogEvent("Deleted Title", "Deleted Title - Title: " + title.getTitle() + " - TitleID: " + titleId);
                     } catch (SQLException sqlExcept) {
                         sqlExcept.printStackTrace();
                     }
                 }
 
+                invalidateTitles();
                 titleTable.getItems().setAll(getTitles());
                 titleTitleText.setText("");
                 titlePriceText.setText("");
@@ -1547,13 +1439,15 @@ public class Controller implements Initializable {
                 window.setOnHidden(e -> {
                     if (editCustomerController.customerWasEdited)
                     {
-                        customerListValid = false;
+                        invalidateCustomers();
                         customerTable.getItems().setAll(getCustomers());
+
                         customerFirstNameText.setText("");
                         customerLastNameText.setText("");
                         customerPhoneText.setText("");
                         customerEmailText.setText("");
                         customerNotesText.setText("");
+
                         this.loadReportsTab();
                         getDatabaseInfo();
                     }
@@ -1600,7 +1494,7 @@ public class Controller implements Initializable {
                 window.setOnHidden(e -> {
                     if (editOrderController.orderWasEdited)
                     {
-                        orderListValid = false;
+                        invalidateOrders();
                         updateOrdersTable(customerTable.getSelectionModel().getSelectedItem());
                         this.loadReportsTab();
                         getDatabaseInfo();
@@ -1654,7 +1548,7 @@ public class Controller implements Initializable {
                 window.setOnHidden(e -> {
                     if (editTitleController.titleWasEdited)
                     {
-                        titleListValid = false;
+                        invalidateTitles();
                         titleTable.getItems().setAll(getTitles());
                         titleTitleText.setText("");
                         titlePriceText.setText("");
@@ -1703,7 +1597,7 @@ public class Controller implements Initializable {
                 window.setOnHidden(e ->  {
                     if (newOrderController.orderWasAdded)
                     {
-                        orderListValid = false;
+                        invalidateOrders();
                         updateOrdersTable(customerTable.getSelectionModel().getSelectedItem());
                         this.loadReportsTab();
                         getDatabaseInfo();
@@ -3209,6 +3103,120 @@ public class Controller implements Initializable {
         titleTable.getSelectionModel().getSelectedItem().setFlagged(true);
         //https://stackoverflow.com/questions/48616490/how-to-add-a-javafx-shortcut-key-combinations-for-buttons
         //https://stackoverflow.com/questions/25397742/javafx-keyboard-event-shortcut-key
+    }
+
+    private void invalidateCustomers()
+    {
+        if (storedCustomers == null)
+        {
+            storedCustomers = FXCollections.observableArrayList();
+        }
+
+        storedCustomers.clear();
+
+        Statement s = null;
+        try
+        {
+            s = conn.createStatement();
+            ResultSet results = s.executeQuery("select * from Customers ORDER BY LASTNAME");
+
+            while(results.next())
+            {
+                int customerId = results.getInt(1);
+                String firstName = results.getString(2);
+                String lastName = results.getString(3);
+                String phone = results.getString(4);
+                String email = results.getString(5);
+                String notes = results.getString(6);
+                boolean delinquent = results.getBoolean(7);
+                storedCustomers.add(new Customer(customerId, firstName, lastName, phone, email, notes, delinquent));
+            }
+            results.close();
+            s.close();
+        }
+        catch (SQLException sqlExcept)
+        {
+            sqlExcept.printStackTrace();
+        }
+    }
+
+    private void invalidateOrders()
+    {
+        if (storedOrders == null)
+        {
+            storedOrders = FXCollections.observableArrayList();
+        }
+
+        storedOrders.clear();
+
+        Statement s = null;
+        try
+        {
+            s = conn.createStatement();
+            ResultSet results = s.executeQuery("SELECT ORDERS.CUSTOMERID, ORDERS.TITLEID, TITLES.title, ORDERS.QUANTITY, ORDERS.ISSUE FROM TITLES" +
+                    " INNER JOIN ORDERS ON Orders.titleID=TITLES.TitleId ORDER BY TITLE");
+
+            while(results.next())
+            {
+                int customerId = results.getInt(1);
+                int titleId = results.getInt(2);
+                String title = results.getString(3);
+                int quantity = results.getInt(4);
+                int issue = results.getInt(5);
+
+                storedOrders.add(new Order(customerId, titleId, title, quantity, issue));
+            }
+            results.close();
+            s.close();
+        }
+        catch (SQLException sqlExcept)
+        {
+            sqlExcept.printStackTrace();
+        }
+    }
+
+    private void invalidateTitles()
+    {
+        if (storedTitles == null)
+        {
+            storedTitles = FXCollections.observableArrayList();
+        }
+
+        storedTitles.clear();
+
+        try
+        {
+            Statement s = conn.createStatement();
+            ResultSet results = s.executeQuery("select * from Titles order by TITLE");
+
+            while(results.next())
+            {
+                int titleId = results.getInt("TITLEID");
+                String title = results.getString("TITLE");
+                int price= results.getInt("PRICE");
+                String notes = results.getString("NOTES");
+                String productId = results.getString("PRODUCTID");
+                Date dateCreated = results.getDate("DATECREATED");
+                boolean flagged = results.getBoolean("FLAGGED");
+                Date dateFlagged = results.getDate("DATE_FLAGGED");
+                int issueFlagged = results.getInt("ISSUE_FLAGGED");
+                if (dateFlagged != null) {
+                    if (dateCreated == null) {
+                        // TODO: Is something supposed to be here?
+                    }
+                    storedTitles.add(new Title(titleId, title, price, notes, productId, (dateCreated == null ? null : dateCreated.toLocalDate()), flagged, dateFlagged.toLocalDate(), issueFlagged));
+                }
+                else {
+                    storedTitles.add(new Title(titleId, title, price, notes, productId, (dateCreated == null ? null : dateCreated.toLocalDate()), flagged, null, issueFlagged));
+                }
+            }
+            results.close();
+            s.close();
+        }
+        catch (SQLException sqlExcept)
+        {
+            sqlExcept.printStackTrace();
+        }
     }
 
 }

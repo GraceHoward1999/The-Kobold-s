@@ -77,7 +77,8 @@ public class EditCustomerController implements Initializable {
                 if (testFirstName.equals(firstName) && testLastName.equals(lastName)) {
                     String testPhone = result.getString("PHONE");
                     String testEmail = result.getString("EMAIL");
-                    if (testPhone.equals(phone) && testEmail.equals(email)) {
+                    String testNotes = result.getString("NOTES");
+                    if (testPhone.equals(phone) && testEmail.equals(email) && testNotes.equals(notes)) {
                         Alert alert = new Alert(Alert.AlertType.WARNING, "Cannot create duplicate Customers. If two Customers have the exact same name, make sure they have different phones or emails.", ButtonType.OK);
                         alert.setTitle("Duplicate Customer Entry");
                         alert.setHeaderText("");
