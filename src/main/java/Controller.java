@@ -2596,6 +2596,8 @@ public class Controller implements Initializable {
 
             TextField search = (TextField) scene.lookup("#CustomerSearch");
             search.requestFocus();
+
+            customerOrderTable.getItems().clear();
         }
     }
 
