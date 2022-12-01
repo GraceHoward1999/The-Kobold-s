@@ -259,7 +259,7 @@
                         <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                 <children>
-                                          <Button fx:id="exportSingleTitleRequestListButton" mnemonicParsing="false" onAction="#handleExportSingleTitleFlaggedTable" text="Export Single Title Request List" AnchorPane.leftAnchor="510.0" AnchorPane.rightAnchor="305.0" AnchorPane.topAnchor="5.0" />
+                                          <Button fx:id="exportSingleTitleRequestListButton" mnemonicParsing="false" onAction="#handleExportSingleTitleFlaggedTable" text="Export Single Title Request List" AnchorPane.leftAnchor="708.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
                                     <HBox layoutX="11.0" layoutY="6.0" prefHeight="93.0" prefWidth="683.0">
                                         <children>
                                             <GridPane>
@@ -298,7 +298,7 @@
                                           </Text>
                                        </children>
                                        <HBox.margin>
-                                          <Insets left="89.5" />
+                                          <Insets left="285.0" />
                                        </HBox.margin>
                                     </VBox>
                                         </children>
