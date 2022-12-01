@@ -16,6 +16,8 @@ import java.util.ResourceBundle;
  */
 public class EditCustomerController implements Initializable {
 
+    public boolean customerWasEdited = false;
+
     private Connection conn;
     private Customer customer;
 
@@ -75,14 +77,15 @@ public class EditCustomerController implements Initializable {
                 if (testFirstName.equals(firstName) && testLastName.equals(lastName)) {
                     String testPhone = result.getString("PHONE");
                     String testEmail = result.getString("EMAIL");
-                    if (testPhone.equals(phone) && testEmail.equals(email)) {
-                        /**Alert alert = new Alert(Alert.AlertType.WARNING, "Cannot create duplicate Customers. If two Customers have the exact same name, make sure they have different phones or emails.", ButtonType.OK);
+                    String testNotes = result.getString("NOTES");
+                    if (testPhone.equals(phone) && testEmail.equals(email) && testNotes.equals(notes)) {
+                        Alert alert = new Alert(Alert.AlertType.WARNING, "Cannot create duplicate Customers. If two Customers have the exact same name, make sure they have different phones or emails.", ButtonType.OK);
                         alert.setTitle("Duplicate Customer Entry");
                         alert.setHeaderText("");
                         alert.show();
-                        return;*/
-                        update.close();
-                        window.close();
+                        return;
+                       //update.close();
+                        //window.close();
                     }
                 }
             }
@@ -99,6 +102,7 @@ public class EditCustomerController implements Initializable {
 
             update.close();
 
+            customerWasEdited = true;
             Log.LogEvent("Customer Edited", "Edited Customer - " + firstName + " " + lastName + " - phone: " + phone + " - email: " + email + " - notes: " + notes);
         }
         catch (SQLException sqlExcept)

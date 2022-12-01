@@ -36,7 +36,7 @@ public class Main extends Application {
         Controller controller = fxmlLoader.getController();
         window = primaryStage;
 
-        Scene scene = new Scene(root, 1000, 700);
+        Scene scene = new Scene(root, 1200, 700);
 
         window.setTitle("Pull List");
         //Add handler for closing the window with unsaved flags

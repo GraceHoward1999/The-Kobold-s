@@ -17,7 +17,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1000.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
+<TabPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="1200.0" tabClosingPolicy="UNAVAILABLE" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controller">
   <tabs>
     <Tab text="Customers">
          <content>
@@ -29,7 +29,7 @@
                       <TableColumn fx:id="customerFirstNameColumn" prefWidth="100.0" text="First Name" />
                       <TableColumn fx:id="customerPhoneColumn" prefWidth="125.0" text="Phone Number" />
                         <TableColumn fx:id="customerEmailColumn" prefWidth="165.0" text="Email" />
-                        <TableColumn fx:id="customerNotesColumn" prefWidth="165.0" text="Notes" />
+                        <TableColumn fx:id="customerNotesColumn" prefWidth="200.0" text="Notes" />
                     </columns>
                   </TableView>
                   <VBox alignment="CENTER" prefHeight="749.0" prefWidth="476.0" spacing="10.0" AnchorPane.bottomAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
@@ -46,6 +46,7 @@
                             <RowConstraints maxHeight="67.0" minHeight="33.0" prefHeight="33.0" vgrow="SOMETIMES" />
                            <RowConstraints maxHeight="33.0" minHeight="10.0" prefHeight="29.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="200.0" minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                              <RowConstraints />
                           </rowConstraints>
                            <children>
                               <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="First Name:" underline="true" GridPane.rowIndex="1" />
@@ -114,21 +115,18 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <TextField fx:id="CustomerSearch" layoutX="10.0" layoutY="44.0" onKeyReleased="#handleCustomerKeyboardInput" prefHeight="26.0" prefWidth="490.0" promptText="Search..." />
-                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" onMouseClicked="#passCustomerKeyboardFocus" prefHeight="30.0" prefWidth="490.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <TextField fx:id="CustomerSearch" layoutX="10.0" layoutY="44.0" onKeyReleased="#handleCustomerSearching" prefHeight="26.0" prefWidth="690.0" promptText="Search..." />
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" onMouseClicked="#passCustomerKeyboardFocus" prefHeight="30.0" prefWidth="690.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <children>
                         <Button fx:id="addCustomerButtonMain" mnemonicParsing="false" onAction="#handleAddCustomer" text="Add New Customer" />
-                        <Button fx:id="editCustomerButton" mnemonicParsing="false" onAction="#handleEditCustomer" prefWidth="60.0" text="Edit" >
+                        <Button fx:id="Delinq" mnemonicParsing="false" onAction="#handleMarkDelinquent" text="Mark Delinquent">
                            <HBox.margin>
                               <Insets left="5.0" />
                            </HBox.margin>
                         </Button>
-                        <Button fx:id="Delinq" mnemonicParsing="false" onAction="#handleMarkDelinquent" prefWidth="100.0" text="Mark Delinquent" wrapText="true">
-                                 <font>
-                                    <Font size="11.0" />
-                                 </font>
+                        <Button fx:id="editCustomerButton" mnemonicParsing="false" onAction="#handleEditCustomer" prefWidth="60.0" text="Edit">
                            <HBox.margin>
-                              <Insets left="141.0" />
+                              <Insets left="329.0" />
                            </HBox.margin>
                         </Button>
 
@@ -150,7 +148,7 @@
                     <columns>
                         <TableColumn fx:id="titleFlaggedColumn" prefWidth="51.0" text="Flagged" />
                         <TableColumn fx:id="titleTitleColumn" editable="false" prefWidth="239.0" text="Title" />
-                        <TableColumn fx:id="titleProductIdColumn" editable="false" prefWidth="100.0" text="Product ID"/>
+                        <TableColumn fx:id="titleProductIdColumn" editable="false" prefWidth="100.0" text="Product ID" />
                         <TableColumn fx:id="titlePriceColumn" editable="false" prefWidth="100.0" text="Price" />
                         <TableColumn fx:id="titleDateCreatedColumn" editable="false" prefWidth="100.0" text="Date Created" />
                         <TableColumn fx:id="titleNotesColumn" editable="false" prefWidth="100.0" text="Notes" />
@@ -170,6 +168,8 @@
                               <RowConstraints maxHeight="134.0" minHeight="10.0" prefHeight="29.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="67.0" minHeight="33.0" prefHeight="33.0" vgrow="SOMETIMES" />
                               <RowConstraints maxHeight="200.0" minHeight="10.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                              <RowConstraints />
+                              <RowConstraints />
                            </rowConstraints>
                            <children>
                               <Text fill="#666666" strokeType="OUTSIDE" strokeWidth="0.0" text="Title:" underline="true" GridPane.rowIndex="1" />
@@ -219,13 +219,13 @@
                         </HBox>
                      </children>
                   </VBox>
-                  <TextField fx:id="TitleSearch" layoutX="10.0" layoutY="44.0" onKeyReleased="#handleTitleKeyboardInput" prefHeight="26.0" prefWidth="490.0" promptText="Search..." />
-                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" nodeOrientation="LEFT_TO_RIGHT" onMouseClicked="#passTitleKeyboardFocus" prefHeight="30.0" prefWidth="490.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                  <TextField fx:id="TitleSearch" layoutX="10.0" layoutY="44.0" onKeyReleased="#handleTitleSearching" prefHeight="26.0" prefWidth="690.0" promptText="Search..." />
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" nodeOrientation="LEFT_TO_RIGHT" onMouseClicked="#passTitleKeyboardFocus" prefHeight="30.0" prefWidth="690.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
                      <children>
                         <Button fx:id="addTitleButtonMain" mnemonicParsing="false" onAction="#handleAddTitle" prefWidth="94.0" text="Add New Title" />
                         <Button fx:id="saveFlagsButton" mnemonicParsing="false" onAction="#saveFlags" prefWidth="77.0" text="Save Flags">
                            <HBox.margin>
-                              <Insets left="17.5" />
+                              <Insets left="5.0" />
                            </HBox.margin>
                         </Button>
                         <Button fx:id="resetFlagsButton" mnemonicParsing="false" onAction="#resetFlags" prefWidth="154.0" text="Reset New Release Flags">
@@ -235,7 +235,7 @@
                         </Button>
                         <Button fx:id="editTitleButton" mnemonicParsing="false" onAction="#handleEditTitle" prefWidth="60.0" text="Edit">
                            <HBox.margin>
-                              <Insets left="17.5" />
+                              <Insets left="230.0" />
                            </HBox.margin>
                         </Button>
                         <Button fx:id="deleteTitleButton" mnemonicParsing="false" onAction="#handleDeleteTitle" prefWidth="60.0" text="Delete">
@@ -259,7 +259,7 @@
                         <content>
                             <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                                 <children>
-                                          <Button fx:id="exportSingleTitleRequestListButton" mnemonicParsing="false" onAction="#handleExportSingleTitleFlaggedTable" text="Export Single Title Request List" AnchorPane.leftAnchor="510.0" AnchorPane.rightAnchor="305.0" AnchorPane.topAnchor="5.0" />
+                                          <Button fx:id="exportSingleTitleRequestListButton" mnemonicParsing="false" onAction="#handleExportSingleTitleFlaggedTable" text="Export Single Title Request List" AnchorPane.leftAnchor="708.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0" />
                                     <HBox layoutX="11.0" layoutY="6.0" prefHeight="93.0" prefWidth="683.0">
                                         <children>
                                             <GridPane>
@@ -298,7 +298,7 @@
                                           </Text>
                                        </children>
                                        <HBox.margin>
-                                          <Insets left="89.5" />
+                                          <Insets left="285.0" />
                                        </HBox.margin>
                                     </VBox>
                                         </children>

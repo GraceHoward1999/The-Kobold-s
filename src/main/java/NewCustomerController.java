@@ -16,6 +16,8 @@ import java.util.ResourceBundle;
  */
 public class NewCustomerController implements Initializable {
 
+    public boolean customerWasAdded = false;
+
     private Connection conn;
 
     int rowsAffected = 0;
@@ -94,6 +96,7 @@ public class NewCustomerController implements Initializable {
 
             insert.close();
 
+            customerWasAdded = true;
             Log.LogEvent("User Added", "Added User - " + firstName + " " + lastName + " - phone: " + phone + " - email: " + email + " - notes:" + notes);
         }
         catch (SQLException sqlExcept)
