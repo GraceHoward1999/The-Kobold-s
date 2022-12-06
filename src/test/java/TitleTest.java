@@ -53,9 +53,9 @@ public class TitleTest extends ApplicationTest {
         assertTrue(true);
         clickOn("Titles");
         try{
+            //dumb workaround bc click on won't work right
             clickOn("#TitleSearch");
             write("Example Man");
-            //dumb workaround bc click on won't work right
             for (int i = 0; i < 6; i++)
             {
                 press(KeyCode.TAB);
@@ -85,7 +85,7 @@ public class TitleTest extends ApplicationTest {
             clickOn("#newTitlePrice");
             write("5.00");
             clickOn("#newTitleNotes");
-            write("Just testing");
+            write("Testing");
 
             clickOn("#addTitleButton");
         
@@ -97,9 +97,26 @@ public class TitleTest extends ApplicationTest {
     @Test
     public void testFlaggingTitle()
     {
-        Title example = controller.getSelectedTitle();
-        assertFalse(example.flaggedProperty().get());
+        clickOn("Titles");
         //dumb workaround bc click on won't work right
+        clickOn("#TitleSearch");
+            write("Example Man");
+        for (int i = 0; i < 6; i++)
+        {
+           press(KeyCode.TAB);
+            release(KeyCode.TAB);
+        }
+        press(KeyCode.ENTER);
+        release(KeyCode.ENTER);
+        Title example = controller.getSelectedTitle();
+        assertFalse(example.isFlagged());
+
+        push(new KeyCodeCombination(KeyCode.M, KeyCodeCombination.CONTROL_DOWN));
+
+        clickOn("#saveFlagsButton");
+        //dumb workaround bc click on won't work right
+        clickOn("#TitleSearch");
+            write("Example Man");
         for (int i = 0; i < 6; i++)
         {
            press(KeyCode.TAB);
@@ -108,8 +125,44 @@ public class TitleTest extends ApplicationTest {
         press(KeyCode.ENTER);
         release(KeyCode.ENTER);
 
-        push(new KeyCodeCombination(KeyCode.M, KeyCodeCombination.CONTROL_DOWN));
+        assertTrue(example.isFlagged());
 
+    }
+
+    @Test
+    public void testEditingTitle()
+    {
+        clickOn("Titles");
+        //dumb workaround bc click on won't work right
+        clickOn("#TitleSearch");
+        write("Example");
+        for (int i = 0; i < 6; i++)
+        {
+           press(KeyCode.TAB);
+            release(KeyCode.TAB);
+        }
+        press(KeyCode.ENTER);
+        release(KeyCode.ENTER);
+        Title example = controller.getSelectedTitle();
+
+        clickOn("#editTitleButton");
+        doubleClickOn("#updateTitleNotes");
+        write("5:55 am");
+        clickOn("#updateTitleButton");
+
+        //dumb workaround bc click on won't work right
+        doubleClickOn("#TitleSearch");
+        write("Example Man");
+        for (int i = 0; i < 6; i++)
+        {
+           press(KeyCode.TAB);
+            release(KeyCode.TAB);
+        }
+        press(KeyCode.ENTER);
+        release(KeyCode.ENTER);
+        example = controller.getSelectedTitle();
+
+        assertEquals(example.getNotes(), "5:55 am");
     }
 
     /**
@@ -141,6 +194,36 @@ public class TitleTest extends ApplicationTest {
         int after = controller.getTitles().size();
 
         assertEquals(before - 1, after);
+    }
+
+    @Test
+    public void verifyDeletedTitle()
+    {
+        clickOn("Titles");
+        clickOn("#addTitleButtonMain");
+        clickOn("#newTitleTitle");
+        write("Example Man");
+        clickOn("#newTitlePrice");
+        write("5.00");
+        clickOn("#newTitleNotes");
+        write("Testing");
+        clickOn("#addTitleButton");
+
+        clickOn("Titles");
+        clickOn("#TitleSearch");
+        write("Example Man");
+        //dumb workaround bc click on won't work right
+        for (int i = 0; i < 6; i++)
+        {
+            press(KeyCode.TAB);
+            release(KeyCode.TAB);
+        }
+        press(KeyCode.ENTER);
+        release(KeyCode.ENTER);
+        Title example = controller.getSelectedTitle();
+        assertFalse(example.isFlagged());
+        clickOn("#deleteTitleButton");
+        clickOn("#yesButton");
     }
 }
 
