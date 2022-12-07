@@ -2860,7 +2860,12 @@ public class Controller implements Initializable {
     }
 
     private void moveDB() {
-
+        File lastDatabaseLocation = new File(LAST_DB_LOCATION_FILE_PATH);
+        // TODO
+        // copy database at last location to new location
+        
+        // make a test connection to new database location
+        // connection successful, delete database from last location
     }
 
     /**
