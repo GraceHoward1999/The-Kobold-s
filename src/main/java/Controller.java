@@ -7,8 +7,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -141,7 +139,7 @@ public class Controller implements Initializable {
 
     private static Connection conn = null;
 
-    private boolean setAll;
+    // private boolean setAll;
     //#endregion
 
     /**
@@ -1026,22 +1024,6 @@ public class Controller implements Initializable {
             }
         });
 
-        EventHandler<KeyEvent> eventHandler = new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent e)
-            {
-                if(e.getCode() == KeyCode.F)
-                {
-                    titleTable.getSelectionModel().getSelectedItem().setFlagged(!titleTable.getSelectionModel().getSelectedItem().isFlagged());
-                }
-            }
-        };
-
-
-        //TODO: figure how to access current scene to add key listner
-        //Scene scene = null;//??
-        //scene.addEventFilter(KeyEvent.KEY_TYPED, eventHandler);
-
         //add listener for selected flagged title
         flaggedTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
@@ -1130,7 +1112,7 @@ public class Controller implements Initializable {
                 Parent root = fxmlLoader.load();
 
                 NewTitleController newTitleController = fxmlLoader.getController();
-                newTitleController.setConnection(this.conn);
+                newTitleController.setConnection(Controller.conn);
 
                 Stage window = new Stage();
                 window.initModality(Modality.APPLICATION_MODAL);
@@ -2388,8 +2370,6 @@ public class Controller implements Initializable {
                 headerCell.setCellStyle(cellStyle);
                 headerCell.setCellValue("Single Title Customer List");
 
-                // TODO: Add a log call?
-
                 exportSingleTitle(workbook, title, 2, true, false);
                 saveReport(file, workbook);
             }
@@ -2604,7 +2584,7 @@ public class Controller implements Initializable {
     @FXML
     void passCustomerKeyboardFocus(MouseEvent event)
     {
-        if (event.getEventType() == event.MOUSE_CLICKED)
+        if (event.getEventType() == MouseEvent.MOUSE_CLICKED)
         {
             customerOrderTable.getScene().lookup("#CustomerAnchorPane").requestFocus();
         }
@@ -2622,12 +2602,14 @@ public class Controller implements Initializable {
             TextField search = (TextField) scene.lookup("#TitleSearch");
             search.requestFocus();
         }
+
+
     }
 
     @FXML
     void passTitleKeyboardFocus(MouseEvent event)
     {
-        if (event.getEventType() == event.MOUSE_CLICKED)
+        if (event.getEventType() == MouseEvent.MOUSE_CLICKED)
         {
             titleTable.getScene().lookup("#TitleAnchorPane").requestFocus();
         }

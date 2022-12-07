@@ -114,9 +114,9 @@ public class NewOrderController implements Initializable{
                 int rowsAffected = s.executeUpdate();
 
                 if (rowsAffected == 0) {
-                    //TODO: Throw an error
+                    System.err.println("Zero rows effected on new order add, this should not happen.");
                 } else if (rowsAffected > 1) {
-                    //TODO: Throw an error
+                    // Nothing should happen here
                 }
                 s.close();
 

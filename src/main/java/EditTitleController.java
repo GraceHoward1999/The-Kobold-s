@@ -120,7 +120,7 @@ public class EditTitleController{
     }
 
     /**
-     * Converts a string in the format of XXX,XXX.XX to an integer
+     * Converts a string in the format of xxx,xxx.xx to an integer
      * @param priceDollars The price in dollars to be converted
      * @return An integer representing the number of cents
      */
