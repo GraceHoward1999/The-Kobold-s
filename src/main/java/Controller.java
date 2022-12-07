@@ -2787,15 +2787,18 @@ public class Controller implements Initializable {
      */
     private void createConnection() {
         try {
-            conn = DriverManager.getConnection("jdbc:derby:" + System.getProperty("user.home") + "/DragonSlayer/derbyDB");
+            conn = DriverManager.getConnection("jdbc:derby:" + settings.getSetting("dbLocation"));
         } catch (SQLException e) {
             if (e.getErrorCode() == 40000) {
                 String lastDBLocation = getLastDBLocation();
                 if (lastDBLocation == null || lastDBLocation == settings.getSetting("dbLocation")) {
                     CreateDB.main(null);
                 }
+                else {
+                    moveDB();
+                }
                 try {
-                    conn = DriverManager.getConnection("jdbc:derby:" + System.getProperty("user.home") + "/DragonSlayer/derbyDB");
+                    conn = DriverManager.getConnection("jdbc:derby:" + settings.getSetting("dbLocation"));
                 } catch (SQLException se) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Could not create derby database. Please report this bug.", ButtonType.OK);
                     alert.setTitle("Database Error");
@@ -2803,7 +2806,7 @@ public class Controller implements Initializable {
                     alert.show();
                 }
             } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Database error. This is either a bug, or you messed with the DragonSlayer/derbyDB folder.", ButtonType.OK);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Database error. This is either a bug, or you messed with the database folder.", ButtonType.OK);
                 alert.setTitle("Database Error");
                 alert.setHeaderText("");
                 alert.show();
@@ -2818,17 +2821,19 @@ public class Controller implements Initializable {
     private String getLastDBLocation() {
         File lastDatabaseLocation = new File(LAST_DB_LOCATION_FILE_PATH);
         String out;
+        Scanner reader = null;
+
         try {
-            Scanner reader = new Scanner(new FileReader(lastDatabaseLocation));
+            reader = new Scanner(new FileReader(lastDatabaseLocation));
             out = reader.nextLine();
-            reader.close();
         } catch (FileNotFoundException fnfe) {
             out = null;
         } catch (Exception e) {
             out = null;
             e.printStackTrace();
         }
-
+        
+        reader.close();
         return out;
     }
 
@@ -2838,19 +2843,24 @@ public class Controller implements Initializable {
      */
     private void setLastDBLocation(String dbPath) {
         File lastDatabaseLocation = new File(LAST_DB_LOCATION_FILE_PATH);
+        FileWriter writer = null;
+
         try {
             lastDatabaseLocation.delete();
             lastDatabaseLocation.createNewFile();
-            FileWriter writer = new FileWriter(lastDatabaseLocation);
-            writer.
+            writer = new FileWriter(lastDatabaseLocation);
+            writer.write(dbPath);
+            writer.close();
         } catch (SecurityException sce) {
             sce.printStackTrace();
             System.out.println("Security exception detected, try running the program as an administrator");
-        } catch (FileNotFoundException fnfe) {
-
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void moveDB() {
+
     }
 
     /**

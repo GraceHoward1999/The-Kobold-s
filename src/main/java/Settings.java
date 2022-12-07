@@ -13,7 +13,7 @@ public class Settings {
     private final String SETTINGS_PATH = "settings.ini";
     private final String RULE_DELIMITER = "=";
 
-    // default config Pairs (Key = Setting, Value = Setting value)
+    // default config Pairs (Key = Setting, Value = Setting value), add new settings here
     private final Pair<String, String> DEFAULT_DB_LOCATION = new Pair<String, String>("dbLocation", System.getProperty("user.home") + "/DragonSlayer/derbyDB");
 
     private File settingsFile;

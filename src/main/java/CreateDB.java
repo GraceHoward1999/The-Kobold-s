@@ -10,10 +10,11 @@ import java.sql.Statement;
  * This class provides a way to create a database for the application.
  */
 public class CreateDB {
+    static Settings settings = new Settings();
     public static void main(String args[]) {
         new CreateDB().go();
         System.out.println("CreateDB finished.");
-        Log.LogEvent("Database Created", "Created a new database at: " + System.getProperty("user.home") + "/DragonSlayer/derbyDB;create=true");
+        Log.LogEvent("Database Created", "Created a new database at: " + settings.getSetting("dbLocation") + ";create=true");
     }
 
     /**
@@ -30,7 +31,7 @@ public class CreateDB {
             //NOTE: This is the install location of the database, hardcoding to work on my machine now.
             //We will need to change this in the future.
 
-            conn = DriverManager.getConnection("jdbc:derby:" + System.getProperty("user.home") + "/DragonSlayer/derbyDB;create=true");
+            conn = DriverManager.getConnection("jdbc:derby:" + settings.getSetting("dbLocation") + ";create=true");
 
             System.out.println("Connected to db " + dbName);
             conn.setAutoCommit(false);
