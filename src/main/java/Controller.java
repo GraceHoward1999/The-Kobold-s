@@ -2602,8 +2602,6 @@ public class Controller implements Initializable {
             TextField search = (TextField) scene.lookup("#TitleSearch");
             search.requestFocus();
         }
-
-
     }
 
     @FXML
@@ -3084,7 +3082,8 @@ public class Controller implements Initializable {
      */
     public void flagKeyShortcut()
     {
-        titleTable.getSelectionModel().getSelectedItem().setFlagged(true);
+        //titleTable.getSelectionModel().getSelectedItem().isFlagged()
+        titleTable.getSelectionModel().getSelectedItem().setFlagged(!titleTable.getSelectionModel().getSelectedItem().isFlagged());
         //https://stackoverflow.com/questions/48616490/how-to-add-a-javafx-shortcut-key-combinations-for-buttons
         //https://stackoverflow.com/questions/25397742/javafx-keyboard-event-shortcut-key
     }
@@ -3201,6 +3200,25 @@ public class Controller implements Initializable {
         {
             sqlExcept.printStackTrace();
         }
+    }
+
+    /*######################################################################/
+    //////////////////////////// Testing Functions ///////////////////////////
+    /######################################################################*/
+    /**
+     * Method to get the active customer for testing.
+     */
+    public Customer getSelectedCustomer()
+    {
+        return customerTable.getSelectionModel().getSelectedItem();
+    }
+
+    /**
+     * Method to get the active title for testing.
+     */
+    public Title getSelectedTitle()
+    {
+        return titleTable.getSelectionModel().getSelectedItem();
     }
 
 }
