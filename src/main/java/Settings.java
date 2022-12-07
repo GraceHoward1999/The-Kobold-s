@@ -1,6 +1,6 @@
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -13,14 +13,26 @@ public class Settings {
     private final String SETTINGS_PATH = "settings.ini";
     private final String RULE_DELIMITER = "=";
 
-    private final String DEFAULT_DB_LOCATION = "";
+    // default config Pairs (Key = Setting, Value = Setting value)
+    private final Pair<String, String> DEFAULT_DB_LOCATION = new Pair<String, String>("Database location", System.getProperty("user.home") + "/DragonSlayer/derbyDB");
 
     private File settingsFile;
     private ArrayList<Pair<String, String>> rulePairs;
 
     public Settings() {
         settingsFile = new File (SETTINGS_PATH);
-        FetchSettings();
+
+        try {
+            // if file was created, create settings file. Otherwise, the file already existed, so parse it
+            if (settingsFile.createNewFile()) {
+                createSettings();
+            }
+            else {
+                ParseSettings();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -42,20 +54,6 @@ public class Settings {
         return null;
     }
 
-    private int FetchSettings() {
-        // if file exists, parse file
-        try {
-            ParseSettings();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            // TODO:
-            // if file doesn't exist, create file with default settings
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return 0;
-    }
-
     private void ParseSettings() throws IOException {
         Scanner reader = new Scanner(new FileReader(settingsFile));
         String curLine;
@@ -66,12 +64,19 @@ public class Settings {
             curLine = reader.nextLine();
             if (curLine.charAt(0) != COMMENT_CHAR) {
                 curPair = curLine.split(RULE_DELIMITER);
-                rulePairs.add(new Pair<String, String>(curPair[0], curPair[1]));
+                rulePairs.add(new Pair<String, String>(curPair[0].trim(), curPair[1].trim()));
             }
         }
     }
 
-    private void GenDefaultSettings() {
-        // TODO: how to generate initial file??
+    private void createSettings() throws IOException {
+        FileWriter writer = new FileWriter(settingsFile);
+        // generate db location setting
+        // instructions
+        writer.write(COMMENT_CHAR + " This is the location of the database. To move the database, change the path below and run the Dragon Slayer software\n");
+        // Setting that will be parsed
+        writer.write(DEFAULT_DB_LOCATION.getKey() + " " + RULE_DELIMITER + " " + DEFAULT_DB_LOCATION.getValue());
+
+        writer.close();
     }
 }

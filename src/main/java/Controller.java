@@ -136,6 +136,7 @@ public class Controller implements Initializable {
     @FXML private TextArea databaseOverview;
 
     private static Connection conn = null;
+    private Settings settings;
 
     private boolean setAll;
     //#endregion
@@ -804,6 +805,9 @@ public class Controller implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        
+        // create settings object
+        settings = new Settings();
 
         createConnection();
 
