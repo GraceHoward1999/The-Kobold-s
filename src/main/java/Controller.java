@@ -43,12 +43,16 @@ import java.util.Hashtable;
 //import java.util.Observable;
 import java.util.ResourceBundle;
 //import java.util.Set;
+import java.util.Scanner;
 
 public class Controller implements Initializable {
 
 /*######################################################################/
 //////////////////////////// Class Variables ////////////////////////////
 /######################################################################*/
+
+    // Path to txt file saving last DB location. Reccommended to leave with program
+    private final String LAST_DB_LOCATION_FILE_PATH = "Last DB Location.txt";
 
     //#region Class Variables
 
@@ -2786,7 +2790,10 @@ public class Controller implements Initializable {
             conn = DriverManager.getConnection("jdbc:derby:" + System.getProperty("user.home") + "/DragonSlayer/derbyDB");
         } catch (SQLException e) {
             if (e.getErrorCode() == 40000) {
-                CreateDB.main(null);
+                String lastDBLocation = getLastDBLocation();
+                if (lastDBLocation == null || lastDBLocation == settings.getSetting("dbLocation")) {
+                    CreateDB.main(null);
+                }
                 try {
                     conn = DriverManager.getConnection("jdbc:derby:" + System.getProperty("user.home") + "/DragonSlayer/derbyDB");
                 } catch (SQLException se) {
@@ -2801,6 +2808,48 @@ public class Controller implements Initializable {
                 alert.setHeaderText("");
                 alert.show();
             }
+        }
+    }
+
+    /**
+     * retrieves the last known database location, if any
+     * @return path to last DB location if any is stored, null if no path is stored
+     */
+    private String getLastDBLocation() {
+        File lastDatabaseLocation = new File(LAST_DB_LOCATION_FILE_PATH);
+        String out;
+        try {
+            Scanner reader = new Scanner(new FileReader(lastDatabaseLocation));
+            out = reader.nextLine();
+            reader.close();
+        } catch (FileNotFoundException fnfe) {
+            out = null;
+        } catch (Exception e) {
+            out = null;
+            e.printStackTrace();
+        }
+
+        return out;
+    }
+
+    /**
+     * updates the last known database location
+     * @param dbPath path of the confirmed database location
+     */
+    private void setLastDBLocation(String dbPath) {
+        File lastDatabaseLocation = new File(LAST_DB_LOCATION_FILE_PATH);
+        try {
+            lastDatabaseLocation.delete();
+            lastDatabaseLocation.createNewFile();
+            FileWriter writer = new FileWriter(lastDatabaseLocation);
+            writer.
+        } catch (SecurityException sce) {
+            sce.printStackTrace();
+            System.out.println("Security exception detected, try running the program as an administrator");
+        } catch (FileNotFoundException fnfe) {
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
