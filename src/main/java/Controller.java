@@ -1,4 +1,5 @@
 //import org.apache.poi.ss.formula.functions.T;
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -28,6 +29,8 @@ import javafx.stage.Stage;
 //import java.beans.EventHandler;
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.*;
 import java.text.DateFormat;
 import java.time.LocalDate;
@@ -41,12 +44,16 @@ import java.util.Hashtable;
 //import java.util.Observable;
 import java.util.ResourceBundle;
 //import java.util.Set;
+import java.util.Scanner;
 
 public class Controller implements Initializable {
 
 /*######################################################################/
 //////////////////////////// Class Variables ////////////////////////////
 /######################################################################*/
+
+    // Path to txt file saving last DB location. Reccommended to leave with program
+    private final String LAST_DB_LOCATION_FILE_PATH = "lastDBconnection.txt";
 
     //#region Class Variables
 
@@ -138,6 +145,7 @@ public class Controller implements Initializable {
     private ObservableList<Order> storedOrders;
 
     private static Connection conn = null;
+    private Settings settings;
 
     // private boolean setAll;
     //#endregion
@@ -757,6 +765,9 @@ public class Controller implements Initializable {
      */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        
+        // create settings object
+        settings = new Settings();
 
         createConnection();
 
@@ -974,12 +985,15 @@ public class Controller implements Initializable {
 
                     if (newSelection.getDateFlagged() != null) {
                         titleDateFlagged.setText(newSelection.getDateFlagged().toString());
-                        if (newSelection.getDateFlagged().isBefore(sixMonthsAgo)) {
+                        if (newSelection.getDateFlagged().isBefore(sixMonthsAgo) && newSelection.getDateCreated() == null && newSelection.getDateCreated().isBefore(sixMonthsAgo)) {
                             titleDateFlaggedNoticeText.setVisible(true);
                         }
                         else {
                             titleDateFlaggedNoticeText.setVisible(false);
                         }
+                    }
+                    else if (newSelection.getDateCreated() != null && newSelection.getDateCreated().isAfter(sixMonthsAgo)) {
+                        titleDateFlaggedNoticeText.setVisible(false);
                     }
                     else {
                         titleDateFlagged.setText("Never");
@@ -1007,7 +1021,7 @@ public class Controller implements Initializable {
                     LocalDate sixMonthsAgo = LocalDate.now().minusMonths(6);
                     for (Title title: selectedTitles)
                     {
-                        if (title.getDateFlagged() == null || title.getDateFlagged().isBefore(sixMonthsAgo)) {
+                        if ((title.getDateCreated() == null || title.getDateCreated().isBefore(sixMonthsAgo)) && (title.getDateFlagged() == null || title.getDateFlagged().isBefore(sixMonthsAgo))) {
                             oldTitleFlag = true;
                             break;
                         }
@@ -2756,12 +2770,20 @@ public class Controller implements Initializable {
      */
     private void createConnection() {
         try {
-            conn = DriverManager.getConnection("jdbc:derby:" + System.getProperty("user.home") + "/DragonSlayer/derbyDB");
+            conn = DriverManager.getConnection("jdbc:derby:" + settings.getSetting("dbLocation"));
+            setLastDBLocation(settings.getSetting("dbLocation"));
         } catch (SQLException e) {
             if (e.getErrorCode() == 40000) {
-                CreateDB.main(null);
+                String lastDBLocation = getLastDBLocation();
+                if (lastDBLocation == null || lastDBLocation == settings.getSetting("dbLocation")) {
+                    CreateDB.main(null);
+                }
+                else {
+                    moveDB();
+                }
                 try {
-                    conn = DriverManager.getConnection("jdbc:derby:" + System.getProperty("user.home") + "/DragonSlayer/derbyDB");
+                    conn = DriverManager.getConnection("jdbc:derby:" + settings.getSetting("dbLocation"));
+                    setLastDBLocation(settings.getSetting("dbLocation"));
                 } catch (SQLException se) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Could not create derby database. Please report this bug.", ButtonType.OK);
                     alert.setTitle("Database Error");
@@ -2769,11 +2791,87 @@ public class Controller implements Initializable {
                     alert.show();
                 }
             } else {
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Database error. This is either a bug, or you messed with the DragonSlayer/derbyDB folder.", ButtonType.OK);
+                Alert alert = new Alert(Alert.AlertType.ERROR, "Database error. This is either a bug, or you messed with the database folder.", ButtonType.OK);
                 alert.setTitle("Database Error");
                 alert.setHeaderText("");
                 alert.show();
             }
+        }
+    }
+
+    /**
+     * retrieves the last known database location, if any
+     * @return path to last DB location if any is stored, null if no path is stored
+     */
+    private String getLastDBLocation() {
+        File lastDatabaseLocationFile = new File(LAST_DB_LOCATION_FILE_PATH);
+        String out;
+        Scanner reader = null;
+
+        try {
+            reader = new Scanner(new FileReader(lastDatabaseLocationFile));
+            out = reader.nextLine();
+        } catch (FileNotFoundException fnfe) {
+            out = null;
+        } catch (Exception e) {
+            out = null;
+            e.printStackTrace();
+        }
+        
+        reader.close();
+        return out;
+    }
+
+    /**
+     * updates the last known database location
+     * @param dbPath path of the confirmed database location
+     */
+    private void setLastDBLocation(String dbPath) {
+        File lastDatabaseLocationFile = new File(LAST_DB_LOCATION_FILE_PATH);
+        FileWriter writer = null;
+
+        try {
+            lastDatabaseLocationFile.delete();
+            lastDatabaseLocationFile.createNewFile();
+            writer = new FileWriter(lastDatabaseLocationFile);
+            writer.write(dbPath);
+            writer.close();
+        } catch (SecurityException sce) {
+            sce.printStackTrace();
+            System.out.println("Security exception detected, try running the program as an administrator");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void moveDB() {
+        // copy database at last location to new location
+        copyDB();
+        // make a test connection to new database location
+        try {
+            conn = DriverManager.getConnection("jdbc:derby:" + settings.getSetting("dbLocation"));
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("Error connecting to database at new location, database at old location was not deleted");
+            return;
+        }
+        // connection successful, delete database from last location and update last DB location
+        try {
+            FileUtils.deleteDirectory(new File(getLastDBLocation()));
+            setLastDBLocation(settings.getSetting("dbLocation"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void copyDB() {
+        File lastDatabaseLocation = new File(getLastDBLocation());
+        File newDatabaseLocation = new File(settings.getSetting("dbLocation"));
+        try {
+            newDatabaseLocation.mkdirs();
+            FileUtils.copyDirectory(lastDatabaseLocation, newDatabaseLocation);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
