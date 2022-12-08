@@ -8,8 +8,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -142,10 +140,14 @@ public class Controller implements Initializable {
 
     @FXML private TextArea databaseOverview;
 
+    private ObservableList<Customer> storedCustomers;
+    private ObservableList<Title> storedTitles;
+    private ObservableList<Order> storedOrders;
+
     private static Connection conn = null;
     private Settings settings;
 
-    private boolean setAll;
+    // private boolean setAll;
     //#endregion
 
     /**
@@ -270,29 +272,17 @@ public class Controller implements Initializable {
 
         ObservableList<Customer> customers = FXCollections.observableArrayList();
 
-        Statement s = null;
-        try
+        // Update the customer list if a change has happened to make it invalid.
+        if (storedCustomers == null)
         {
-            s = conn.createStatement();
-            ResultSet results = s.executeQuery("select * from Customers ORDER BY LASTNAME");
-
-            while(results.next())
-            {
-                int customerId = results.getInt(1);
-                String firstName = results.getString(2);
-                String lastName = results.getString(3);
-                String phone = results.getString(4);
-                String email = results.getString(5);
-                String notes = results.getString(6);
-                boolean delinquent = results.getBoolean(7);
-                customers.add(new Customer(customerId, firstName, lastName, phone, email, notes, delinquent));
-            }
-            results.close();
-            s.close();
+            invalidateCustomers();
         }
-        catch (SQLException sqlExcept)
+
+        // For data safety, create a copy of the customer to avoid data modification of the original list.
+        for (Customer c: storedCustomers)
         {
-            sqlExcept.printStackTrace();
+            Customer copy = new Customer(c.getId(), c.getFirstName(), c.getLastName(), c.getPhone(), c.getEmail(), c.getNotes(), c.getDelinquent());
+            customers.add(copy);
         }
 
         return customers;
@@ -588,29 +578,15 @@ public class Controller implements Initializable {
     public ObservableList<Order> getOrderTable() {
         ObservableList<Order> orders = FXCollections.observableArrayList();
 
-        Statement s = null;
-        try
+        if (storedOrders == null)
         {
-            s = conn.createStatement();
-            ResultSet results = s.executeQuery("SELECT ORDERS.CUSTOMERID, ORDERS.TITLEID, TITLES.title, ORDERS.QUANTITY, ORDERS.ISSUE FROM TITLES" +
-                    " INNER JOIN ORDERS ON Orders.titleID=TITLES.TitleId ORDER BY TITLE");
-
-            while(results.next())
-            {
-                int customerId = results.getInt(1);
-                int titleId = results.getInt(2);
-                String title = results.getString(3);
-                int quantity = results.getInt(4);
-                int issue = results.getInt(5);
-
-                orders.add(new Order(customerId, titleId, title, quantity, issue));
-            }
-            results.close();
-            s.close();
+            invalidateOrders();
         }
-        catch (SQLException sqlExcept)
+
+        for (Order o: storedOrders)
         {
-            sqlExcept.printStackTrace();
+            Order copy = new Order(o.getCustomerId(), o.getTitleId(), o.getTitleName(), o.getQuantity(), o.getIssue());
+            orders.add(copy);
         }
 
         return orders;
@@ -684,53 +660,27 @@ public class Controller implements Initializable {
      */
     public ObservableList<Title> getTitles() {
 
-        ObservableList<Title> titles  = FXCollections.observableArrayList();
+        ObservableList<Title> titles = FXCollections.observableArrayList();
 
-        try
+        if (storedTitles == null)
         {
-            Statement s = conn.createStatement();
-            ResultSet results = s.executeQuery("select * from Titles order by TITLE");
-
-            while(results.next())
-            {
-                int titleId = results.getInt("TITLEID");
-                String title = results.getString("TITLE");
-                int price= results.getInt("PRICE");
-                String notes = results.getString("NOTES");
-                String productId = results.getString("PRODUCTID");
-                Date dateCreated = results.getDate("DATECREATED");
-                boolean flagged = results.getBoolean("FLAGGED");
-                Date dateFlagged = results.getDate("DATE_FLAGGED");
-                int issueFlagged = results.getInt("ISSUE_FLAGGED");
-                if (dateFlagged != null) {
-                    if (dateCreated == null) {
-
-                    }
-                    titles.add(new Title(titleId, title, price, notes, productId, (dateCreated == null ? null : dateCreated.toLocalDate()), flagged, dateFlagged.toLocalDate(), issueFlagged));
-                }
-                else {
-                    titles.add(new Title(titleId, title, price, notes, productId, (dateCreated == null ? null : dateCreated.toLocalDate()), flagged, null, issueFlagged));
-                }
-            }
-            results.close();
-            s.close();
+            invalidateTitles();
         }
-        catch (SQLException sqlExcept)
+
+        for (Title t: storedTitles)
         {
-            sqlExcept.printStackTrace();
-        }
-        //TODO: adjust unsaved flags alert
-        for (Title t : titles) {
-            t.flaggedProperty().addListener((obs, wasFlagged, isFlagged) -> {
+            Title copy = new Title(t.getId(), t.getTitle(), t.getPrice(), t.getNotes(), t.getProductId(), t.getDateCreated(), t.isFlagged(), t.getDateFlagged(), t.getIssueFlagged());
+
+            copy.flaggedProperty().addListener((obs, wasFlagged, isFlagged) -> {
                 if (isFlagged) {
                     try {
                         Statement s = conn.createStatement();
-                        String sql = "SELECT * FROM ORDERS WHERE TITLEID = " + t.getId() + " AND ISSUE IS NOT NULL";
+                        String sql = "SELECT * FROM ORDERS WHERE TITLEID = " + copy.getId() + " AND ISSUE IS NOT NULL";
                         ResultSet results = s.executeQuery(sql);
 
                         if (results.next()) {
                             int titleId = results.getInt("TITLEID");
-                            if (t.getId() == titleId) {
+                            if (copy.getId() == titleId) {
                                 TextInputDialog dialog = new TextInputDialog();
                                 dialog.setContentText("This title has at least one issue # request.\nPlease enter the issue # for the new release.");
                                 dialog.setTitle("Confirm Issue");
@@ -738,7 +688,7 @@ public class Controller implements Initializable {
                                 final Button buttonOk = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
                                 buttonOk.addEventFilter(ActionEvent.ACTION, event -> {
                                     try {
-                                        t.setIssueFlagged(Integer.parseInt(dialog.getEditor().getText()));
+                                        copy.setIssueFlagged(Integer.parseInt(dialog.getEditor().getText()));
                                     } catch (NumberFormatException e) {
                                         event.consume();
                                         Alert alert = new Alert(Alert.AlertType.INFORMATION, "Please enter a valid integer", ButtonType.OK);
@@ -746,7 +696,7 @@ public class Controller implements Initializable {
                                     }
                                 });
                                 if (dialog.showAndWait().isEmpty()) {
-                                    t.setFlagged(false);
+                                    copy.setFlagged(false);
                                 }
                             }
                         }
@@ -759,7 +709,10 @@ public class Controller implements Initializable {
                 }
                 if (!isFlagged && wasFlagged) this.unsaved = true;
             });
+
+            titles.add(copy);
         }
+
         return titles;
     }
 
@@ -1085,22 +1038,6 @@ public class Controller implements Initializable {
             }
         });
 
-        EventHandler<KeyEvent> eventHandler = new EventHandler<KeyEvent>() {
-            @Override
-            public void handle(KeyEvent e)
-            {
-                if(e.getCode() == KeyCode.F)
-                {
-                    titleTable.getSelectionModel().getSelectedItem().setFlagged(!titleTable.getSelectionModel().getSelectedItem().isFlagged());
-                }
-            }
-        };
-
-
-        //TODO: figure how to access current scene to add key listner
-        //Scene scene = null;//??
-        //scene.addEventFilter(KeyEvent.KEY_TYPED, eventHandler);
-
         //add listener for selected flagged title
         flaggedTable.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
@@ -1154,9 +1091,13 @@ public class Controller implements Initializable {
             window.setWidth(400);
             window.setScene(new Scene(root));
             window.setOnHidden( e -> {
-                customerTable.getItems().setAll(getCustomers());
-                this.loadReportsTab();
-                getDatabaseInfo();
+                if (newCustomerController.customerWasAdded)
+                {
+                    invalidateCustomers();
+                    customerTable.getItems().setAll(getCustomers());
+                    this.loadReportsTab();
+                    getDatabaseInfo();
+                }
             });
 
             window.show();
@@ -1185,7 +1126,7 @@ public class Controller implements Initializable {
                 Parent root = fxmlLoader.load();
 
                 NewTitleController newTitleController = fxmlLoader.getController();
-                newTitleController.setConnection(this.conn);
+                newTitleController.setConnection(Controller.conn);
 
                 Stage window = new Stage();
                 window.initModality(Modality.APPLICATION_MODAL);
@@ -1195,9 +1136,13 @@ public class Controller implements Initializable {
                 window.setWidth(400);
                 window.setScene(new Scene(root));
                 window.setOnHidden( e -> {
-                    titleTable.getItems().setAll(getTitles());
-                    this.loadReportsTab();
-                    getDatabaseInfo();
+                    if (newTitleController.titleWasAdded)
+                    {
+                        invalidateTitles();
+                        titleTable.getItems().setAll(getTitles());
+                        this.loadReportsTab();
+                        getDatabaseInfo();
+                    }
                 });
 
                 window.show();
@@ -1240,7 +1185,8 @@ public class Controller implements Initializable {
                     "Are you sure you would like to delete " + selectedCustomers.size() + " customers?");
             }
 
-            if (confirmDelete) {
+            if (confirmDelete) 
+            {
                 for (Customer customer: selectedCustomers)
                 {
                     int customerId = customer.getId();
@@ -1263,24 +1209,27 @@ public class Controller implements Initializable {
                         Log.LogEvent("Customer Deleted", "Deleted Customer - " + customer.getFirstName() + " " + customer.getLastName());
 
                     } catch (SQLException sqlExcept) {
+                        System.err.println("Error deleting customer");
                         sqlExcept.printStackTrace();
                     }
                 }
-            }
-            customerTable.getItems().setAll(getCustomers());
-            customerFirstNameText.setText("");
-            customerLastNameText.setText("");
-            customerPhoneText.setText("");
-            customerEmailText.setText("");
-            customerNotesText.setText("");
 
-            titleTable.getItems().setAll(getTitles());
-            if (customerTable.getSelectionModel().getSelectedItem() != null) {
-                updateOrdersTable(customerTable.getSelectionModel().getSelectedItem());
-            }
+                invalidateCustomers();
+                customerTable.getItems().setAll(getCustomers());
+                customerFirstNameText.setText("");
+                customerLastNameText.setText("");
+                customerPhoneText.setText("");
+                customerEmailText.setText("");
+                customerNotesText.setText("");
 
-            getDatabaseInfo();
-            this.loadReportsTab();
+                // titleTable.getItems().setAll(getTitles());
+                // if (customerTable.getSelectionModel().getSelectedItem() != null) {
+                //     updateOrdersTable(customerTable.getSelectionModel().getSelectedItem());
+                // }
+
+                getDatabaseInfo();
+                this.loadReportsTab();
+            }
         }
     }
 
@@ -1313,7 +1262,8 @@ public class Controller implements Initializable {
                     "Are you sure you would like to delete " + selectedOrders.size() + " orders?");
             }
 
-            if (confirmDelete) {
+            if (confirmDelete) 
+            {
                 for (Order order: selectedOrders)
                 {
                     int customerId = order.getCustomerId();
@@ -1343,14 +1293,15 @@ public class Controller implements Initializable {
                         sqlExcept.printStackTrace();
                     }
                 }
+
+                invalidateOrders();
+                updateOrdersTable(customerTable.getSelectionModel().getSelectedItem());
+
+                titleOrdersTable.getItems().clear();
+
+                this.loadReportsTab();
+                getDatabaseInfo();
             }
-            titleTable.getItems().setAll(getTitles());
-            updateOrdersTable(customerTable.getSelectionModel().getSelectedItem());
-
-            titleOrdersTable.getItems().clear();
-
-            this.loadReportsTab();
-            getDatabaseInfo();
         }
     }
 
@@ -1381,8 +1332,7 @@ public class Controller implements Initializable {
             }
 
             boolean confirmDelete;
-            if (req > 0)
-            {
+            if (req > 0) {
                 if (selectedTitles.size() == 1)
                 {
                     confirmDelete = ConfirmBox.display(
@@ -1396,8 +1346,7 @@ public class Controller implements Initializable {
                         "Are you sure you would like to delete " + selectedTitles.size() + " titles?\nThere are " + req + " requests for these titles!");
                 }
             }
-            else 
-            {
+            else {
                 if (selectedTitles.size() == 1)
                 {
                     confirmDelete = ConfirmBox.display(
@@ -1411,6 +1360,7 @@ public class Controller implements Initializable {
                         "Are you sure you would like to delete " + selectedTitles.size() + " titles?");
                 }
             }
+
             if (confirmDelete) {
                 for (Title title: selectedTitles)
                 {
@@ -1436,21 +1386,22 @@ public class Controller implements Initializable {
                         sqlExcept.printStackTrace();
                     }
                 }
+
+                invalidateTitles();
+                titleTable.getItems().setAll(getTitles());
+                titleTitleText.setText("");
+                titlePriceText.setText("");
+                titleNotesText.setText("");
+
+                // if (customerTable.getSelectionModel().getSelectedItem() != null) {
+                //     updateOrdersTable(customerTable.getSelectionModel().getSelectedItem());
+                // }
+
+                titleOrdersTable.getItems().clear();
+
+                getDatabaseInfo();
+                this.loadReportsTab();
             }
-            titleTable.getItems().setAll(getTitles());
-            titleTitleText.setText("");
-            titlePriceText.setText("");
-            titleNotesText.setText("");
-
-            titleTable.getItems().setAll(getTitles());
-            if (customerTable.getSelectionModel().getSelectedItem() != null) {
-                updateOrdersTable(customerTable.getSelectionModel().getSelectedItem());
-            }
-
-            titleOrdersTable.getItems().clear();
-
-            getDatabaseInfo();
-            this.loadReportsTab();
         }
     }
 
@@ -1482,14 +1433,20 @@ public class Controller implements Initializable {
                 window.setWidth(400);
                 window.setScene(new Scene(root));
                 window.setOnHidden(e -> {
-                    customerTable.getItems().setAll(getCustomers());
-                    customerFirstNameText.setText("");
-                    customerLastNameText.setText("");
-                    customerPhoneText.setText("");
-                    customerEmailText.setText("");
-                    customerNotesText.setText("");
-                    this.loadReportsTab();
-                    getDatabaseInfo();
+                    if (editCustomerController.customerWasEdited)
+                    {
+                        invalidateCustomers();
+                        customerTable.getItems().setAll(getCustomers());
+
+                        customerFirstNameText.setText("");
+                        customerLastNameText.setText("");
+                        customerPhoneText.setText("");
+                        customerEmailText.setText("");
+                        customerNotesText.setText("");
+
+                        this.loadReportsTab();
+                        getDatabaseInfo();
+                    }
                 });
                 window.show();
             } catch (Exception e) {
@@ -1531,11 +1488,15 @@ public class Controller implements Initializable {
 
                 window.setScene(new Scene(root));
                 window.setOnHidden(e -> {
-                    updateOrdersTable(customerTable.getSelectionModel().getSelectedItem());
-                    this.loadReportsTab();
-                    getDatabaseInfo();
+                    if (editOrderController.orderWasEdited)
+                    {
+                        invalidateOrders();
+                        updateOrdersTable(customerTable.getSelectionModel().getSelectedItem());
+                        this.loadReportsTab();
+                        getDatabaseInfo();
 
-                    titleTable.getItems().setAll(getTitles());
+                        // titleTable.getItems().setAll(getTitles());
+                    }
                 });
                 window.show();
             } catch (Exception e) {
@@ -1581,12 +1542,16 @@ public class Controller implements Initializable {
 
                 window.setScene(new Scene(root));
                 window.setOnHidden(e -> {
-                    titleTable.getItems().setAll(getTitles());
-                    titleTitleText.setText("");
-                    titlePriceText.setText("");
-                    titleNotesText.setText("");
-                    this.loadReportsTab();
-                    getDatabaseInfo();
+                    if (editTitleController.titleWasEdited)
+                    {
+                        invalidateTitles();
+                        titleTable.getItems().setAll(getTitles());
+                        titleTitleText.setText("");
+                        titlePriceText.setText("");
+                        titleNotesText.setText("");
+                        this.loadReportsTab();
+                        getDatabaseInfo();
+                    }
                 });
                 window.show();
             } catch (Exception e) {
@@ -1626,13 +1591,17 @@ public class Controller implements Initializable {
                 window.setWidth(400);
                 window.setScene(new Scene(root));
                 window.setOnHidden(e ->  {
-                    updateOrdersTable(customerTable.getSelectionModel().getSelectedItem());
-                    this.loadReportsTab();
-                    getDatabaseInfo();
+                    if (newOrderController.orderWasAdded)
+                    {
+                        invalidateOrders();
+                        updateOrdersTable(customerTable.getSelectionModel().getSelectedItem());
+                        this.loadReportsTab();
+                        getDatabaseInfo();
 
-                    if (titleTable.getSelectionModel().getSelectedItem() != null) {
-                        Title title = titleTable.getSelectionModel().getSelectedItem();
-                        titleOrdersTable.getItems().setAll(this.getRequests(title.getId(), -9));
+                        if (titleTable.getSelectionModel().getSelectedItem() != null) {
+                            Title title = titleTable.getSelectionModel().getSelectedItem();
+                            titleOrdersTable.getItems().setAll(this.getRequests(title.getId(), -9));
+                        }
                     }
                 });
                 window.show();
@@ -2415,8 +2384,6 @@ public class Controller implements Initializable {
                 headerCell.setCellStyle(cellStyle);
                 headerCell.setCellValue("Single Title Customer List");
 
-                // TODO: Add a log call?
-
                 exportSingleTitle(workbook, title, 2, true, false);
                 saveReport(file, workbook);
             }
@@ -2623,13 +2590,15 @@ public class Controller implements Initializable {
 
             TextField search = (TextField) scene.lookup("#CustomerSearch");
             search.requestFocus();
+
+            customerOrderTable.getItems().clear();
         }
     }
 
     @FXML
     void passCustomerKeyboardFocus(MouseEvent event)
     {
-        if (event.getEventType() == event.MOUSE_CLICKED)
+        if (event.getEventType() == MouseEvent.MOUSE_CLICKED)
         {
             customerOrderTable.getScene().lookup("#CustomerAnchorPane").requestFocus();
         }
@@ -2647,12 +2616,22 @@ public class Controller implements Initializable {
             TextField search = (TextField) scene.lookup("#TitleSearch");
             search.requestFocus();
         }
+
+        if (event.isControlDown() && event.getCode() == KeyCode.M)
+        {
+            for (Title title : titleTable.getSelectionModel().getSelectedItems())
+            {
+                title.setFlagged(!title.isFlagged());
+            }
+        }
+
+        
     }
 
     @FXML
     void passTitleKeyboardFocus(MouseEvent event)
     {
-        if (event.getEventType() == event.MOUSE_CLICKED)
+        if (event.getEventType() == MouseEvent.MOUSE_CLICKED)
         {
             titleTable.getScene().lookup("#TitleAnchorPane").requestFocus();
         }
@@ -2723,6 +2702,7 @@ public class Controller implements Initializable {
 
         customerTable.getItems().setAll(sortedCustomers);
     }
+
     @FXML
     void handleMarkDelinquent()
     {
@@ -3067,7 +3047,6 @@ public class Controller implements Initializable {
     }
 
     /**
-<<<<<<< HEAD
      * Adds all orders for a given set of Customers to the Orders table.
      * @param customer The Customer to update the Order Table for
      */
@@ -3211,9 +3190,148 @@ public class Controller implements Initializable {
      */
     public void flagKeyShortcut()
     {
-        titleTable.getSelectionModel().getSelectedItem().setFlagged(true);
+        //titleTable.getSelectionModel().getSelectedItem().isFlagged()
+        for (Title title : titleTable.getSelectionModel().getSelectedItems())
+        {
+            title.setFlagged(!title.isFlagged());
+        }
+
+        titleTable.getSelectionModel().getSelectedItem().setFlagged(!titleTable.getSelectionModel().getSelectedItem().isFlagged());
         //https://stackoverflow.com/questions/48616490/how-to-add-a-javafx-shortcut-key-combinations-for-buttons
         //https://stackoverflow.com/questions/25397742/javafx-keyboard-event-shortcut-key
+    }
+
+    private void invalidateCustomers()
+    {
+        if (storedCustomers == null)
+        {
+            storedCustomers = FXCollections.observableArrayList();
+        }
+
+        storedCustomers.clear();
+
+        Statement s = null;
+        try
+        {
+            s = conn.createStatement();
+            ResultSet results = s.executeQuery("select * from Customers ORDER BY LASTNAME");
+
+            while(results.next())
+            {
+                int customerId = results.getInt(1);
+                String firstName = results.getString(2);
+                String lastName = results.getString(3);
+                String phone = results.getString(4);
+                String email = results.getString(5);
+                String notes = results.getString(6);
+                boolean delinquent = results.getBoolean(7);
+                storedCustomers.add(new Customer(customerId, firstName, lastName, phone, email, notes, delinquent));
+            }
+            results.close();
+            s.close();
+        }
+        catch (SQLException sqlExcept)
+        {
+            sqlExcept.printStackTrace();
+        }
+    }
+
+    private void invalidateOrders()
+    {
+        if (storedOrders == null)
+        {
+            storedOrders = FXCollections.observableArrayList();
+        }
+
+        storedOrders.clear();
+
+        Statement s = null;
+        try
+        {
+            s = conn.createStatement();
+            ResultSet results = s.executeQuery("SELECT ORDERS.CUSTOMERID, ORDERS.TITLEID, TITLES.title, ORDERS.QUANTITY, ORDERS.ISSUE FROM TITLES" +
+                    " INNER JOIN ORDERS ON Orders.titleID=TITLES.TitleId ORDER BY TITLE");
+
+            while(results.next())
+            {
+                int customerId = results.getInt(1);
+                int titleId = results.getInt(2);
+                String title = results.getString(3);
+                int quantity = results.getInt(4);
+                int issue = results.getInt(5);
+
+                storedOrders.add(new Order(customerId, titleId, title, quantity, issue));
+            }
+            results.close();
+            s.close();
+        }
+        catch (SQLException sqlExcept)
+        {
+            sqlExcept.printStackTrace();
+        }
+    }
+
+    private void invalidateTitles()
+    {
+        if (storedTitles == null)
+        {
+            storedTitles = FXCollections.observableArrayList();
+        }
+
+        storedTitles.clear();
+
+        try
+        {
+            Statement s = conn.createStatement();
+            ResultSet results = s.executeQuery("select * from Titles order by TITLE");
+
+            while(results.next())
+            {
+                int titleId = results.getInt("TITLEID");
+                String title = results.getString("TITLE");
+                int price= results.getInt("PRICE");
+                String notes = results.getString("NOTES");
+                String productId = results.getString("PRODUCTID");
+                Date dateCreated = results.getDate("DATECREATED");
+                boolean flagged = results.getBoolean("FLAGGED");
+                Date dateFlagged = results.getDate("DATE_FLAGGED");
+                int issueFlagged = results.getInt("ISSUE_FLAGGED");
+                if (dateFlagged != null) {
+                    if (dateCreated == null) {
+                        // TODO: Is something supposed to be here?
+                    }
+                    storedTitles.add(new Title(titleId, title, price, notes, productId, (dateCreated == null ? null : dateCreated.toLocalDate()), flagged, dateFlagged.toLocalDate(), issueFlagged));
+                }
+                else {
+                    storedTitles.add(new Title(titleId, title, price, notes, productId, (dateCreated == null ? null : dateCreated.toLocalDate()), flagged, null, issueFlagged));
+                }
+            }
+            results.close();
+            s.close();
+        }
+        catch (SQLException sqlExcept)
+        {
+            sqlExcept.printStackTrace();
+        }
+    }
+
+    /*######################################################################/
+    //////////////////////////// Testing Functions ///////////////////////////
+    /######################################################################*/
+    /**
+     * Method to get the active customer for testing.
+     */
+    public Customer getSelectedCustomer()
+    {
+        return customerTable.getSelectionModel().getSelectedItem();
+    }
+
+    /**
+     * Method to get the active title for testing.
+     */
+    public Title getSelectedTitle()
+    {
+        return titleTable.getSelectionModel().getSelectedItem();
     }
 
 }

@@ -47,7 +47,7 @@ public class PhoneNumberFilter implements UnaryOperator<TextFormatter.Change> {
     }
 
     /**
-     * Formats a string into XXX-XXX-XXXX format
+     * Formats a string into xxx-xxx-xxxx format
      * @param numbers the string to format
      * @return the formatted string
      */

@@ -16,6 +16,8 @@ import java.sql.*;
  */
 public class EditTitleController{
 
+    public boolean titleWasEdited = false;
+
     private Connection conn;
     private Title title;
     int rowsAffected;
@@ -36,6 +38,8 @@ public class EditTitleController{
      */
     @FXML
     void updateTitle(ActionEvent event) {
+        titleWasEdited = true;
+
         String titleText = updateTitleTitle.getText();
         String notes = updateTitleNotes.getText();
         String productId = updateTitleProductId.getText();
@@ -116,7 +120,7 @@ public class EditTitleController{
     }
 
     /**
-     * Converts a string in the format of XXX,XXX.XX to an integer
+     * Converts a string in the format of xxx,xxx.xx to an integer
      * @param priceDollars The price in dollars to be converted
      * @return An integer representing the number of cents
      */

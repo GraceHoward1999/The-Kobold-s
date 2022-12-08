@@ -17,6 +17,8 @@ public final class Log
 
     public static boolean promptUser = false;
 
+    public static final boolean printDebugInfo = true;
+
     private Log() { /* This class is static and must not be instantiated */ };
     
     /**
@@ -96,8 +98,8 @@ public final class Log
         String fileName = date.substring(4, 7) + "-" + date.substring(date.length() - 4) + ".log";
         String filePath = System.getProperty("user.dir") + LOG_DIRECTORY_PATH + "/" + fileName;
 
-        // TODO: Remove after debugging
-        System.out.println(filePath);
+        if (printDebugInfo)
+            System.out.println(filePath);
 
         return filePath;
     }

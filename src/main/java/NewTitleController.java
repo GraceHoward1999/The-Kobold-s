@@ -16,6 +16,8 @@ import java.sql.*;
  */
 public class NewTitleController{
 
+    public boolean titleWasAdded = false;
+    
     private Connection conn;
     int rowsAffected = 0;
 
@@ -86,6 +88,8 @@ public class NewTitleController{
                 alert.setHeaderText("");
                 alert.show();
             }
+
+            titleWasAdded = true;
             Stage window = (Stage) addTitleButton.getScene().getWindow();
             window.close();
         }
@@ -106,7 +110,7 @@ public class NewTitleController{
     }
 
     /**
-     * Converts a string in the format of XXX,XXX.XX to an integer
+     * Converts a string in the format of xxx,xxx.xx to an integer
      * @param priceDollars The price in dollars to be converted
      * @return An integer representing the number of cents
      */
