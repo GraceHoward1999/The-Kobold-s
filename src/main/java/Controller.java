@@ -1,4 +1,5 @@
 //import org.apache.poi.ss.formula.functions.T;
+import org.apache.commons.io.FileUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -30,6 +31,8 @@ import javafx.stage.Stage;
 //import java.beans.EventHandler;
 import java.io.*;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.*;
 import java.text.DateFormat;
 import java.time.LocalDate;
@@ -52,7 +55,7 @@ public class Controller implements Initializable {
 /######################################################################*/
 
     // Path to txt file saving last DB location. Reccommended to leave with program
-    private final String LAST_DB_LOCATION_FILE_PATH = "Last DB Location.txt";
+    private final String LAST_DB_LOCATION_FILE_PATH = "lastDBconnection.txt";
 
     //#region Class Variables
 
@@ -2788,6 +2791,7 @@ public class Controller implements Initializable {
     private void createConnection() {
         try {
             conn = DriverManager.getConnection("jdbc:derby:" + settings.getSetting("dbLocation"));
+            setLastDBLocation(settings.getSetting("dbLocation"));
         } catch (SQLException e) {
             if (e.getErrorCode() == 40000) {
                 String lastDBLocation = getLastDBLocation();
@@ -2799,6 +2803,7 @@ public class Controller implements Initializable {
                 }
                 try {
                     conn = DriverManager.getConnection("jdbc:derby:" + settings.getSetting("dbLocation"));
+                    setLastDBLocation(settings.getSetting("dbLocation"));
                 } catch (SQLException se) {
                     Alert alert = new Alert(Alert.AlertType.ERROR, "Could not create derby database. Please report this bug.", ButtonType.OK);
                     alert.setTitle("Database Error");
@@ -2819,12 +2824,12 @@ public class Controller implements Initializable {
      * @return path to last DB location if any is stored, null if no path is stored
      */
     private String getLastDBLocation() {
-        File lastDatabaseLocation = new File(LAST_DB_LOCATION_FILE_PATH);
+        File lastDatabaseLocationFile = new File(LAST_DB_LOCATION_FILE_PATH);
         String out;
         Scanner reader = null;
 
         try {
-            reader = new Scanner(new FileReader(lastDatabaseLocation));
+            reader = new Scanner(new FileReader(lastDatabaseLocationFile));
             out = reader.nextLine();
         } catch (FileNotFoundException fnfe) {
             out = null;
@@ -2842,13 +2847,13 @@ public class Controller implements Initializable {
      * @param dbPath path of the confirmed database location
      */
     private void setLastDBLocation(String dbPath) {
-        File lastDatabaseLocation = new File(LAST_DB_LOCATION_FILE_PATH);
+        File lastDatabaseLocationFile = new File(LAST_DB_LOCATION_FILE_PATH);
         FileWriter writer = null;
 
         try {
-            lastDatabaseLocation.delete();
-            lastDatabaseLocation.createNewFile();
-            writer = new FileWriter(lastDatabaseLocation);
+            lastDatabaseLocationFile.delete();
+            lastDatabaseLocationFile.createNewFile();
+            writer = new FileWriter(lastDatabaseLocationFile);
             writer.write(dbPath);
             writer.close();
         } catch (SecurityException sce) {
@@ -2860,12 +2865,35 @@ public class Controller implements Initializable {
     }
 
     private void moveDB() {
-        File lastDatabaseLocation = new File(LAST_DB_LOCATION_FILE_PATH);
         // TODO
         // copy database at last location to new location
-        
+        copyDB();
         // make a test connection to new database location
-        // connection successful, delete database from last location
+        try {
+            conn = DriverManager.getConnection("jdbc:derby:" + settings.getSetting("dbLocation"));
+            conn.close();
+        } catch (SQLException e) {
+            System.out.println("Error connecting to database at new location, database at old location was not deleted");
+            return;
+        }
+        // connection successful, delete database from last location and update last DB location
+        try {
+            FileUtils.deleteDirectory(new File(getLastDBLocation()));
+            setLastDBLocation(settings.getSetting("dbLocation"));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void copyDB() {
+        File lastDatabaseLocation = new File(getLastDBLocation());
+        File newDatabaseLocation = new File(settings.getSetting("dbLocation"));
+        try {
+            newDatabaseLocation.mkdirs();
+            FileUtils.copyDirectory(lastDatabaseLocation, newDatabaseLocation);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     /**

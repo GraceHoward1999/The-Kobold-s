@@ -14,10 +14,10 @@ public class Settings {
     private final String RULE_DELIMITER = "=";
 
     // default config Pairs (Key = Setting, Value = Setting value), add new settings here
-    private final Pair<String, String> DEFAULT_DB_LOCATION = new Pair<String, String>("dbLocation", System.getProperty("user.home") + "/DragonSlayer/derbyDB");
+    private final Pair<String, String> DEFAULT_DB_LOCATION = new Pair<String, String>("dbLocation", System.getProperty("user.home") + "\\DragonSlayer\\derbyDB");
 
     private File settingsFile;
-    private ArrayList<Pair<String, String>> rulePairs;
+    private ArrayList<Pair<String, String>> rulePairs = new ArrayList<Pair<String, String>>();
 
     public Settings() {
         settingsFile = new File (SETTINGS_PATH);
@@ -79,6 +79,7 @@ public class Settings {
         // generate db location setting
         // instructions
         writer.write(COMMENT_CHAR + " This is the location of the database. To move the database, change the path below and run the Dragon Slayer software\n");
+        writer.write(COMMENT_CHAR + " WARNING: The movement process involves deleting files, making a manual backup before starting the program is advised\n");
         // Setting that will be parsed
         writer.write(DEFAULT_DB_LOCATION.getKey() + " " + RULE_DELIMITER + " " + DEFAULT_DB_LOCATION.getValue());
 
