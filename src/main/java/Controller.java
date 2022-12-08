@@ -2865,7 +2865,6 @@ public class Controller implements Initializable {
     }
 
     private void moveDB() {
-        // TODO
         // copy database at last location to new location
         copyDB();
         // make a test connection to new database location
