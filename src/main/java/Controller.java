@@ -2602,6 +2602,16 @@ public class Controller implements Initializable {
             TextField search = (TextField) scene.lookup("#TitleSearch");
             search.requestFocus();
         }
+
+        if (event.isControlDown() && event.getCode() == KeyCode.M)
+        {
+            for (Title title : titleTable.getSelectionModel().getSelectedItems())
+            {
+                title.setFlagged(!title.isFlagged());
+            }
+        }
+
+        
     }
 
     @FXML
@@ -3083,6 +3093,11 @@ public class Controller implements Initializable {
     public void flagKeyShortcut()
     {
         //titleTable.getSelectionModel().getSelectedItem().isFlagged()
+        for (Title title : titleTable.getSelectionModel().getSelectedItems())
+        {
+            title.setFlagged(!title.isFlagged());
+        }
+
         titleTable.getSelectionModel().getSelectedItem().setFlagged(!titleTable.getSelectionModel().getSelectedItem().isFlagged());
         //https://stackoverflow.com/questions/48616490/how-to-add-a-javafx-shortcut-key-combinations-for-buttons
         //https://stackoverflow.com/questions/25397742/javafx-keyboard-event-shortcut-key
