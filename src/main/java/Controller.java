@@ -2850,6 +2850,9 @@ public class Controller implements Initializable {
         }
     }
 
+    /**
+     * Moves the database to the location denoted by the settings file
+     */
     private void moveDB() {
         // copy database at last location to new location
         copyDB();
@@ -2870,6 +2873,9 @@ public class Controller implements Initializable {
         }
     }
 
+    /**
+     * Creates the necessary directories and copies the database from the old location to the new location
+     */
     private void copyDB() {
         File lastDatabaseLocation = new File(getLastDBLocation());
         File newDatabaseLocation = new File(settings.getSetting("dbLocation"));

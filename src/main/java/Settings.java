@@ -19,6 +19,9 @@ public class Settings {
     private File settingsFile;
     private ArrayList<Pair<String, String>> rulePairs = new ArrayList<Pair<String, String>>();
 
+    /**
+     * Settings constructor, creates a settings file if needed and parses it
+     */
     public Settings() {
         settingsFile = new File (SETTINGS_PATH);
 
@@ -55,6 +58,10 @@ public class Settings {
         return null;
     }
 
+    /**
+     * Parses the settings files to retrieve the setting pairs
+     * @throws IOException
+     */
     private void parseSettings() throws IOException {
         Scanner reader = new Scanner(new FileReader(settingsFile));
         String curLine;
@@ -72,6 +79,10 @@ public class Settings {
         reader.close();
     }
 
+    /**
+     * Creates the default settings file
+     * @throws IOException
+     */
     private void createSettings() throws IOException {
         FileWriter writer = new FileWriter(settingsFile);
         // generate db location setting
