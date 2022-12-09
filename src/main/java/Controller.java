@@ -2768,7 +2768,6 @@ public class Controller implements Initializable {
      */
     private void createConnection() {
         try {
-            System.out.print(settings.getSetting("dbLocation"));
             conn = DriverManager.getConnection("jdbc:derby:" + settings.getSetting("dbLocation"));
             setLastDBLocation(settings.getSetting("dbLocation"));
         } catch (SQLException e) {
