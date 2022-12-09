@@ -61,7 +61,7 @@ public class CreateDB {
                         DATE_FLAGGED date,
                         ISSUE_FLAGGED int,
                         ProductId varchar(255),
-                        DateCreated date(0),
+                        DateCreated date,
                         PRIMARY KEY (TitleID)
                     )""");
             System.out.println("Created table Title");

@@ -27,9 +27,7 @@ public class Settings {
             if (settingsFile.createNewFile()) {
                 createSettings();
             }
-            else {
-                parseSettings();
-            }
+            parseSettings();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (SecurityException sce) {

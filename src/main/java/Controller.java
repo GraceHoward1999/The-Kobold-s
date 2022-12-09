@@ -771,7 +771,7 @@ public class Controller implements Initializable {
 
         createConnection();
 
-        // alter tables for notes
+        // alter tables
         alterTables();
 
         //Populate columns for Customer Table
@@ -2770,13 +2770,21 @@ public class Controller implements Initializable {
      */
     private void createConnection() {
         try {
+            System.out.print(settings.getSetting("dbLocation"));
             conn = DriverManager.getConnection("jdbc:derby:" + settings.getSetting("dbLocation"));
             setLastDBLocation(settings.getSetting("dbLocation"));
         } catch (SQLException e) {
             if (e.getErrorCode() == 40000) {
+                e.printStackTrace();
                 String lastDBLocation = getLastDBLocation();
-                if (lastDBLocation == null || lastDBLocation == settings.getSetting("dbLocation")) {
+                if (lastDBLocation == null) {
                     CreateDB.main(null);
+                }
+                else if (lastDBLocation.equals(settings.getSetting("dbLocation"))) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR, "Database not in expected location. It's likely someone moved the folder manually.", ButtonType.OK);
+                    alert.setTitle("Database Error");
+                    alert.setHeaderText("");
+                    alert.show();
                 }
                 else {
                     moveDB();
@@ -2816,9 +2824,9 @@ public class Controller implements Initializable {
         } catch (Exception e) {
             out = null;
             e.printStackTrace();
+        } finally {
+            if (reader != null) reader.close();
         }
-        
-        reader.close();
         return out;
     }
 
