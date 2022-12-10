@@ -263,7 +263,8 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Gets a list representing all Customers in the database
+     * Gets a list representing all Customers in the database.
+     * If any operations adjust the backing database, invalidateCustomers() should be called.
      * @return An ObservableList of Customer objects
      */
     public ObservableList<Customer> getCustomers() {
@@ -571,6 +572,7 @@ public class Controller implements Initializable {
 
     /**
      * Gets a list representing all Orders in the database.
+     * If any operations adjust the database for orders, invalidateOrders() should be called.
      * @return An ObservableList of Order objects
      */
     public ObservableList<Order> getOrderTable() {
@@ -653,7 +655,8 @@ public class Controller implements Initializable {
     }
 
     /**
-     * Gets a list representing all Titles in the database
+     * Gets a list representing all Titles in the database.
+     * If any operations adjust the database for titles, invalidateOrders() should be called.
      * @return An ObeservableList of all Title objects
      */
     public ObservableList<Title> getTitles() {
@@ -2514,14 +2517,14 @@ public class Controller implements Initializable {
         long todayMillis = startOfToday.toEpochSecond() * 1000;
         Date today = new Date(todayMillis);
 
-        Alert savingAlert = new Alert(Alert.AlertType.INFORMATION, "Saving New Release Flags...", ButtonType.OK);
+        // Alert savingAlert = new Alert(Alert.AlertType.INFORMATION, "Saving New Release Flags...", ButtonType.OK);
 
-        savingAlert.setTitle("Saving");
-        savingAlert.setHeaderText("");
-        savingAlert.setContentText("Saving New Release Flags...");
-        savingAlert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
-        savingAlert.getDialogPane().getScene().getWindow().setOnCloseRequest(Event::consume);
-        savingAlert.show();
+        // savingAlert.setTitle("Saving");
+        // savingAlert.setHeaderText("");
+        // savingAlert.setContentText("Saving New Release Flags...");
+        // savingAlert.getDialogPane().lookupButton(ButtonType.OK).setDisable(true);
+        // savingAlert.getDialogPane().getScene().getWindow().setOnCloseRequest(Event::consume);
+        // savingAlert.show();
 
         for (int i = 0; i < titles.size(); i++) {
             PreparedStatement s = null;
@@ -2564,12 +2567,14 @@ public class Controller implements Initializable {
 
         }
 
-        savingAlert.close();
+        // savingAlert.close();
 
         Alert savedAlert = new Alert(Alert.AlertType.INFORMATION, "Saved Flags!", ButtonType.OK);
         savedAlert.setHeaderText("");
         savedAlert.show();
         this.unsaved = false;
+
+        invalidateTitles();
         titleTable.getItems().setAll(getTitles());
         this.loadReportsTab();
         getDatabaseInfo();
