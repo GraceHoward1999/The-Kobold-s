@@ -6,6 +6,18 @@ Capstone Project UNO 2022
 The DragonSlayer program is used to maintain a comic book store Pull List. Customer's can be added through the customer tab, titles throught the title tab, and reports and data analytics can be viewed through the reports tab.
 
 # Release Notes
+**RELEASE NOTES 1.01d (12.10.2022)**
+
+-Added ability to mark and track delinquent customers.
+
+-If a title was made in the last sixth months, it no longer triggers the "title not flagged for 6 months" warning.
+
+-SQL calls to the database have been optimized and data is now cached. Backing out of menus no longer triggers calls. Searching is faster.
+
+-Settings file made that tracks the installation location of the database and allows for it to be moved manually by the user.
+
+-Multiple titles can be selected and flagged at once now using the CTRL+M shortcut.
+
 **RELEASE NOTES 1.01c (11.17.2022)**
 
 -Multiple customers, titles, and orders are now selectable at a time. This allows for mass deletion or comparison.
